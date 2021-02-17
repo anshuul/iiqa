@@ -3,6 +3,9 @@ import SignInImage from "../../assets/login.svg";
 import { Formik } from 'formik'
 import * as yup from 'yup'
 
+import { signIn, signOut } from '../../services/userServices'
+import { AuthContext } from '../../context/authContext'
+
 class SignIn extends Component {
   state = {
     email: "",
@@ -20,19 +23,33 @@ class SignIn extends Component {
     console.log(this.state);
   };
 
-  render() {
+  componentDidUpdate(){
+    signOut()
+    .then(()=>{
+      console.log('signed out')
+    })
+  }
+
+  render(){
     const validationSchema = yup.object({
       email: yup.string().required().email('Invalid Email'),
       password: yup.string().required() //more validation can be added here like length, regex etc.
     })
     return (
+      
+    
+  <AuthContext.Consumer>
+    {({currentUser}) => (
       <div className="container">
+        {currentUser && currentUser.uid}
         <Formik
           initialValues={{email: '', password: ''}}
           validationSchema={validationSchema}
-          onSubmit = {(values, actions) => {
+          onSubmit = { async (values, actions) => {
             console.log('submitted')
             console.log(values.email, values.password)
+            await signIn(values.email, values.password)
+
           }}
         >
         {(props) => (
@@ -85,7 +102,9 @@ class SignIn extends Component {
         )}
         </Formik>
       </div>
-    );
+    )}
+  </AuthContext.Consumer>
+    )
   }
 }
 

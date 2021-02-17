@@ -1,6 +1,9 @@
 import { auth, firestore } from '../shared/firebase'
 
-export async function signInStudent(emailId, password){
-    const user = await auth.signInWithEmailAndPassword(emailId, password)
-    console.log(user)
+export function signIn(emailId, password){
+    return auth.signInWithEmailAndPassword(emailId, password)
+}
+
+export function signOut(){
+    return auth.signOut()
 }
