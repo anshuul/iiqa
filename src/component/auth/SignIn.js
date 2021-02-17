@@ -40,7 +40,7 @@ class SignIn extends Component {
   render(){
     const validationSchema = yup.object({
       email: yup.string().required().email('Invalid Email'),
-      password: yup.string().required() //more validation can be added here like length, regex etc.
+      password: yup.string().required()
     })
     return (
       

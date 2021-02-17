@@ -4,6 +4,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 
 import { signUpForTeacher, signUpForStudent } from '../../services/userServices'
+import { AuthContext } from '../../context/authContext'
 
 class SignUp extends Component {
   state = {};
@@ -35,7 +36,12 @@ class SignUp extends Component {
           validationSchema={validationSchema}
           onSubmit={async (values, action)=>{
             try{
-              const message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
+              let message = ''
+              if(values.type === '1'){ // 1 for teacher temporary TODO: change to select value condition
+                message = await signUpForTeacher(values.email, values.password, values.fname, values.lname)
+              } else {
+                message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
+              }
               alert(message)
             }catch(err){
               alert(err.message)
