@@ -4,6 +4,7 @@ import SignIn from "./component/auth/SignIn";
 import SignUp from "./component/auth/SignUp";
 import Home from "./component/home/Home";
 import Navbar from "./component/layout/Navbar";
+import Classroom from "./component/classroom/Classroom";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
+          <Route path="/classroom" component={Classroom} />
         </Switch>
       </div>
     </BrowserRouter>
