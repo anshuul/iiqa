@@ -5,22 +5,11 @@ import * as yup from 'yup'
 
 import { signIn, signOut } from '../../services/userServices'
 import { AuthContext } from '../../context/authContext'
+import Loading from '../layout/Loading'
 
 class SignIn extends Component {
   state = {
-    email: "",
-    password: "",
-  };
-
-  handleChange = (e) => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    });
-  };
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(this.state);
+    loading: false,
   };
 
   componentDidMount(){
@@ -37,11 +26,20 @@ class SignIn extends Component {
     })
   }
 
+  enableLoading(){
+    this.setState({loading:true})
+  }
+
+  disableLoading(){
+    this.setState({loading:false})
+  }
+
   render(){
     const validationSchema = yup.object({
       email: yup.string().required().email('Invalid Email'),
       password: yup.string().required()
     })
+
     return (
       
     
@@ -49,6 +47,7 @@ class SignIn extends Component {
     {({currentUser}) => (
       <div className="container">
         {currentUser && currentUser.uid}
+        {this.state.loading && <Loading message='Signing you in. Please wait. '/>}
         <Formik
           initialValues={{email: '', password: ''}}
           validationSchema={validationSchema}
@@ -56,10 +55,14 @@ class SignIn extends Component {
             console.log('submitted')
             console.log(values.email, values.password)
             try{
+              this.enableLoading()
               await signIn(values.email, values.password)
               alert('User signed in Succesfully')
             }catch(err){
               alert(err.message)
+            }
+            finally{
+              this.disableLoading()
             }
           }}
         >
@@ -105,7 +108,15 @@ class SignIn extends Component {
           </div>
           <div className="input-field">
             <center>
-              <input type='submit' value='Login' className="btn blue darken-3 z-depth-0 center-align" onClick={props.handleSubmit}/>
+              <input
+                type='submit'
+                value='Login' 
+                className="btn blue darken-3 z-depth-0 center-align" 
+                onClick={()=>{
+                  
+                  props.handleSubmit()
+                }}
+              />
                 
             </center>
           </div>

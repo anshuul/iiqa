@@ -1,0 +1,24 @@
+.loaderContainer {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    display:flex;
+    flex:1;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 3;
+    left:0;
+    top:0;
+}
+
+.loaderContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding:20px 20px 0px 20px;
+    box-shadow: 5px 5px 10px 5px lightgrey;
+    width:auto;
+}

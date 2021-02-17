@@ -5,20 +5,20 @@ import * as yup from 'yup'
 
 import { signUpForTeacher, signUpForStudent } from '../../services/userServices'
 import { AuthContext } from '../../context/authContext'
+import Loading from '../layout/Loading'
 
 class SignUp extends Component {
-  state = {};
-
-  handleChange = (e) => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    });
+  state = {
+    loading: false,
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(this.state);
-  };
+  enableLoading(){
+    this.setState({loading:true})
+  }
+
+  disableLoading(){
+    this.setState({loading:false})
+  }
 
   render() {
     const validationSchema = yup.object({
@@ -31,11 +31,13 @@ class SignUp extends Component {
     })
     return (
       <div className="container">
+      {this.state.loading && <Loading message='Creating your Account. Please wait. '/>}
         <Formik
           initialValues = {{fname: '', lname: '', type: '', email: '', password: '', confirmPassword: ''}}
           validationSchema={validationSchema}
           onSubmit={async (values, action)=>{
             try{
+              this.enableLoading()
               let message = ''
               if(values.type === '1'){ // 1 for teacher temporary TODO: change to select value condition
                 message = await signUpForTeacher(values.email, values.password, values.fname, values.lname)
@@ -45,6 +47,9 @@ class SignUp extends Component {
               alert(message)
             }catch(err){
               alert(err.message)
+            }
+            finally{
+              this.disableLoading()
             }
           }}>
           {(props)=>(
