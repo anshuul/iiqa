@@ -23,7 +23,14 @@ class SignIn extends Component {
     console.log(this.state);
   };
 
-  componentDidUpdate(){
+  componentDidMount(){
+    signOut()
+    .then(()=>{
+      console.log('signed out')
+    })
+  }
+
+  componentDidUpdate(){ // caled when redirected to this page
     signOut()
     .then(()=>{
       console.log('signed out')
@@ -48,8 +55,12 @@ class SignIn extends Component {
           onSubmit = { async (values, actions) => {
             console.log('submitted')
             console.log(values.email, values.password)
-            await signIn(values.email, values.password)
-
+            try{
+              await signIn(values.email, values.password)
+              alert('User signed in Succesfully')
+            }catch(err){
+              alert(err.message)
+            }
           }}
         >
         {(props) => (

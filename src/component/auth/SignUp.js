@@ -3,6 +3,8 @@ import SignUpImage from "../../assets/signup.svg";
 import { Formik } from 'formik'
 import * as yup from 'yup'
 
+import { signUpForTeacher, signUpForStudent } from '../../services/userServices'
+
 class SignUp extends Component {
   state = {};
 
@@ -23,7 +25,7 @@ class SignUp extends Component {
       lname: yup.string().required('Last Name is required'),
       type: yup.string().required('Please select one of the user types'),
       email: yup.string().required('Email Id is required').email('Invalid Email'),
-      password: yup.string().required(),
+      password: yup.string().required().min(7, 'Password must be more thant 6 character'),
       confirmPassword: yup.string().required().oneOf([yup.ref('password'), null],'Passwords must match')
     })
     return (
@@ -31,8 +33,13 @@ class SignUp extends Component {
         <Formik
           initialValues = {{fname: '', lname: '', type: '', email: '', password: '', confirmPassword: ''}}
           validationSchema={validationSchema}
-          inSubmit={(values, action)=>{
-            console.log(values)
+          onSubmit={async (values, action)=>{
+            try{
+              const message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
+              alert(message)
+            }catch(err){
+              alert(err.message)
+            }
           }}>
           {(props)=>(
         <div className="white">
