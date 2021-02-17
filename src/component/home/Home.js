@@ -8,7 +8,7 @@ const Home = (props) => {
   };
   return (
     <div className="container center-align">
-      <h1>Welcome to the new age of learning!!</h1>
+      <h2>Welcome to the new age of learning!!</h2>
 
       <center>
         <img src={HomeImage} alt="home image" height="70%" width="70%" />
@@ -19,7 +19,7 @@ const Home = (props) => {
         style={{
           color: "white",
           borderRadius: "20px",
-          marginTop: "20px",
+          marginTop: "2%",
           width: "35%",
           fontSize: 20,
         }}
