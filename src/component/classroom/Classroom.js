@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Classes from "./classes/Classes";
+import './Classroom.css'
 
 class Classroom extends Component {
   state = {
@@ -11,8 +12,6 @@ class Classroom extends Component {
       { id: "2", title: "B" },
       { id: "1", title: "A" },
       { id: "2", title: "B" },
-      { id: "1", title: "A" },
-      { id: "2", title: "B" },
     ],
   };
   buttonHandler = () => {
@@ -20,54 +19,37 @@ class Classroom extends Component {
   };
 
   render() {
-    const classrooms = this.state.classroom;
-    console.log(classrooms);
     return (
-      <div className="conatainer">
+      <div className='container' style={{display:'flex', flexDirection:'column', justifyContent:'space-between'}}>
+        {/* button bar */}
         <div
-          className="buttonclass"
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
+          className="buttonclass customButtonGroup"
         >
           <button
             onClick={this.buttonHandler}
-            className="selection blue darken-2 btn-flat btn-large"
-            style={{
-              color: "white",
-              borderRadius: "20px",
-              marginTop: "20px",
-              width: "20%",
-              fontSize: 20,
-              marginLeft: "20px",
-              marginRight: "20px",
-              marginBottom: "20px",
-              fontWeight: "bold",
-            }}
+            className="selection blue darken-2 btn-flat btn-large customButton"
+            
           >
             Create
           </button>
           <button
             onClick={this.buttonHandler}
-            className="red darken-2 btn-flat btn-large"
-            style={{
-              color: "white",
-              borderRadius: "20px",
-              marginTop: "20px",
-              width: "20%",
-              fontSize: 20,
-              marginBottom: "20px",
-              fontWeight: "bold",
-            }}
+            className="red darken-2 btn-flat btn-large customButton"
           >
             Join
           </button>
         </div>
 
-        {classrooms.map((classroom) => {
-          return <Classes classroom={classroom} key={classroom.id} />;
-        })}
+        {/* class group */}
+        <div className='classGroup'>
+          {this.state.classroom.map((classroom) => {
+            return <Classes classroom={classroom} key={classroom.id} />;
+          })}
+        </div>
       </div>
-    );
+    )
   }
 }
 
 export default Classroom;
+// selection blue darken-2 btn-flat btn-medium"

@@ -1,40 +1,28 @@
 import React from "react";
+import './Classes.css'
 
 const colors = ["blue", "teal", "red", "green", "orange"];
 const Classes = (props) => {
-  const defaultClassName = "child lighten-2";
+  const defaultClassName = "child lighten-2 customTitleContainer";
   const randomize = () => {
     return colors[Math.floor(Math.random() * 5)];
   };
   const finalClassName = `${defaultClassName} ${randomize()}`;
   return (
-    <center>
       <div
-        className="parent"
-        style={{
-          height: "250px",
-          width: "190px",
-          border: "1px solid grey",
-          boxShadow: "10px 10px 10px grey",
-          marginTop: "10px",
-          marginLeft: "10px",
-          borderRadius: "10px",
-        }}
+        className = 'customContainer'
       >
         <div
           className={finalClassName}
-          style={{
-            margin: "0px",
-            height: "80px",
-            borderRadius: "10px 10px 0px 0px",
-          }}
         >
-          <p style={{ margin: "0px", paddingTop: "5px", paddingLeft: "5px" }}>
+          <p>
             {props.classroom.title}
           </p>
         </div>
+        <div className="footer">
+          <p>Total Students: 20</p>
+        </div>
       </div>
-    </center>
   );
 };
 

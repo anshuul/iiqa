@@ -1,0 +1,33 @@
+.classGroup {
+    padding:10px;
+    border: '1px solid black';
+    display:flex;
+    flex:100%;
+    justify-content:left;
+    flex-wrap: wrap;
+    align-content: space-between;
+}
+
+.customButtonGroup {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top:10px;
+}
+
+.customButton {
+    color:white;
+    border-radius: 20px;
+    margin-top: 20px;
+    min-width: 20%;
+    font-size: 20px;
+    margin: 0 20px 20px 20px;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 501px) {
+    .classGroup {
+        justify-content: center;
+    }
+  }
+  
