@@ -93,10 +93,10 @@ export async function getUserProfile(id='SFkJpuuJyHdFJiMHjQPyevhmP4y1'){
         }
         studentProfilesList.forEach(studentProfile => {
             studentData = studentProfile.data()
-            responseData = {userData, studentData}
+            responseData = {...userData, ...studentData}
         })
     } else {
-        responseData = {userData}
+        responseData = userData
     }
     return responseData
     
