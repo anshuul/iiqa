@@ -17,7 +17,7 @@ export default class Loading extends Component {
                         </div>
                         </div>
                     </div>
-                    <p>{this.props.message}</p>
+                    <p style={{marginTop:'10px'}}>{this.props.message}</p>
                 </div>
             </div>
         )

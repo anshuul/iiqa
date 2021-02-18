@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from '../../context/authContext'
+import { getOnlyUserProfile } from '../../services/userServices'
 
 const SignedInLinks = () => {
+
+  const [initials, setInitials] = useState('')
+
   return (
     <AuthContext.Consumer>
     {({currentUser}) => {
-                          const { fname, lname } = currentUser
-                          const initials = `${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`
+                          getOnlyUserProfile(currentUser.uid)
+                          .then(userData => {
+                            const { fname, lname } = userData
+                            setInitials(`${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`)
+                          })
+                          .catch(err => console.log(err))
                           return (
                                   <ul className="right">
                                     <li>

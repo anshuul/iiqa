@@ -8,7 +8,7 @@
     margin-bottom:6%;
     display:flex;
     flex-direction:column;
-    justify-content:space-between
+    /* justify-content:space-between */
 }
 
 .customTitleContainer {
@@ -16,16 +16,33 @@
     height: 80px;
     border-radius: 10px 10px 0px 0px;
     display:flex;
-    justify-content:center;
+    flex-direction: column;
+    justify-content:space-between;
+    align-items: center;
     padding:5px;
 }
 
 .footer {
     padding:10px;
+    /* border:1px solid black; */
+    display: flex;
+    flex:1;
+    align-items: flex-end;
 }
 
 p {
     margin:0;
+}
+
+.displayPicture {
+    width:30%;
+    aspect-ratio: auto;
+    margin-top:12%;
+    border:1px solid lightgrey;
+    border-radius:50%;
+    background-color: white;
+    /* overflow: hidden; */
+    /* padding:10px; */
 }
 
 @media only screen and (max-width: 501px) {

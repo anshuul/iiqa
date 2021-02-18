@@ -15,10 +15,9 @@
 .loaderContent {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
     background-color: white;
-    padding:20px 20px 0px 20px;
+    padding:20px 20px 10px 20px;
     box-shadow: 5px 5px 10px 5px lightgrey;
     width:auto;
 }

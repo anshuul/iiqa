@@ -12,12 +12,13 @@ class SignIn extends Component {
     loading: false,
   };
 
-  // componentDidMount(){
-  //   signOut()
-  //   .then(()=>{
-  //     console.log('signed out')
-  //   })
-  // }
+  componentDidMount(){
+    signOut()
+    .then(()=>{
+      console.log('signed out')
+    })
+    .catch(err => alert(err.message))
+  }
 
   // componentDidUpdate(){ // caled when redirected to this page
   //   signOut()
@@ -44,7 +45,7 @@ class SignIn extends Component {
       
     
   <AuthContext.Consumer>
-    {({currentUser}) => (
+    {() => (
       <div className="container">
         {this.state.loading && <Loading message='Signing you in. Please wait. '/>}
         <Formik
@@ -56,7 +57,8 @@ class SignIn extends Component {
             try{
               this.enableLoading()
               await signIn(values.email, values.password)
-              alert('User signed in Succesfully')
+              // setCurrentUser(currentUser)
+              this.props.history.push('classroom')
             }catch(err){
               alert(err.message)
             }

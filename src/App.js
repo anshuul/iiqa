@@ -3,32 +3,31 @@ import React, {useState, useEffect} from 'react'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import SignIn from "./component/auth/SignIn";
 import SignUp from "./component/auth/SignUp";
-import Classroom from './component/classroom'
+import Classroom from './component/classroom/Classroom'
 import Home from "./component/home/Home";
 import Navbar from "./component/layout/Navbar";
 import { AuthContext } from './context/authContext'
 import { auth } from './shared/firebase'
-import { getUserProfile } from './services/userServices'
+import { getOnlyUserProfile } from './services/userServices'
 
 class App extends React.Component{
   state = {
-    currentUser: '',
-    setCurrentUser: this.setCurrentUser
+    currentUser: {
+      uid: localStorage.getItem('currentUserId')
+    },
+    setCurrentUser: this.setCurrentUser.bind(this)
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.currentUser.uid !== prevState.currentUser.uid){
+      localStorage.setItem('currentUserId', this.state.currentUser.uid)
+    }
   }
 
   componentDidMount(){
     auth.onAuthStateChanged(user => {
-      if(user){
-        getUserProfile(user.uid)
-        .then(userData => {
-          this.setState({...this.state, currentUser:userData})
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      } else { // when looged out user will be null
-        this.setState({...this.state, currentUser:user}) // logout state
-      }
+      if(user) this.setState({...this.state, currentUser:{uid: user.uid}})
+      else this.setState({...this.state, currentUser:{uid: ''}})
     })
   }
 

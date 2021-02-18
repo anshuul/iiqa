@@ -5,6 +5,9 @@ const Student = firestore.collection('students')
 
 export function signIn(emailId, password){
     return auth.signInWithEmailAndPassword(emailId, password)
+    // const { uid } = auth.currentUser
+    // const currentUser = await getUserProfile(uid)
+    // return currentUser
 }
 
 export function signOut(){
@@ -28,7 +31,7 @@ export async function signUpForTeacher(email, password, fname, lname){
         await auth.createUserWithEmailAndPassword(email, password)
         const { uid } = auth.currentUser
         await User.add({
-            fname, lname, uid, isTeacher:true
+            fname, lname, uid, isTeacher:true, isStudent:false
         })
         return 'New Teacher Account created Succesfully'
 
@@ -54,7 +57,7 @@ export async function signUpForStudent(email, password, fname, lname){
         await auth.createUserWithEmailAndPassword(email, password)
         const { uid } = auth.currentUser
         const { id } = await User.add({
-            fname, lname, uid, isStudent:true
+            fname, lname, uid, isStudent:true, isTeacher:false
         })
         await Student.add({
             userDocId: id,
@@ -66,7 +69,20 @@ export async function signUpForStudent(email, password, fname, lname){
     }
 }
 
-export async function getUserProfile(id='SFkJpuuJyHdFJiMHjQPyevhmP4y1'){
+export async function getOnlyUserProfile(id){
+    console.log(id)
+    let userData = null
+    const userProfilesList = await User.where('uid','==',id).get()
+    if(userProfilesList.empty){
+        throw new Error('No matching records')
+    }
+    userProfilesList.forEach((userProfile) => {
+        userData = {docId: userProfile.id, ...userProfile.data()}
+    })
+    return userData
+}
+
+export async function getUserProfile(id){
     /**
      * @param id
      * 
@@ -75,15 +91,12 @@ export async function getUserProfile(id='SFkJpuuJyHdFJiMHjQPyevhmP4y1'){
      * get the user doc from given id
      * get the student data if from doc id if user type is student
      */
+    if(!id){
+        return null
+    }
     let userData = null
     let responseData = null
-    const userProfilesList = await User.where('uid','==',id).get()
-    if(userProfilesList.empty){
-        throw new Error('No matching records')
-    }
-    userProfilesList.forEach((userProfile) => {
-        userData = {docId: userProfile.id, ...userProfile.data()}
-    })
+    userData = await getOnlyUserProfile(id)
     if (userData.isStudent){
         let studentData = null
         
