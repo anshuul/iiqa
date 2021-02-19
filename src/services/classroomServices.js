@@ -2,7 +2,7 @@ import { auth, firestore } from '../shared/firebase'
 
 const Classroom = firestore.collection('classrooms')
 
-export async function loadClassroomForStudents(userId='SJq81PgMxBaM89nU3dG4'){
+export async function loadClassroomForStudents(userId){
     /**
      * @param userId ... the docid of user
      * 
