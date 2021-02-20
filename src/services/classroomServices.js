@@ -14,17 +14,17 @@ export async function loadClassroomForStudents(userId){
      */
     try {
         console.log(userId)
-        let responseData = null
+        let responseData = []
         const listOfClassrooms = await Classroom.where('studentIds', 'array-contains', userId).get()
         if(listOfClassrooms.empty){
             return 
         }
         listOfClassrooms.forEach(classroom => {
             console.log(classroom.data())
-            responseData = {docId: classroom.id, ...classroom.data()}
+            responseData = [...responseData, {docId: classroom.id, ...classroom.data()}]
         })
         console.log(responseData)
-        return !Array.isArray(responseData) ? [responseData] : responseData
+        return responseData
     } catch (err) {
         throw new Error(err)
     }
@@ -82,6 +82,7 @@ export async function createNewClassroom(name, color, teacherId, displayPicture)
      * @return success message for creation of clasroom
      * 
      * for new classroom studentIds will be []
+     * get the doc id of user from uid
      * make a new doc in classroom collection with given data
      */
 
@@ -92,6 +93,37 @@ export async function createNewClassroom(name, color, teacherId, displayPicture)
             name, color, teacherId: docId, studentIds:[], displayPicture
         })
         return 'New Classroom created'
+    } catch (err) {
+        throw new Error(err)
+    }
+}
+
+export async function joinClassroom(code, studentId){
+    /**
+     * @param code this code is actually docId of classroom
+     * @setudeId
+     * 
+     * @return success amessage on joining classroom
+     * 
+     * search for the classroom docid again given code
+     * get docid of user from uid
+     * add docid in array of studentIds of searched classroom
+     */
+
+    try {
+        const classroomRef = Classroom.doc(code)
+        const classroom = await classroomRef.get()
+        if(!classroom.exists){
+            throw new Error('No such Classroom of this code exists.')
+        }
+        const { docId } = await getOnlyUserProfile(studentId)
+        if(classroom.data().studentIds.includes(docId)) {
+            throw new Error('You are already a part of this classroom')
+        }
+        await classroomRef.set({
+            ...classroom.data(), studentIds: [...classroom.data().studentIds, docId]
+        })
+        return 'Joined Classroom Successfully'
     } catch (err) {
         throw new Error(err)
     }

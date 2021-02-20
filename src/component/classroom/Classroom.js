@@ -38,6 +38,15 @@ class ClassroomComponent extends Component {
     this.loadClassrooms()
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.isJoinBoxDisplayed && !this.state.isJoinBoxDisplayed){
+      this.loadClassrooms()
+    }
+    if(prevState.isCreateBoxDisplayed && !this.state.isCreateBoxDisplayed){
+      this.loadClassrooms()
+    }
+  }
+
   loadClassrooms(){
     console.log(this.props.currentUser)
     this.setState({...this.state, loading:true})
@@ -81,7 +90,7 @@ class ClassroomComponent extends Component {
 
   disableCreateBox(){
     this.setState({...this.state, isCreateBoxDisplayed:false})
-    this.loadClassrooms()
+    // this.loadClassrooms() //since setstate is async func, loadclassroms takes place but state doesnot change so shiting this to CDU method
   }
 
   enableJoinBox(){
@@ -91,6 +100,7 @@ class ClassroomComponent extends Component {
 
   disableJoinBox(){
     this.setState({...this.state, isJoinBoxDisplayed:false})
+    // this.loadClassrooms()
   }
 
   buttonHandler = () => {
