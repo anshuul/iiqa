@@ -31,9 +31,14 @@ class ClassroomComponent extends Component {
     this.disableCreateBox = this.disableCreateBox.bind(this)
     this.enableJoinBox = this.enableJoinBox.bind(this)
     this.disableJoinBox = this.disableJoinBox.bind(this)
+    this.loadClassrooms = this.loadClassrooms.bind(this)
   }
 
   componentDidMount(){
+    this.loadClassrooms()
+  }
+
+  loadClassrooms(){
     console.log(this.props.currentUser)
     this.setState({...this.state, loading:true})
     getUserProfile(this.props.currentUser.uid)
@@ -70,11 +75,13 @@ class ClassroomComponent extends Component {
   }
 
   enableCreateBox(){
+    console.log('clicked')
     this.setState({...this.state, isCreateBoxDisplayed:true})
   }
 
   disableCreateBox(){
     this.setState({...this.state, isCreateBoxDisplayed:false})
+    this.loadClassrooms()
   }
 
   enableJoinBox(){
@@ -117,7 +124,7 @@ class ClassroomComponent extends Component {
             {/* class group */}
             <div className='classGroup'>
               {this.state.classrooms.map((classroom) => {
-                return <Classes {...classroom} color='orange' displayPicture={tempImg} key={classroom.docId} />;
+                return <Classes {...classroom} key={classroom.docId} />;
               })}
             </div>
           </div>

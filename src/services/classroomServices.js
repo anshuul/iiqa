@@ -1,4 +1,5 @@
 import { auth, firestore } from '../shared/firebase'
+import { getOnlyUserProfile } from './userServices'
 
 const Classroom = firestore.collection('classrooms')
 const Avatar = firestore.collection('avatars')
@@ -69,4 +70,29 @@ export async function getAvatarImageLinks(){
         responseData = [...responseData, avatarDoc.data().imageLink]
     })
     return responseData
+}
+
+export async function createNewClassroom(name, color, teacherId, displayPicture){
+    /**
+     * @param name
+     * @param color
+     * @param teacherId
+     * @param displayPicture
+     * 
+     * @return success message for creation of clasroom
+     * 
+     * for new classroom studentIds will be []
+     * make a new doc in classroom collection with given data
+     */
+
+    try {
+        const { docId } = await getOnlyUserProfile(teacherId)
+        console.log(docId)
+        await Classroom.add({
+            name, color, teacherId: docId, studentIds:[], displayPicture
+        })
+        return 'New Classroom created'
+    } catch (err) {
+        throw new Error(err)
+    }
 }

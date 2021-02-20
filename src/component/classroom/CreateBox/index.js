@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import './index.css'
 import Classes from '../classes/Classes'
 import tempImg from '../../../assets/dp2.svg'
-import { getAvatarImageLinks } from '../../../services/classroomServices'
+import { getAvatarImageLinks, createNewClassroom } from '../../../services/classroomServices'
 import Avatar from '../../layout/Avatar'
+import Loading from '../../layout/Loading'
+import { AuthContext } from '../../../context/authContext'
 
-export default class index extends Component {
+class CreateBox extends Component {
 
     constructor(props){
         super(props)
@@ -16,10 +18,12 @@ export default class index extends Component {
             displayPicturesList: [],
             displayPictureChose:tempImg,
             studentIds:[],
+            loading:false
         }
         this.onColorRadioChange = this.onColorRadioChange.bind(this)
         this.onAvatarRadioChange = this.onAvatarRadioChange.bind(this)
         this.onNameChange = this.onNameChange.bind(this)
+        this.createHandler = this.createHandler.bind(this)
     }
 
     componentDidMount(){
@@ -29,6 +33,22 @@ export default class index extends Component {
         })
         .catch(err=>{
             console.log(err)
+        })
+    }
+
+    createHandler(){
+        console.log(this.state)
+        this.setState({...this.state, loading:true})
+        createNewClassroom(this.state.name, this.state.colorChose, this.props.currentUser.uid, this.state.displayPictureChose)
+        .then(message => {
+            alert(message)
+        })
+        .catch(err => {
+            alert(err.message)
+        })
+        .finally(()=>{
+            this.setState({...this.state, loading:false})
+            this.props.cancelHandler()
         })
     }
 
@@ -47,6 +67,7 @@ export default class index extends Component {
     render() {
         return (
             <div className='boxContainer'>
+                {this.state.loading && <Loading message='Creating your Classroom. Please wait.' />}
                 <div className='createBoxContent' >
                     <div className='previewContainer'>
                         <Classes
@@ -76,9 +97,9 @@ export default class index extends Component {
                                     </label>
                                 </div>  
                                 {this.state.colorsList.map(color => (
-                                    <div className='checkBox'>
+                                    <div className='checkBox' key={color}>
                                         <label>
-                                        <input class="with-gap" value={color} name="group1" type="radio" onChange={this.onColorRadioChange} />
+                                        <input className="with-gap" value={color} name="group1" type="radio" onChange={this.onColorRadioChange} />
                                         <span>{color}</span>
                                         </label>
                                     </div>
@@ -90,10 +111,10 @@ export default class index extends Component {
                                     Choose Avatar:
                                     </label>
                                 </div>   
-                                {this.state.displayPicturesList.map(displayPictureLink => (
-                                    <div className='checkBox'>
+                                {this.state.displayPicturesList.map((displayPictureLink, index) => (
+                                    <div className='checkBox' key={index}>
                                         <label>
-                                        <input class="with-gap"value={displayPictureLink} name="group2" type="radio" onChange={this.onAvatarRadioChange} />
+                                        <input className="with-gap"value={displayPictureLink} name="group2" type="radio" onChange={this.onAvatarRadioChange} />
                                         <span>
                                             <Avatar displayPicture={displayPictureLink} className='customAvatar' />
                                         </span>
@@ -102,8 +123,8 @@ export default class index extends Component {
                                 ))}
                             </div>
                             <div className='buttonGroup'>
-                                <button className='btn blue darken-3 z-depth-0' >Create</button>
-                                <button className='btn red darken-3 z-depth-0' onClick={() => this.props.cancelHandler()}>Cancel</button>
+                                <div className='btn blue darken-3 z-depth-0' onClick={this.createHandler} >Create</div>
+                                <div className='btn red darken-3 z-depth-0' onClick={()=>this.props.cancelHandler()}>Cancel</div>
                             </div>
                         </form>
                     </div>
@@ -111,4 +132,12 @@ export default class index extends Component {
             </div>
         )
     }
+}
+
+export default function ComponentWithContext(props){
+    return (
+        <AuthContext.Consumer>
+            {({currentUser}) => <CreateBox currentUser={currentUser} {...props} />}
+        </AuthContext.Consumer>
+    )
 }
