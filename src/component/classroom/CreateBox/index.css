@@ -12,7 +12,7 @@
     top:0;
 }
 
-.boxContent {
+.createBoxContent {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -22,7 +22,7 @@
     width:60%;
 }
 
-.formContainer {
+.createFormContainer {
     width:70%;
     height:100%;
     display: flex;
@@ -75,11 +75,11 @@
 }
 
 @media only screen and (max-width: 720px) {
-    .boxContent {
+    .createBoxContent {
         flex-direction: column;
     }
 
-    .formContainer {
+    .createFormContainer {
         padding: 5% 0;
     }
 
@@ -94,7 +94,7 @@
 }
 
 @media only screen and (max-width: 890px) {
-    .boxContent {
+    .createBoxContent {
         width:80%;
     }
 }
@@ -108,13 +108,13 @@
         display: none;
     }
 
-    .formContainer {
+    .createFormContainer {
         width:80%
     }
 }
 
 @media only screen and (max-width: 350px) {
-    .boxContent {
+    .createBoxContent {
         width:100%;
     }
 }

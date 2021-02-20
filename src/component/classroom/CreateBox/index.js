@@ -47,7 +47,7 @@ export default class index extends Component {
     render() {
         return (
             <div className='boxContainer'>
-                <div className='boxContent' >
+                <div className='createBoxContent' >
                     <div className='previewContainer'>
                         <Classes
                             color={this.state.colorChose}
@@ -57,7 +57,7 @@ export default class index extends Component {
                         /> 
                     </div>
                     <div className='divider'></div>
-                    <div className='formContainer'>
+                    <div className='createFormContainer'>
                         <form>
                             <div className="input-field">
                                 <label htmlFor="name">Name of Class</label>

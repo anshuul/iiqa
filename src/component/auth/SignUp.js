@@ -9,9 +9,21 @@ import Loading from '../layout/Loading'
 import ErrorText from '../layout/ErrorText'
 
 class SignUp extends Component {
-  state = {
-    loading: false,
-  };
+
+  constructor(props){
+    super(props)
+    this.state = {
+      loading: false,
+      type: null,
+      isTypeErrorDisplayed:false,
+    };
+
+    this.onTypeRadioChange = this.onTypeRadioChange.bind(this)
+  }
+
+  onTypeRadioChange(event){
+    this.setState({...this.state, type:event.target.value})
+  }
 
   enableLoading(){
     this.setState({loading:true})
@@ -25,7 +37,7 @@ class SignUp extends Component {
     const validationSchema = yup.object({
       fname: yup.string().required('First Name is required'),
       lname: yup.string().required('Last Name is required'),
-      type: yup.string().required('Please select one of the user types'),
+      // type: yup.string().required('Please select one of the user types'),
       email: yup.string().required('Email Id is required').email('Invalid Email'),
       password: yup.string().required('Please enter your Password of minimum 6 characters').min(7, 'Password must be more thant 6 character'),
       confirmPassword: yup.string().required('Please Confirm your Password').oneOf([yup.ref('password'), null],'Passwords must match')
@@ -38,15 +50,20 @@ class SignUp extends Component {
           validationSchema={validationSchema}
           onSubmit={async (values, action)=>{
             try{
-              this.enableLoading()
-              let message = ''
-              if(values.type === '1'){ // 1 for teacher temporary TODO: change to select value condition
-                message = await signUpForTeacher(values.email, values.password, values.fname, values.lname)
+              if(this.state.type === null){
+                this.setState({...this.state, isTypeErrorDisplayed:true})
               } else {
-                message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
+                this.setState({...this.state, isTypeErrorDisplayed:false})
+                this.enableLoading()
+                let message = ''
+                if(this.state.type === '1'){ // 1 for teacher temporary TODO: change to select value condition
+                  message = await signUpForTeacher(values.email, values.password, values.fname, values.lname)
+                } else {
+                  message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
+                }
+                alert(message)
+                this.props.history.push('/classroom')
               }
-              alert(message)
-              this.props.history.push('/classroom')
             }catch(err){
               alert(err.message)
             }
@@ -92,7 +109,27 @@ class SignUp extends Component {
             {props.touched.lname && props.errors.lname && 
               <ErrorText errorText={props.errors.lname} />}
           </div>
-          <div className="input-field">
+          <div style={{display:'flex',flexWrap:'wrap', alignItems:'center'}} >
+            <div style={{marginRight:'10px'}}>
+                <label style={{fontSize:'1rem'}}>
+                Are you a student or a teacher? *
+                </label>
+            </div>  
+            <div style={{marginRight:'10px'}}>
+              <label>
+              <input class="with-gap" value={1} name="group1" type="radio" onChange={this.onTypeRadioChange} />
+              <span>Teacher</span>
+              </label>
+            </div>
+            <div style={{marginRight:'10px'}}>
+              <label>
+              <input class="with-gap" value={0} name="group1" type="radio" onChange={this.onTypeRadioChange} />
+              <span>Student</span>
+              </label>
+            </div>
+            {this.state.isTypeErrorDisplayed && <p style={{fontSize:'12px'}}><ErrorText errorText='Please select user type'/></p>}
+          </div>
+          {/*<div className="input-field">
             <label htmlFor="usertype">Are you a student or a teacher? *</label>
             <input
               type="text"
@@ -102,7 +139,7 @@ class SignUp extends Component {
             
             {props.touched.type && props.errors.type && 
             <ErrorText errorText={props.errors.type} />}
-          </div>
+            </div>*/}
           <div className="input-field">
             <label htmlFor="email">Email *</label>
             <input
