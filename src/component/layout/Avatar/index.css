@@ -1,0 +1,9 @@
+.displayPicture {
+    width:30%;
+    aspect-ratio: auto;
+    border:1px solid lightgrey;
+    border-radius:50%;
+    background-color: white;
+    /* overflow: hidden; */
+    /* padding:10px; */
+}

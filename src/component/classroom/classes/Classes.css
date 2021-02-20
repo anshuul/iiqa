@@ -35,12 +35,12 @@ p {
 }
 
 .displayPicture {
-    width:30%;
-    aspect-ratio: auto;
-    margin-top:12%;
-    border:1px solid lightgrey;
+    /* width:30%;
+    aspect-ratio: auto; */
+    margin-top:25px;
+    /* border:1px solid lightgrey;
     border-radius:50%;
-    background-color: white;
+    background-color: white; */
     /* overflow: hidden; */
     /* padding:10px; */
 }

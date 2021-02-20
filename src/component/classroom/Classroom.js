@@ -5,21 +5,30 @@ import { AuthContext } from '../../context/authContext'
 import { loadClassroomForStudents, loadClassroomsForTeacher } from '../../services/classroomServices'
 import { getUserProfile } from '../../services/userServices'
 import Loading from '../layout/Loading'
+import tempImg from '../../assets/dp2.svg' // temp
+import CreateBox from '../classroom/CreateBox'
 
 class ClassroomComponent extends Component {
-  state = {
-    classrooms: [
-      // { id: "1", title: "A" },
-      // { id: "2", title: "B" },
-      // { id: "3", title: "C" },
-      // { id: "1", title: "A" },
-      // { id: "2", title: "B" },
-      // { id: "1", title: "A" },
-      // { id: "2", title: "B" },
-    ],
-    currentUserData: null,
-    loading: false
-  };
+  constructor(props){
+    super(props)
+    this.state = {
+      classrooms: [
+        // { id: "1", title: "A" },
+        // { id: "2", title: "B" },
+        // { id: "3", title: "C" },
+        // { id: "1", title: "A" },
+        // { id: "2", title: "B" },
+        // { id: "1", title: "A" },
+        // { id: "2", title: "B" },
+      ],
+      currentUserData: null,
+      loading: false,
+      isCreateBoxDisplayed:false,
+      isJoinBoxDisplayed:false,
+    };
+    this.enableCreateBox = this.enableCreateBox.bind(this)
+    this.disableCreateBox = this.disableCreateBox.bind(this)
+  }
 
   componentDidMount(){
     console.log(this.props.currentUser)
@@ -57,6 +66,14 @@ class ClassroomComponent extends Component {
     })
   }
 
+  enableCreateBox(){
+    this.setState({...this.state, isCreateBoxDisplayed:true})
+  }
+
+  disableCreateBox(){
+    this.setState({...this.state, isCreateBoxDisplayed:false})
+  }
+
   buttonHandler = () => {
     console.log("Button Clicked");
   };
@@ -64,13 +81,14 @@ class ClassroomComponent extends Component {
   render() {
     return (
           <div className='container' style={{display:'flex', flexDirection:'column', justifyContent:'space-between'}}>
+            {this.state.isCreateBoxDisplayed && <CreateBox cancelHandler = {this.disableCreateBox}/>}
             {this.state.loading && <Loading message='Loading your classrooms. Please wait.'/>}
             {/* button bar */}
             <div
               className="buttonclass customButtonGroup"
             >
               {this.state.currentUserData && this.state.currentUserData.isTeacher && <button
-                onClick={this.buttonHandler}
+                onClick={this.enableCreateBox}
                 className="selection blue darken-2 btn-flat btn-large customButton"
               >
                 Create
@@ -86,7 +104,7 @@ class ClassroomComponent extends Component {
             {/* class group */}
             <div className='classGroup'>
               {this.state.classrooms.map((classroom) => {
-                return <Classes classroom={classroom} key={classroom.docId} />;
+                return <Classes {...classroom} color='orange' displayPicture={tempImg} key={classroom.docId} />;
               })}
             </div>
           </div>
