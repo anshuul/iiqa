@@ -6,6 +6,7 @@ import * as yup from 'yup'
 import { signUpForTeacher, signUpForStudent } from '../../services/userServices'
 import { AuthContext } from '../../context/authContext'
 import Loading from '../layout/Loading'
+import ErrorText from '../layout/ErrorText'
 
 class SignUp extends Component {
   state = {
@@ -26,8 +27,8 @@ class SignUp extends Component {
       lname: yup.string().required('Last Name is required'),
       type: yup.string().required('Please select one of the user types'),
       email: yup.string().required('Email Id is required').email('Invalid Email'),
-      password: yup.string().required().min(7, 'Password must be more thant 6 character'),
-      confirmPassword: yup.string().required().oneOf([yup.ref('password'), null],'Passwords must match')
+      password: yup.string().required('Please enter your Password of minimum 6 characters').min(7, 'Password must be more thant 6 character'),
+      confirmPassword: yup.string().required('Please Confirm your Password').oneOf([yup.ref('password'), null],'Passwords must match')
     })
     return (
       <div className="container">
@@ -45,6 +46,7 @@ class SignUp extends Component {
                 message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
               }
               alert(message)
+              this.props.history.push('/classroom')
             }catch(err){
               alert(err.message)
             }
@@ -77,9 +79,7 @@ class SignUp extends Component {
             />
             
             {props.touched.fname && props.errors.fname && 
-            <span className="helper-text" data-error="wrong" data-success="right">
-              {props.errors.fname}
-            </span>}
+              <ErrorText errorText={props.errors.fname} />}
           </div>
           <div className="input-field">
             <label htmlFor="lastname">Last Name *</label>
@@ -90,9 +90,7 @@ class SignUp extends Component {
             />
             
             {props.touched.lname && props.errors.lname && 
-            <span className="helper-text" data-error="wrong" data-success="right">
-              {props.errors.lname}
-            </span>}
+              <ErrorText errorText={props.errors.lname} />}
           </div>
           <div className="input-field">
             <label htmlFor="usertype">Are you a student or a teacher? *</label>
@@ -103,9 +101,7 @@ class SignUp extends Component {
             />
             
             {props.touched.type && props.errors.type && 
-            <span className="helper-text" data-error="wrong" data-success="right">
-              {props.errors.type}
-            </span>}
+            <ErrorText errorText={props.errors.type} />}
           </div>
           <div className="input-field">
             <label htmlFor="email">Email *</label>
@@ -116,9 +112,7 @@ class SignUp extends Component {
             />
             
             {props.touched.email && props.errors.email && 
-            <span className="helper-text" data-error="wrong" data-success="right">
-              {props.errors.email}
-            </span>}
+              <ErrorText errorText={props.errors.email} />}
           </div>
           <div className="input-field">
             <label htmlFor="password">Password *</label>
@@ -129,9 +123,7 @@ class SignUp extends Component {
             />
             
             {props.touched.password && props.errors.password && 
-            <span className="helper-text" data-error="wrong" data-success="right">
-              {props.errors.password}
-            </span>}
+              <ErrorText errorText={props.errors.password} />}
           </div>
           <div className="input-field">
             <label htmlFor="confirmpassword">Confirm Password *</label>
@@ -142,13 +134,11 @@ class SignUp extends Component {
             />
             
             {props.touched.confirmPassword && props.errors.confirmPassword && 
-            <span className="helper-text" data-error="wrong" data-success="right">
-              {props.errors.confirmPassword}
-            </span>}
+              <ErrorText errorText={props.errors.confirmPassword} />}
           </div>
           <div className="input-field">
             <center>
-              <button className="btn blue darken-3 z-depth-0" onClick={props.handleSubmit}>Signup</button>
+              <input type='submit' value='Sign Up' className="btn blue darken-3 z-depth-0" onClick={props.handleSubmit}/>
             </center>
           </div>
         </div>

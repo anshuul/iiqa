@@ -45,7 +45,7 @@ class ClassroomComponent extends Component {
           loadClassroomForStudents(userData.docId)
           .then(listOfClassrooms => {
             console.log(listOfClassrooms)
-            this.setState({classrooms: listOfClassrooms})
+            this.setState({classrooms: !listOfClassrooms ? [] : listOfClassrooms })
           })
           .catch(err => {
             throw new Error(err)
@@ -55,7 +55,7 @@ class ClassroomComponent extends Component {
           loadClassroomsForTeacher(userData.docId)
           .then(listOfClassrooms => {
             console.log(listOfClassrooms)
-            this.setState({classrooms: listOfClassrooms})
+            this.setState({classrooms: !listOfClassrooms ? [] : listOfClassrooms })
           })
           .catch(err => {
             throw new Error(err)

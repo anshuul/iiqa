@@ -11,18 +11,22 @@ export async function loadClassroomForStudents(userId){
      * 
      * from docid get the list of classrom user is part of
      */
-    console.log(userId)
-    let responseData = null
-    const listOfClassrooms = await Classroom.where('studentIds', 'array-contains', userId).get()
-    if(listOfClassrooms.empty){
-        throw new Error('No classroom found')
+    try {
+        console.log(userId)
+        let responseData = null
+        const listOfClassrooms = await Classroom.where('studentIds', 'array-contains', userId).get()
+        if(listOfClassrooms.empty){
+            return 
+        }
+        listOfClassrooms.forEach(classroom => {
+            console.log(classroom.data())
+            responseData = {docId: classroom.id, ...classroom.data()}
+        })
+        console.log(responseData)
+        return !Array.isArray(responseData) ? [responseData] : responseData
+    } catch (err) {
+        throw new Error(err)
     }
-    listOfClassrooms.forEach(classroom => {
-        console.log(classroom.data())
-        responseData = {docId: classroom.id, ...classroom.data()}
-    })
-    console.log(responseData)
-    return !Array.isArray(responseData) ? [responseData] : responseData
 }
 
 export async function loadClassroomsForTeacher(userId){
@@ -33,18 +37,22 @@ export async function loadClassroomsForTeacher(userId){
      * 
      * from docid get the list of classrom user is part of
      */
-    console.log(userId)
-    let responseData = []
-    const listOfClassrooms = await Classroom.where('teacherId', '==', userId).get()
-    if(listOfClassrooms.empty){
-        throw new Error('No classroom found')
+    try {
+        console.log(userId)
+        let responseData = []
+        const listOfClassrooms = await Classroom.where('teacherId', '==', userId).get()
+        if(listOfClassrooms.empty){
+            return 
+        }
+        listOfClassrooms.forEach(classroom => {
+            console.log(classroom.data())
+            responseData = [...responseData, {docId: classroom.id, ...classroom.data()}]
+        })
+        console.log(responseData)
+        return responseData 
+    } catch (err) {
+        throw new Error(err)
     }
-    listOfClassrooms.forEach(classroom => {
-        console.log(classroom.data())
-        responseData = [...responseData, {docId: classroom.id, ...classroom.data()}]
-    })
-    console.log(responseData)
-    return responseData 
 }
 
 export async function getAvatarImageLinks(){
