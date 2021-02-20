@@ -6,7 +6,8 @@ import { loadClassroomForStudents, loadClassroomsForTeacher } from '../../servic
 import { getUserProfile } from '../../services/userServices'
 import Loading from '../layout/Loading'
 import tempImg from '../../assets/dp2.svg' // temp
-import CreateBox from '../classroom/CreateBox'
+import CreateBox from './CreateBox'
+import JoinBox from './JoinBox'
 
 class ClassroomComponent extends Component {
   constructor(props){
@@ -28,6 +29,8 @@ class ClassroomComponent extends Component {
     };
     this.enableCreateBox = this.enableCreateBox.bind(this)
     this.disableCreateBox = this.disableCreateBox.bind(this)
+    this.enableJoinBox = this.enableJoinBox.bind(this)
+    this.disableJoinBox = this.disableJoinBox.bind(this)
   }
 
   componentDidMount(){
@@ -74,6 +77,15 @@ class ClassroomComponent extends Component {
     this.setState({...this.state, isCreateBoxDisplayed:false})
   }
 
+  enableJoinBox(){
+    console.log('clicked')
+    this.setState({...this.state, isJoinBoxDisplayed:true})
+  }
+
+  disableJoinBox(){
+    this.setState({...this.state, isJoinBoxDisplayed:false})
+  }
+
   buttonHandler = () => {
     console.log("Button Clicked");
   };
@@ -82,6 +94,7 @@ class ClassroomComponent extends Component {
     return (
           <div className='container' style={{display:'flex', flexDirection:'column', justifyContent:'space-between'}}>
             {this.state.isCreateBoxDisplayed && <CreateBox cancelHandler = {this.disableCreateBox}/>}
+            {this.state.isJoinBoxDisplayed && <JoinBox cancelHandler = {this.disableJoinBox}/>}
             {this.state.loading && <Loading message='Loading your classrooms. Please wait.'/>}
             {/* button bar */}
             <div
@@ -94,7 +107,7 @@ class ClassroomComponent extends Component {
                 Create
               </button>}
               {this.state.currentUserData && this.state.currentUserData.isStudent && <button
-                onClick={this.buttonHandler}
+                onClick={this.enableJoinBox}
                 className="red darken-2 btn-flat btn-large customButton"
               >
                 Join
