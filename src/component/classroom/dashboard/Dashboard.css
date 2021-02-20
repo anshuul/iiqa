@@ -1,0 +1,29 @@
+.student-details::-webkit-scrollbar {
+  width: 10px;
+}
+/* Handle */
+.student-details::-webkit-scrollbar-thumb {
+  border-radius: 40px;
+  background: rgba(124, 123, 123, 0.7);
+  width: 10px;
+}
+
+/* Handle on hover */
+.student-details::-webkit-scrollbar-thumb:hover {
+  background: rgba(180, 179, 179, 0.7);
+}
+
+.activities::-webkit-scrollbar {
+  width: 10px;
+}
+/* Handle */
+.activities::-webkit-scrollbar-thumb {
+  border-radius: 40px;
+  background: rgba(124, 123, 123, 0.7);
+  width: 10px;
+}
+
+/* Handle on hover */
+.activities::-webkit-scrollbar-thumb:hover {
+  background: rgba(180, 179, 179, 0.7);
+}

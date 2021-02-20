@@ -7,10 +7,12 @@ const Home = (props) => {
     props.history.push("/signup");
   };
   return (
-    <div className="container center-align" style={{height:'auto'}}>
+    <div className="container center-align" style={{ height: "auto" }}>
       <h2
-        // style={{fontSize:'5vw', textAlign:'right'}}
-      >Welcome to the new age of learning!!</h2>
+      // style={{fontSize:'5vw', textAlign:'right'}}
+      >
+        Welcome to the new age of learning!!
+      </h2>
 
       <center>
         <img src={HomeImage} alt="home image" height="70%" width="70%" />
@@ -23,7 +25,7 @@ const Home = (props) => {
           borderRadius: "20px",
           marginTop: "2%",
           minWidth: "35%",
-          fontSize:20
+          fontSize: 20,
         }}
       >
         Get Started
