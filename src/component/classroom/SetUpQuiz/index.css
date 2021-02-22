@@ -1,0 +1,114 @@
+.customQuizMainContainer {
+    display: flex;
+    flex-direction: column;
+    /* height:91vh; */
+    justify-content: center;
+    align-items: center;
+    flex:1;
+}
+
+.customQuizContainer {
+    display:flex;
+    flex:1;
+    border:1px solid black;
+}
+
+.customImageSetContainer {
+    flex:0.25;
+    display:flex;
+    flex-wrap: wrap;
+    padding:7px;
+    justify-content: space-evenly;
+    /* align-content:flex-start; */
+    height: 100%;
+    border:1px solid red;
+    overflow-y: scroll;
+}
+
+.customImageViewContainer {
+    display:flex;
+    flex-direction: column;
+    flex:0.75;
+    /* width:100%; */
+    border: 1px solid green;
+    padding: 25px;
+}
+
+.customDisplayContainer {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-content: flex-start;
+    padding:18px;
+    flex:1;
+    height:90%;
+    border:1px solid magenta
+}
+
+.customButtonContainer {
+    display:flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding:0px 10px;
+    align-content: space-evenly;
+    border:1px solid brown;
+    height:10%;
+}
+
+.customQuizButton {
+    margin-left:20px;
+    font-size: 18px;
+    /* height: 35px; */
+    font-size: 80%;
+    margin-bottom:0px
+}
+
+.customImageSetContainer::-webkit-scrollbar {
+    width: 10px;
+}
+/* Handle */
+.customImageSetContainer::-webkit-scrollbar-thumb {
+    border-radius: 40px;
+    background: rgba(124, 123, 123, 0.7);
+    width: 10px;
+}
+
+/* Handle on hover */
+.customImageSetContainer::-webkit-scrollbar-thumb:hover {
+    background: rgba(180, 179, 179, 0.7);
+}
+
+@media only screen and (max-width:575px){
+
+    .customQuizMainContainer {
+        height:100vh;
+    }
+
+    .customQuizContainer {
+        flex-direction: column;
+        flex:1;
+        width:100%;
+    }
+
+    .customImageSetContainer {
+        flex-direction: row;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow: scroll;
+        flex:0.20;
+        align-items: center;
+    }
+
+    .customImageViewContainer {
+        flex:0.75;
+    }
+
+    .customQuizButton {
+        height:80%;
+    }
+
+    .customImageSetContainer::-webkit-scrollbar {
+        height: 10px;
+    }
+}

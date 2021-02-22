@@ -10,6 +10,7 @@ import { AuthContext } from "./context/authContext";
 import { auth } from "./shared/firebase";
 import { getOnlyUserProfile } from "./services/userServices";
 import Dashboard from "./component/classroom/dashboard/Dashboard";
+import SetUpQuiz from './component/classroom/SetUpQuiz'
 
 class App extends React.Component {
   state = {
@@ -49,6 +50,7 @@ class App extends React.Component {
               <Route path="/signup" component={SignUp} />
               <Route path="/classroom" component={Classroom} />
               <Route path="/dashboard/:compoundedInfo" component={Dashboard} />
+              <Route path='/set-up-quiz/:compoundedInfo' component={SetUpQuiz} />
             </Switch>
           </div>
         </BrowserRouter>

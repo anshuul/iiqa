@@ -6,6 +6,7 @@ import Avatar from "../../../assets/dp.svg";
 import { decryptInformationAfterRouting, getClassroomData } from '../../../services/classroomServices'
 import { getProfileDataFromDocId } from '../../../services/userServices'
 import Loading from '../../layout/Loading'
+import { Link } from 'react-router-dom'
 
 class Dashboard extends Component {
 
@@ -136,7 +137,7 @@ class Dashboard extends Component {
               height: "100px",
             }}
           >
-            <div
+            <Link to={`/set-up-quiz/${this.props.match.params.compoundedInfo}`}
               className="blue darken-2 btn-flat btn-large quiz-button"
               style={{
                 color: "white",
@@ -148,7 +149,7 @@ class Dashboard extends Component {
               }}
             >
               Create Quiz
-            </div>
+            </Link>
           </div>
         </div>
         <div className="row">
