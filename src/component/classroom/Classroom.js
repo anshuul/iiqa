@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Classes from "./classes/Classes";
 import './Classroom.css'
 import { AuthContext } from '../../context/authContext'
-import { loadClassroomForStudents, loadClassroomsForTeacher } from '../../services/classroomServices'
+import { loadClassroomForStudents, loadClassroomsForTeacher, encryptInformationForRouting } from '../../services/classroomServices'
 import { getUserProfile } from '../../services/userServices'
 import Loading from '../layout/Loading'
 import tempImg from '../../assets/dp2.svg' // temp
@@ -142,10 +142,10 @@ class ClassroomComponent extends Component {
   }
 }
 
-export default function Classroom(){
+export default function Classroom(props){
   return (
     <AuthContext.Consumer>
-      {({currentUser}) => <ClassroomComponent currentUser = {currentUser}/>}
+      {({currentUser}) => <ClassroomComponent {...props} currentUser = {currentUser}/>}
     </AuthContext.Consumer>
   )
 }

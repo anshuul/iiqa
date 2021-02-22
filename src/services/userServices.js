@@ -114,3 +114,21 @@ export async function getUserProfile(id){
     return responseData
     
 }
+
+export async function getProfileDataFromDocId(docId){
+    /**
+     * @param docId
+     * 
+     * @return user profile details
+     */
+
+    try {
+        const profileDetails = await User.doc(docId).get()
+        if(!profileDetails.exists) {
+            throw new Error ('No such records found')
+        }
+        return {docId, ...profileDetails.data()}
+    } catch (err) {
+        throw new Error(err)
+    }
+}

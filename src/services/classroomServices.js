@@ -128,3 +128,54 @@ export async function joinClassroom(code, studentId){
         throw new Error(err)
     }
 }
+
+export async function getClassroomData(docId){
+    /**
+     * @param docId
+     * 
+     * @return complete data of classroom
+     */
+
+    try {
+        const classroomRef = Classroom.doc(docId)
+        const classroom = await classroomRef.get()
+        if(!classroom.exists){
+            throw new Error('No such Classroom of this code exists.')
+        }
+        return {docId, ...classroom.data()}
+    } catch (err) {
+        throw new Error(err)
+    }
+}
+
+export function encryptInformationForRouting(docId, teacherId){
+    /**
+     * @param docId this is classroom docId
+     * @param teacherId this is docID of teacher of this classroom
+     * 
+     * @return encrypted version of given information
+     */
+
+    let encryptedVersion = ''
+    for(let i = 0; i < docId.length; i++){
+        encryptedVersion += docId[i] + teacherId[i]
+    }
+    console.log(encryptedVersion)
+    return encryptedVersion
+}
+
+export function decryptInformationAfterRouting(encryptedVersion){
+    /**
+     * @param encryptedVersion
+     * 
+     * @return orinal information
+     */
+
+    let ogDocId = '', ogTeacherId = ''
+    for(let i = 0; i < encryptedVersion.length; i+=2){
+        ogDocId += encryptedVersion[i]
+        ogTeacherId += encryptedVersion[i+1]
+    }
+    console.log(ogDocId,' ', ogTeacherId)
+    return [ogDocId, ogTeacherId]
+}
