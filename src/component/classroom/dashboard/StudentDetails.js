@@ -9,9 +9,8 @@ function StudentDetails({studentsNameList}) {
             className="card-panel "
             key={studentName.id}
             style={{
-              border: "1px solid lightgrey",
               borderRadius: "10px",
-              boxShadow: "10px 10px 10px #d3d3d3",
+              border:"1px solid #d3d3d3",
               height: "70px",
             }}
           >

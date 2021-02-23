@@ -3,3 +3,11 @@
     font-size: 20px;
   }
 } */
+
+@media only screen and (max-width:575px){
+  .homeButton {
+    position: absolute;
+    bottom: 25%;
+    left:26%;
+  }
+}

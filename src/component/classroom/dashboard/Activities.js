@@ -21,9 +21,8 @@ class Activities extends Component {
               className="card-panel "
               key={activity.title}
               style={{
-                border: "1px solid lightgrey",
+                border: "1px solid #d3d3d3",
                 borderRadius: "10px",
-                boxShadow: "10px 10px 10px #d3d3d3",
                 height: "100px",
               }}
             >

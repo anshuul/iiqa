@@ -8,6 +8,10 @@ import { AuthContext } from '../../context/authContext'
 import Loading from '../layout/Loading'
 import ErrorText from '../layout/ErrorText'
 
+function capitalize(string){
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 class SignUp extends Component {
 
   constructor(props){
@@ -57,7 +61,7 @@ class SignUp extends Component {
                 this.enableLoading()
                 let message = ''
                 if(this.state.type === '1'){ // 1 for teacher temporary TODO: change to select value condition
-                  message = await signUpForTeacher(values.email, values.password, values.fname, values.lname)
+                  message = await signUpForTeacher(values.email, values.password, capitalize(values.fname), capitalize(values.lname))
                 } else {
                   message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
                 }

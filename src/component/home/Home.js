@@ -7,7 +7,7 @@ const Home = (props) => {
     props.history.push("/signup");
   };
   return (
-    <div className="container center-align" style={{ height: "auto" }}>
+    <div className="container center-align customHomeContainer">
       <h2
       // style={{fontSize:'5vw', textAlign:'right'}}
       >
@@ -17,9 +17,9 @@ const Home = (props) => {
       <center>
         <img src={HomeImage} alt="home image" height="70%" width="70%" />
       </center>
-      <button
+      <div
         onClick={buttonHandler}
-        className="blue darken-2 btn-flat btn-large"
+        className="blue darken-2 btn-flat btn-large homeButton"
         style={{
           color: "white",
           borderRadius: "20px",
@@ -29,7 +29,7 @@ const Home = (props) => {
         }}
       >
         Get Started
-      </button>
+      </div>
     </div>
   );
 };

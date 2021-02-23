@@ -62,7 +62,7 @@ export default class index extends Component {
                         <div className='customDisplayContainer'>
                             {this.state.imageSetImages.map(imageLink => (
                                 <div className='customImageBlockContainer' key={imageLink} >
-                                    <img src={imageLink} alt='ImageDisplayTile' width='200px' height='200px'/>
+                                    <img src={imageLink} alt='ImageDisplayTile' width='200px' height='200px'className="customImage"/>
                                 </div>
                             ))}
                         </div>

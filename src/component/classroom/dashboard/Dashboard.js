@@ -4,21 +4,24 @@ import Activities from "./Activities";
 import "./Dashboard.css";
 import Avatar from "../../../assets/dp.svg";
 import { decryptInformationAfterRouting, getClassroomData } from '../../../services/classroomServices'
-import { getProfileDataFromDocId } from '../../../services/userServices'
+import { getProfileDataFromDocId, getOnlyUserProfile } from '../../../services/userServices'
 import Loading from '../../layout/Loading'
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../../../context/authContext'
 
 class Dashboard extends Component {
 
   constructor(props){
     super(props)
     this.state = {
+      userData: {},
       teacherName: '',
       studentsNameList: [],
       classroomData: {
         title:'',
         displayPicture: '',
         color: '',
+        code: '',
       },
       classroomLoading:false,
       activitiesLoading:false,
@@ -35,7 +38,18 @@ class Dashboard extends Component {
     return Promise.all([getProfileDataFromDocId(teacherId), this.loadStudentsList(studentIds)])
   }
 
+  loadUserData(){
+    getOnlyUserProfile(this.props.currentUser.uid)
+    .then(userData => {
+      this.setState({...this.state, userData})
+    })
+    .catch(err => {
+      alert(err.message)
+    })
+  }
+
   componentDidMount(){
+    this.loadUserData()
     this.setState({...this.state, classroomLoading:true})
     const { compoundedInfo } = this.props.match.params
     const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(compoundedInfo)
@@ -43,7 +57,7 @@ class Dashboard extends Component {
     getClassroomData(ogDocId)
     .then(data => {
       const { name: title, displayPicture, color } = data
-      this.setState({...this.state, classroomData: { title, displayPicture, color }})
+      this.setState({...this.state, classroomData: { title, displayPicture, color, code:ogDocId }})
       console.log(data)
       return this.loadClassroomDataAsync(data.teacherId, data.studentIds)
     })
@@ -105,6 +119,20 @@ class Dashboard extends Component {
                     Teacher : {this.state.teacherName}
                   </p>
                 </div>
+                <div className="teacherclass ">
+                  <p
+                    style={{
+                      fontSize: "15px",
+                      paddingTop: "10px",
+                      paddingLeft: "10px",
+                      color: "white",
+                    }}
+                  >
+                    Code : <p  style={{
+                      fontSize: "15px",
+                    }}>{this.state.classroomData.code}</p>
+                  </p>
+                </div>
               </div>
               <div
                 className="imageclass right"
@@ -127,7 +155,7 @@ class Dashboard extends Component {
             </div>
           </div>
         </div>
-        <div className="row">
+        {this.state.userData.isTeacher && <div className="row">
           <div
             className="col s12 m12"
             style={{
@@ -151,7 +179,7 @@ class Dashboard extends Component {
               Create Quiz
             </Link>
           </div>
-        </div>
+        </div>}
         <div className="row">
           <div
             className="col s12 m8 "
@@ -206,4 +234,12 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default function ComponentWithContext(props){
+  return (
+    <AuthContext.Consumer>
+      {({currentUser}) => (
+        <Dashboard currentUser={currentUser} {...props}/>
+      )}
+    </AuthContext.Consumer>
+  )
+}

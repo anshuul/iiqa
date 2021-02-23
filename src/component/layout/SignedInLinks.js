@@ -22,9 +22,9 @@ const SignedInLinks = () => {
                                       <NavLink to="/signin">Log Out</NavLink>
                                     </li>
                                     <li>
-                                      <NavLink to="/" className="btn btn-floating blue lighten-1">
+                                      <div className="btn btn-floating blue lighten-1">
                                         {initials}
-                                      </NavLink>
+                                      </div>
                                     </li>
                                   </ul>
                                 )
