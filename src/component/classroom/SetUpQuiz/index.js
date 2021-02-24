@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './index.css'
 import { decryptInformationAfterRouting } from '../../../services/classroomServices'
-import { getImageSets } from '../../../services/quizServices'
+import { getImageSet, getPredefinedImageSets, getClassroomImageSet } from '../../../services/quizServices'
 import ImageStack from './ImageStack'
 import Loading from '../../layout/Loading'
 
@@ -10,21 +10,32 @@ export default class index extends Component {
     constructor(props){
         super(props)
         this.state = {
-            imageSets: [],
+            predefinedImageSets: [],
+            classroomImageSets: [],
             imageSetImages: [],
             loading:false,
         }
-        this.onSelectImageStHandler = this.onSelectImageStHandler.bind(this)
+        this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(this)
+        this.onSelectClassroomImageSetHandler = this.onSelectClassroomImageSetHandler.bind(this)
         this.onCrosshandler = this.onCrosshandler.bind(this)
     }
 
-    onSelectImageStHandler(id){
-        const selectedImageSet = this.state.imageSets.find(imageSet => imageSet.docId === id)
+    fillImagesToBeDisplayed(selectedImageSet){
         const { imageSetImages } = this.state
         selectedImageSet.imageLinks.forEach(imageLink => {
-            !imageSetImages.includes(imageLink) && imageSetImages.push(imageLink)
+            !imageSetImages.includes(imageLink) && imageSetImages.unshift(imageLink)
         });
         this.setState({...this.state, imageSetImages})
+    }
+
+    onSelectPredefinedImageSetHandler(id){
+        const selectedImageSet = this.state.predefinedImageSets.find(imageSet => imageSet.docId === id)
+        this.fillImagesToBeDisplayed(selectedImageSet)
+    }
+
+    onSelectClassroomImageSetHandler(id){
+        const selectedImageSet = this.state.classroomImageSets.find(imageSet => imageSet.docId === id)
+        this.fillImagesToBeDisplayed(selectedImageSet)
     }
 
     onCrosshandler(link){
@@ -39,16 +50,26 @@ export default class index extends Component {
         const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(compoundedInfo)
         console.log(ogDocId, ogTeacherId)
 
+        let predefinedImageSetsState = [], classroomImageSetsState = []
+
         this.setState({...this.state, loading:true})
-        getImageSets()
+        getImageSet()
         .then(imageSets => {
-            this.setState({...this.state, imageSets})
+            imageSets.forEach(eachImageSet => {
+                console.log(eachImageSet)
+                if(eachImageSet.belongsTo.trim() === ogDocId){
+                    classroomImageSetsState.push(eachImageSet)
+                } else if (eachImageSet.belongsTo.toLowerCase() === 'admin') {
+                    predefinedImageSetsState.push(eachImageSet)
+                }
+            })
         })
         .catch(err => {
+            console.error(err)
             alert(err.message)
         })
-        .finally(()=>{
-            this.setState({...this.state, loading:false})
+        .finally(()=> {
+            this.setState({...this.state, predefinedImageSets:predefinedImageSetsState, classroomImageSets:classroomImageSetsState, loading:false})
         })
     }
 
@@ -65,8 +86,8 @@ export default class index extends Component {
                         <h6 className='customImageSetContainerTitle' >Predefined</h6>
                         <div className='customImageSetWrapper' >
                             {/* list of image sets display */}
-                            {this.state.imageSets.map(imageSet => (
-                                <ImageStack key={imageSet.docId} onClick={()=>this.onSelectImageStHandler(imageSet.docId)} name={imageSet.name} src={imageSet.displayPicture} />
+                            {this.state.predefinedImageSets.map(imageSet => (
+                                <ImageStack key={imageSet.docId} onClick={()=>this.onSelectPredefinedImageSetHandler(imageSet.docId)} name={imageSet.name} src={imageSet.displayPicture || imageSet.imageLinks[0]} />
                             ))}
                         </div>
                     </div>
@@ -74,8 +95,8 @@ export default class index extends Component {
                         <h6 className='customImageSetContainerTitle' >Saved</h6>
                         <div className='customImageSetWrapper' >
                             {/* list of image sets display */}
-                            {this.state.imageSets.map(imageSet => (
-                                <ImageStack key={imageSet.docId} onClick={()=>this.onSelectImageStHandler(imageSet.docId)} name={imageSet.name} src={imageSet.displayPicture} />
+                            {this.state.classroomImageSets.map(imageSet => (
+                                <ImageStack key={imageSet.docId} onClick={()=>this.onSelectClassroomImageSetHandler(imageSet.docId)} name={imageSet.name} src={imageSet.displayPicture || imageSet.imageLinks[0]} />
                             ))}
                         </div>
                     </div>
@@ -86,7 +107,7 @@ export default class index extends Component {
                             {this.state.imageSetImages.map((imageLink, index) => (
                                 <div className='customImageBlockContainer' key={index} >
                                     <div className='cancelIcon' onClick={() => this.onCrosshandler(imageLink)} >X</div>
-                                    <div style={{width:'100%', height:'100%', backgroundImage:`url(${imageLink})`, backgroundSize:'cover'}}>
+                                    <div style={{width:'100%', height:'100%', backgroundImage:`url(${imageLink})`, backgroundSize: '200px', backgroundPosition: 'center', backgroundRepeat:'no-repeat'}}>
                                     </div>
                                 </div>
                             ))}
