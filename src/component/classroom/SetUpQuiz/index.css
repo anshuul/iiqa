@@ -15,23 +15,35 @@
 }
 
 .customImageSetContainer {
-    flex:0.25;
+    flex:0.15;
     display:flex;
-    flex-wrap: wrap;
-    padding:7px;
-    justify-content: space-evenly;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
+    /* justify-content: flex-start; */
+    /* align-items: center; */
     /* align-content:flex-start; */
     height:600px;
     max-height: 600px;
-    border-right:1px solid black;
+    border-right:1px solid #d3d3d3;
+    /* overflow-y: scroll; */
+}
+
+.customImageSetWrapper {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    /* flex:1; */
     overflow-y: scroll;
+    padding:0px 0px 10px 10px;
 }
 
 .customImageViewContainer {
     display:flex;
     flex-direction: column;
-    flex:0.75;
+    justify-content: flex-end;
+    flex:0.70;
     width:100%;
+    /* border: 1px solid green; */
     padding: 25px;
 }
 
@@ -41,22 +53,24 @@
     justify-content: space-evenly;
     align-content: flex-start;
     padding:18px;
-    flex:1;
+    flex:0.9;
     width:100%;
     height:500px;
     max-height:500px;
+    border:1px solid #d3d3d3;
     overflow-y: scroll;
-    box-shadow: 7px 7px 7px #d3d3d3;
 }
 
 .customButtonContainer {
     display:flex;
+    flex:0.1;
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: flex-end;
     padding:0px 10px;
     align-content: space-evenly;
-    height:10%;
+    /* border:1px solid brown; */
+    /* height:10%; */
 }
 
 .customQuizButton {
@@ -68,11 +82,35 @@
 }
 
 .customImageBlockContainer {
-    border:1px solid #d3d3d3;
+    /* border:1px solid orange; */
+    box-shadow: 2px 2px 7px #d3d3d3;
     max-width:200px;
     min-width:200px;
     height:200px;
     margin-bottom:15px;
+}
+
+.cancelIcon{
+    /* border:1px solid black; */
+    /* position: absolute; */
+    float: right;
+    /* margin-top: 0.5%;
+    margin-left:15.7%; */
+    margin: 5px;
+    z-index: 300;
+    width:20px;
+    text-align: center;
+    background-color: #d3d3d3;
+    color:grey;
+    border-radius: 20px;
+    cursor:pointer;
+    /* font-size: 30px; */
+    /* width:100%; */
+}
+
+.customImageSetContainerTitle {
+    opacity: initial;
+    text-align: center;
 }
 
 .customDisplayContainer::-webkit-scrollbar {
@@ -90,18 +128,18 @@
     background: rgba(180, 179, 179, 0.7);
 }
 
-.customImageSetContainer::-webkit-scrollbar {
+.customImageSetWrapper::-webkit-scrollbar {
     width: 10px;
 }
 /* Handle */
-.customImageSetContainer::-webkit-scrollbar-thumb {
+.customImageSetWrapper::-webkit-scrollbar-thumb {
     border-radius: 40px;
     background: rgba(124, 123, 123, 0.7);
     width: 10px;
 }
 
 /* Handle on hover */
-.customImageSetContainer::-webkit-scrollbar-thumb:hover {
+.customImageSetWrapper::-webkit-scrollbar-thumb:hover {
     background: rgba(180, 179, 179, 0.7);
 }
 
@@ -118,14 +156,20 @@
     }
 
     .customImageSetContainer {
+        /* flex-direction: row; */
+        display: flex;
+        justify-content: flex-start;
+        /* flex-wrap: nowrap; */
+        /* overflow: scroll; */
+        flex:0.30;
+        /* align-items: center; */
+    }
+
+    .customImageSetWrapper {
         flex-direction: row;
         justify-content: flex-start;
-        flex-wrap: nowrap;
-        overflow: scroll;
-        flex:0.30;
-        align-items: center;
-        border-right:0;
-        border-bottom: 1px solid black;
+        align-items: flex-start;
+        
     }
 
     .customImageViewContainer {
@@ -136,7 +180,7 @@
         height:80%;
     }
 
-    .customImageSetContainer::-webkit-scrollbar {
+    .customImageSetWrapper::-webkit-scrollbar {
         height: 10px;
     }
 

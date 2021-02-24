@@ -15,11 +15,22 @@ export default class index extends Component {
             loading:false,
         }
         this.onSelectImageStHandler = this.onSelectImageStHandler.bind(this)
+        this.onCrosshandler = this.onCrosshandler.bind(this)
     }
 
     onSelectImageStHandler(id){
         const selectedImageSet = this.state.imageSets.find(imageSet => imageSet.docId === id)
-        this.setState({...this.state, imageSetImages:selectedImageSet.imageLinks})
+        const { imageSetImages } = this.state
+        selectedImageSet.imageLinks.forEach(imageLink => {
+            !imageSetImages.includes(imageLink) && imageSetImages.push(imageLink)
+        });
+        this.setState({...this.state, imageSetImages})
+    }
+
+    onCrosshandler(link){
+        const { imageSetImages } = this.state
+        const filteredImages = imageSetImages.filter(imageLink => imageLink !== link )
+        this.setState({...this.state, imageSetImages:filteredImages})
     }
 
     componentDidMount(){
@@ -51,18 +62,32 @@ export default class index extends Component {
                 <div className='customQuizContainer'>
                     {/* Image sets container */}
                     <div className='customImageSetContainer' >
-                        {/* list of image sets display */}
-                        {this.state.imageSets.map(imageSet => (
-                            <ImageStack key={imageSet.docId} onClick={()=>this.onSelectImageStHandler(imageSet.docId)} name={imageSet.name} src={imageSet.displayPicture} />
-                        ))}
+                        <h6 className='customImageSetContainerTitle' >Predefined</h6>
+                        <div className='customImageSetWrapper' >
+                            {/* list of image sets display */}
+                            {this.state.imageSets.map(imageSet => (
+                                <ImageStack key={imageSet.docId} onClick={()=>this.onSelectImageStHandler(imageSet.docId)} name={imageSet.name} src={imageSet.displayPicture} />
+                            ))}
+                        </div>
+                    </div>
+                    <div className='customImageSetContainer' >
+                        <h6 className='customImageSetContainerTitle' >Saved</h6>
+                        <div className='customImageSetWrapper' >
+                            {/* list of image sets display */}
+                            {this.state.imageSets.map(imageSet => (
+                                <ImageStack key={imageSet.docId} onClick={()=>this.onSelectImageStHandler(imageSet.docId)} name={imageSet.name} src={imageSet.displayPicture} />
+                            ))}
+                        </div>
                     </div>
                     {/* main images view container */}
                     <div className='customImageViewContainer'>
                         {/* display container */}
                         <div className='customDisplayContainer'>
-                            {this.state.imageSetImages.map(imageLink => (
-                                <div className='customImageBlockContainer' key={imageLink} >
-                                    <img src={imageLink} alt='ImageDisplayTile' width='200px' height='200px'className="customImage"/>
+                            {this.state.imageSetImages.map((imageLink, index) => (
+                                <div className='customImageBlockContainer' key={index} >
+                                    <div className='cancelIcon' onClick={() => this.onCrosshandler(imageLink)} >X</div>
+                                    <div style={{width:'100%', height:'100%', backgroundImage:`url(${imageLink})`, backgroundSize:'cover'}}>
+                                    </div>
                                 </div>
                             ))}
                         </div>
