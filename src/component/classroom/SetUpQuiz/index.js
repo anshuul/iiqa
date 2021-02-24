@@ -43,7 +43,7 @@ export default class index extends Component {
 
     render() {
         // const imgSrc = 'https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/avatars%2Fdp2.svg?alt=media'
-        const imgSrc = ''
+        // const imgSrc = ''
         return (
             <div className='container customQuizMainContainer'>
                 {this.state.loading && <Loading message='Getting Image Sets ready. Please wait.'/>}
