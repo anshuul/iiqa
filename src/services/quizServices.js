@@ -72,7 +72,7 @@ export async function createImageSetForClassroom(docId, imageLinks){
             throw new Error('Please select some images')
         }
         const subCollectionForImageSet = firestore.collection(`classrooms/${docId}/imagesets`)
-        const imageSetName = new Date().toUTCString()
+        const imageSetName = new Date().toDateString().slice(4)
         await subCollectionForImageSet.add({
             name: imageSetName,
             imageLinks,
