@@ -4,7 +4,11 @@ import { getClassroomData } from './classroomServices'
 const ImageSet = firestore.collection('imagesets')
 const PredefinedImageSetsListRef = ImageSet.doc('predefinedImageSets')
 
-export async function getImageSet(){
+export function getPromiseForFetchingImageSet(classroomDocId){
+    return Promise.all([getImageSet(ImageSet), getImageSet(firestore.collection(`classrooms/${classroomDocId}/imagesets`))])
+}
+
+export async function getImageSet(ImageSet){
     /**
      * @param docId
      * 

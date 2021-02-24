@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './index.css'
-import { decryptInformationAfterRouting } from '../../../services/classroomServices'
-import { getImageSet, getPredefinedImageSets, getClassroomImageSet } from '../../../services/quizServices'
+import { decryptInformationAfterRouting, getClassroomData } from '../../../services/classroomServices'
+import { getImageSet, getPredefinedImageSets, getClassroomImageSet, getPromiseForFetchingImageSet } from '../../../services/quizServices'
 import ImageStack from './ImageStack'
 import Loading from '../../layout/Loading'
 
@@ -53,16 +53,10 @@ export default class index extends Component {
         let predefinedImageSetsState = [], classroomImageSetsState = []
 
         this.setState({...this.state, loading:true})
-        getImageSet()
-        .then(imageSets => {
-            imageSets.forEach(eachImageSet => {
-                console.log(eachImageSet)
-                if(eachImageSet.belongsTo.trim() === ogDocId){
-                    classroomImageSetsState.push(eachImageSet)
-                } else if (eachImageSet.belongsTo.toLowerCase() === 'admin') {
-                    predefinedImageSetsState.push(eachImageSet)
-                }
-            })
+        getPromiseForFetchingImageSet(ogDocId)
+        .then(([predefinedImageSets, classroomImageSets]) => {
+            predefinedImageSetsState = predefinedImageSets
+            classroomImageSetsState = classroomImageSets
         })
         .catch(err => {
             console.error(err)
