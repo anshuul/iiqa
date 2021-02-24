@@ -18,7 +18,7 @@ export async function getImageSet(ImageSet){
     try {
         const imageSetsList = await ImageSet.get()
         if(imageSetsList.empty){
-            throw new Error('No image sets present')
+            return []
         }
         let imageSetResponse = []
         imageSetsList.forEach(imageSet => {
@@ -32,51 +32,52 @@ export async function getImageSet(ImageSet){
 
 export async function getPredefinedImageSets(){
     /**
-     * @return all the predefined image sets list
+     * @return promise that resolves to imagesets
      * 
-     * get the docId from the list
-     * get data of each image set
+     * call getImageSet method with admin imageset
      */
 
-    try {
-        const predefinedImageSetsDocIds = await PredefinedImageSetsListRef.get()
-        if(!predefinedImageSetsDocIds.exists){
-            return []
-        }
-        console.log(predefinedImageSetsDocIds.data())
-        let predefinedImageSets = []
-        predefinedImageSetsDocIds.data().imageSetsDocIds.forEach(async docId => {
-            const eachImageSet = await getImageSet(docId)
-            predefinedImageSets.push(eachImageSet)
-        })
-        return predefinedImageSets
-    } catch (err) {
-        throw new Error(err)
-    }
+    return getImageSet(ImageSet)
 }
 
 export async function getClassroomImageSet(classroomDocId){
     /**
      * @param classroomDocId
      * 
-     * @return imagesets of the given classroom
+     * @return promise that resolves to metioned classroom iamgesets
      * 
-     * get the list of all docIds of imagesets
-     * get imageset for each docid
+     * get the docId of classroom
+     * get the subcolection path
+     * call getImageSt method with the Imageset formed
+     */
+
+    return getImageSet(firestore.collection(`classrooms/${classroomDocId}/imagesets`))
+}
+
+export async function createImageSetForClassroom(docId, imageLinks){
+    /**
+     * @param docId docID of classroom
+     * @imageLinks links of image to be saved
+     * 
+     * @return success message
+     * 
+     * creat document with imagelinks
+     * set name to be the current day
+     * displaypicture wil be bydefault taken as the first image
      */
 
     try {
-        const classroomData = await getClassroomData(classroomDocId)
-        console.log(classroomData.hasOwnProperty('imageSetsDocIds'))
-        if(!classroomData.hasOwnProperty('imageSetsDocIds') || !classroomData.imageSetsDocIds){
-            return []
+        // TODO: set parameter for maximum no of images allowed
+        if(imageLinks.length === 0){
+            throw new Error('Please select some images')
         }
-        let classroomImageSets = []
-        classroomData.imageSetsDocIds.forEach(async docId => {
-            const eachImageSet = await getImageSet(docId)
-            classroomImageSets.push(eachImageSet)
+        const subCollectionForImageSet = firestore.collection(`classrooms/${docId}/imagesets`)
+        const imageSetName = new Date().toUTCString()
+        await subCollectionForImageSet.add({
+            name: imageSetName,
+            imageLinks,
         })
-        return classroomImageSets
+        return 'Collection saved successfully'
     } catch (err) {
         throw new Error(err)
     }

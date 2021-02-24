@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './index.css'
 import { decryptInformationAfterRouting, getClassroomData } from '../../../services/classroomServices'
-import { getImageSet, getPredefinedImageSets, getClassroomImageSet, getPromiseForFetchingImageSet } from '../../../services/quizServices'
+import { getImageSet, getPredefinedImageSets, getClassroomImageSet, getPromiseForFetchingImageSet, createImageSetForClassroom } from '../../../services/quizServices'
 import ImageStack from './ImageStack'
 import Loading from '../../layout/Loading'
 
@@ -14,10 +14,15 @@ export default class index extends Component {
             classroomImageSets: [],
             imageSetImages: [],
             loading:false,
+            loadingMessage:'',
+            isCollectionToBeSaved: false,
+            currentClassroomDocId: '',
         }
         this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(this)
         this.onSelectClassroomImageSetHandler = this.onSelectClassroomImageSetHandler.bind(this)
         this.onCrosshandler = this.onCrosshandler.bind(this)
+        this.setUpQuizHandler = this.setUpQuizHandler.bind(this)
+        this.checkBoxChangeHandler = this.checkBoxChangeHandler.bind(this)
     }
 
     fillImagesToBeDisplayed(selectedImageSet){
@@ -44,6 +49,28 @@ export default class index extends Component {
         this.setState({...this.state, imageSetImages:filteredImages})
     }
 
+    setUpQuizHandler(){
+        if(this.state.isCollectionToBeSaved){
+            this.setState({...this.state, loading:true, loadingMessage:'Saving your collection first.'})
+            console.log(this.state.currentClassroomDocId)
+            createImageSetForClassroom(this.state.currentClassroomDocId, this.state.imageSetImages)
+            .then(message => {
+                alert(message)
+            })
+            .catch(err => {
+                alert(err.message)
+            })
+            .finally(()=>{
+                this.setState({...this.state, loading:false})
+            })
+        }
+    }
+
+    checkBoxChangeHandler(event){
+        console.log(event.target.checked)
+        this.setState({...this.state, isCollectionToBeSaved:event.target.checked})
+    }
+
     componentDidMount(){
         console.log(this.props.match.params)
         const { compoundedInfo } = this.props.match.params
@@ -52,9 +79,11 @@ export default class index extends Component {
 
         let predefinedImageSetsState = [], classroomImageSetsState = []
 
-        this.setState({...this.state, loading:true})
+        this.setState({...this.state, currentClassroomDocId:ogDocId, loading:true, loadingMessage:'Getting Image Sets ready. Please wait.'})
         getPromiseForFetchingImageSet(ogDocId)
         .then(([predefinedImageSets, classroomImageSets]) => {
+            console.log(predefinedImageSets)
+            console.log(classroomImageSets)
             predefinedImageSetsState = predefinedImageSets
             classroomImageSetsState = classroomImageSets
         })
@@ -72,7 +101,7 @@ export default class index extends Component {
         // const imgSrc = ''
         return (
             <div className='container customQuizMainContainer'>
-                {this.state.loading && <Loading message='Getting Image Sets ready. Please wait.'/>}
+                {this.state.loading && <Loading message={this.state.loadingMessage}/>}
                 <h5>Choose Images to set up a Quiz...</h5>
                 <div className='customQuizContainer'>
                     {/* Image sets container */}
@@ -108,9 +137,13 @@ export default class index extends Component {
                         </div>
                         {/* buton container */}
                         <div className='customButtonContainer' >
-                            <div
-                                className="btn blue darken-3 z-depth-0 customQuizButton"
-                            >Set Up Quiz</div>
+                            <p>
+                                <label>
+                                <input type="checkbox" checked={this.state.isCollectionToBeSaved} onChange={this.checkBoxChangeHandler} />
+                                <span>Save this collection</span>
+                                </label>
+                            </p>                                
+                            <div className="btn blue darken-3 z-depth-0 customQuizButton" onClick={this.setUpQuizHandler}>Set Up Quiz</div>
                         </div>
                     </div>
                 </div>
