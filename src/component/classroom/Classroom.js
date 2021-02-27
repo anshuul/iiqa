@@ -77,7 +77,7 @@ class ClassroomComponent extends Component {
         }
       }
     })
-    .catch(err => alert(err.message))
+    .catch(err => console.log(err.message))
     .finally(()=>{
       this.setState({...this.state, loading:false})
     })
