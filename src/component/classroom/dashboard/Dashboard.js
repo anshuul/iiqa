@@ -3,84 +3,108 @@ import StudentDetails from "./StudentDetails";
 import Activities from "./Activities";
 import "./Dashboard.css";
 import Avatar from "../../../assets/dp.svg";
-import { decryptInformationAfterRouting, getClassroomData } from '../../../services/classroomServices'
-import { getProfileDataFromDocId, getOnlyUserProfile } from '../../../services/userServices'
-import Loading from '../../layout/Loading'
-import { Link } from 'react-router-dom'
-import { AuthContext } from '../../../context/authContext'
+import {
+  decryptInformationAfterRouting,
+  getClassroomData,
+} from "../../../services/classroomServices";
+import {
+  getProfileDataFromDocId,
+  getOnlyUserProfile,
+} from "../../../services/userServices";
+import Loading from "../../layout/Loading";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../../context/authContext";
 
 class Dashboard extends Component {
-
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       userData: {},
-      teacherName: '',
+      teacherName: "",
       studentsNameList: [],
       classroomData: {
-        title:'',
-        displayPicture: '',
-        color: '',
-        code: '',
+        title: "",
+        displayPicture: "",
+        color: "",
+        code: "",
       },
-      classroomLoading:false,
-      activitiesLoading:false,
-      studentsListLoading:false
-    }
+      classroomLoading: false,
+      activitiesLoading: false,
+      studentsListLoading: false,
+    };
   }
 
-  loadStudentsList(studentIdsList){
-    const promisesForGeneratingStudentsData = studentIdsList.map(docId => getProfileDataFromDocId(docId))
-    return Promise.all(promisesForGeneratingStudentsData)
+  loadStudentsList(studentIdsList) {
+    const promisesForGeneratingStudentsData = studentIdsList.map((docId) =>
+      getProfileDataFromDocId(docId)
+    );
+    return Promise.all(promisesForGeneratingStudentsData);
   }
 
-  loadClassroomDataAsync(teacherId, studentIds){
-    return Promise.all([getProfileDataFromDocId(teacherId), this.loadStudentsList(studentIds)])
+  loadClassroomDataAsync(teacherId, studentIds) {
+    return Promise.all([
+      getProfileDataFromDocId(teacherId),
+      this.loadStudentsList(studentIds),
+    ]);
   }
 
-  loadUserData(){
+  loadUserData() {
     getOnlyUserProfile(this.props.currentUser.uid)
-    .then(userData => {
-      this.setState({...this.state, userData})
-    })
-    .catch(err => {
-      alert(err.message)
-    })
+      .then((userData) => {
+        this.setState({ ...this.state, userData });
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   }
 
-  componentDidMount(){
-    this.loadUserData()
-    this.setState({...this.state, classroomLoading:true})
-    const { compoundedInfo } = this.props.match.params
-    const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(compoundedInfo)
-    console.log(ogDocId, ogTeacherId)
+  componentDidMount() {
+    this.loadUserData();
+    this.setState({ ...this.state, classroomLoading: true });
+    const { compoundedInfo } = this.props.match.params;
+    const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(
+      compoundedInfo
+    );
+    console.log(ogDocId, ogTeacherId);
     getClassroomData(ogDocId)
-    .then(data => {
-      const { name: title, displayPicture, color } = data
-      this.setState({...this.state, classroomData: { title, displayPicture, color, code:ogDocId }})
-      console.log(data)
-      return this.loadClassroomDataAsync(data.teacherId, data.studentIds)
-    })
-    .then(dataList => {
-      console.log(dataList)
-      const [ teacherData, studentsDataList ] = dataList
-      const studentsNameList = studentsDataList.map(eachData => {
-        return {name: `${eachData.fname} ${eachData.lname}`,id: eachData.docId}
+      .then((data) => {
+        const { name: title, displayPicture, color } = data;
+        this.setState({
+          ...this.state,
+          classroomData: { title, displayPicture, color, code: ogDocId },
+        });
+        console.log(data);
+        return this.loadClassroomDataAsync(data.teacherId, data.studentIds);
       })
-      this.setState({...this.state, teacherName:`${teacherData.fname} ${teacherData.lname}`, studentsNameList})
-    })
-    .catch(err=>{
-      alert(err.message)
-    })
-    .finally(()=>{
-      this.setState({...this.state, classroomLoading:false})
-    })
+      .then((dataList) => {
+        console.log(dataList);
+        const [teacherData, studentsDataList] = dataList;
+        const studentsNameList = studentsDataList.map((eachData) => {
+          return {
+            name: `${eachData.fname} ${eachData.lname}`,
+            id: eachData.docId,
+          };
+        });
+        this.setState({
+          ...this.state,
+          teacherName: `${teacherData.fname} ${teacherData.lname}`,
+          studentsNameList,
+        });
+      })
+      .catch((err) => {
+        alert(err.message);
+      })
+      .finally(() => {
+        this.setState({ ...this.state, classroomLoading: false });
+      });
   }
 
   render() {
     return (
       <div className="dashboard container">
-        {this.state.classroomLoading && <Loading message='Getting Classroom Dashboard Ready. Please wait.'/>}
+        {this.state.classroomLoading && (
+          <Loading message="Getting Classroom Dashboard Ready. Please wait." />
+        )}
         <div className="row">
           <div
             className={`col s12 m12 ${this.state.classroomData.color} lighten-2`}
@@ -128,9 +152,14 @@ class Dashboard extends Component {
                       color: "white",
                     }}
                   >
-                    Code : <p  style={{
-                      fontSize: "15px",
-                    }}>{this.state.classroomData.code}</p>
+                    Code :{" "}
+                    <p
+                      style={{
+                        fontSize: "15px",
+                      }}
+                    >
+                      {this.state.classroomData.code}
+                    </p>
                   </p>
                 </div>
               </div>
@@ -155,31 +184,34 @@ class Dashboard extends Component {
             </div>
           </div>
         </div>
-        {this.state.userData.isTeacher && <div className="row">
-          <div
-            className="col s12 m12"
-            style={{
-              marginTop: "20px",
-              display: "flex",
-              justifyContent: "center",
-              height: "100px",
-            }}
-          >
-            <Link to={`/set-up-quiz/${this.props.match.params.compoundedInfo}`}
-              className="blue darken-2 btn-flat btn-large quiz-button"
+        {this.state.userData.isTeacher && (
+          <div className="row">
+            <div
+              className="col s12 m12"
               style={{
-                color: "white",
-                borderRadius: "20px",
-                minWidth: "45%",
-                fontSize: "20px",
-                margin: "auto",
-                padding: "0px",
+                marginTop: "20px",
+                display: "flex",
+                justifyContent: "center",
+                height: "100px",
               }}
             >
-              Create Quiz
-            </Link>
+              <Link
+                to={`/set-up-quiz/${this.props.match.params.compoundedInfo}`}
+                className="blue darken-2 btn-flat btn-large quiz-button"
+                style={{
+                  color: "white",
+                  borderRadius: "20px",
+                  minWidth: "45%",
+                  fontSize: "20px",
+                  margin: "auto",
+                  padding: "0px",
+                }}
+              >
+                Create Quiz
+              </Link>
+            </div>
           </div>
-        </div>}
+        )}
         <div className="row">
           <div
             className="col s12 m8 "
@@ -191,9 +223,8 @@ class Dashboard extends Component {
               height: "350px",
             }}
           >
-            
-              <h5 className='center'>Activities</h5>
-              <div
+            <h5 className="center">Activities</h5>
+            <div
               className="center student-details"
               style={{
                 paddingTop: "5px",
@@ -202,7 +233,8 @@ class Dashboard extends Component {
                 height: "270px",
               }}
             >
-              <Activities /></div>
+              <Activities />
+            </div>
           </div>
           <div
             className="col s12 m3 offset-m1"
@@ -214,7 +246,6 @@ class Dashboard extends Component {
               height: "350px",
             }}
           >
-          
             <h5 className="center">Student Names</h5>
             <div
               className="center student-details"
@@ -234,12 +265,10 @@ class Dashboard extends Component {
   }
 }
 
-export default function ComponentWithContext(props){
+export default function ComponentWithContext(props) {
   return (
     <AuthContext.Consumer>
-      {({currentUser}) => (
-        <Dashboard currentUser={currentUser} {...props}/>
-      )}
+      {({ currentUser }) => <Dashboard currentUser={currentUser} {...props} />}
     </AuthContext.Consumer>
-  )
+  );
 }

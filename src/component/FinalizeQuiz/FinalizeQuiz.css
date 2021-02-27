@@ -1,0 +1,19 @@
+.finalizeQuiz {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex-basis: 25%;
+  margin-top: 70px;
+}
+
+.textClass {
+  padding-left: 10px;
+}
+
+@media only screen and (max-width: 635px) {
+  .finalizeQuiz {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}

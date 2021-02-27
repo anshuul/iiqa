@@ -1,0 +1,17 @@
+.finalScore {
+  background-image: url("../../assets/score.jpg");
+  height: 93vh;
+  width: 100%;
+  background-size: cover; /* or contain depending on what you want */
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.finalScore p {
+  font-family: "Henny Penny", cursive;
+  font-size: 60px;
+}

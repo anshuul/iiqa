@@ -10,8 +10,12 @@ import { AuthContext } from "./context/authContext";
 import { auth } from "./shared/firebase";
 import { getOnlyUserProfile } from "./services/userServices";
 import Dashboard from "./component/classroom/dashboard/Dashboard";
-import SetUpQuiz from './component/classroom/SetUpQuiz'
-import AuthRoute from './routes/AuthRoute'
+import SetUpQuiz from "./component/classroom/SetUpQuiz";
+import AuthRoute from "./routes/AuthRoute";
+import SelfLearning from "./component/SelfLearning/selfLearning";
+import Quiz from "./component/quiz/Quiz";
+import FinalizeQuiz from "./component/FinalizeQuiz/FinalizeQuiz";
+import finalScore from "./component/quiz/finalScore";
 
 class App extends React.Component {
   state = {
@@ -51,7 +55,14 @@ class App extends React.Component {
               <AuthRoute path="/signup" component={SignUp} />
               <Route path="/classroom" component={Classroom} />
               <Route path="/dashboard/:compoundedInfo" component={Dashboard} />
-              <Route path='/set-up-quiz/:compoundedInfo' component={SetUpQuiz} />
+              <Route
+                path="/set-up-quiz/:compoundedInfo"
+                component={SetUpQuiz}
+              />
+              <Route path="/selflearn" component={SelfLearning} />
+              <Route path="/quiz" component={Quiz} />
+              <Route path="/finalizequiz" component={FinalizeQuiz} />
+              <Route path="/finalscore" component={finalScore} />
             </Switch>
           </div>
         </BrowserRouter>

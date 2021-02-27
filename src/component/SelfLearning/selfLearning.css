@@ -1,0 +1,15 @@
+.modules {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex-basis: 25%;
+  margin-top: 70px;
+}
+
+@media only screen and (max-width: 635px) {
+  .modules {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
