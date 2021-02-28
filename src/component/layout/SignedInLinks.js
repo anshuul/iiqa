@@ -5,6 +5,7 @@ import { getOnlyUserProfile } from "../../services/userServices";
 
 const SignedInLinks = () => {
   const [initials, setInitials] = useState("");
+  const [isSelfLearningDisplayed, setIsSelfLearningDisplayed] = useState(false);
 
   return (
     <AuthContext.Consumer>
@@ -15,6 +16,7 @@ const SignedInLinks = () => {
             setInitials(
               `${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`
             );
+            setIsSelfLearningDisplayed(userData.isStudent);
           })
           .catch((err) => console.log(err));
         return (
@@ -22,9 +24,11 @@ const SignedInLinks = () => {
             <li>
               <NavLink to="/signin">Log Out</NavLink>
             </li>
-            <li>
-              <NavLink to="/selflearn">Self Learning</NavLink>
-            </li>
+            {isSelfLearningDisplayed && (
+              <li>
+                <NavLink to="/selflearn">Self Learning</NavLink>
+              </li>
+            )}
             <li>
               <div className="btn btn-floating blue lighten-1">{initials}</div>
             </li>

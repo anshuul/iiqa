@@ -15,7 +15,7 @@ import AuthRoute from "./routes/AuthRoute";
 import SelfLearning from "./component/SelfLearning/selfLearning";
 import Quiz from "./component/quiz/Quiz";
 import FinalizeQuiz from "./component/FinalizeQuiz/FinalizeQuiz";
-import finalScore from "./component/quiz/finalScore";
+import FinalScore from "./component/quiz/FinalScore";
 
 class App extends React.Component {
   state = {
@@ -62,7 +62,7 @@ class App extends React.Component {
               <Route path="/selflearn" component={SelfLearning} />
               <Route path="/quiz" component={Quiz} />
               <Route path="/finalizequiz" component={FinalizeQuiz} />
-              <Route path="/finalscore" component={finalScore} />
+              <Route path="/finalscore" component={FinalScore} />
             </Switch>
           </div>
         </BrowserRouter>

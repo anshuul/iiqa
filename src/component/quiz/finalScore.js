@@ -1,5 +1,5 @@
 import React from "react";
-import "./finalScore.css";
+import "./FinalScore.css";
 
 const finalScore = (props) => {
   const buttonHandler = () => {
@@ -7,7 +7,9 @@ const finalScore = (props) => {
   };
   return (
     <div className="finalScore">
-      <p>yayyy!! You scored 7/10</p>
+      <p>
+        yayyy!! You scored {props.score}/{props.outOff}
+      </p>
       <div
         onClick={buttonHandler}
         className="green darken-2 btn-flat btn-large homeButton"

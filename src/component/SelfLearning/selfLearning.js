@@ -1,29 +1,77 @@
 import React, { Component } from "react";
 import SelfLearningModules from "./SelfLearningModules";
 import "./selfLearning.css";
+import {
+  getPredefinedImageSets,
+  getQuizData,
+  dummy,
+} from "../../services/quizServices";
+import Quiz from "../quiz/Quiz";
+import Loading from "../layout/Loading";
 
 class SelfLearning extends Component {
-  state = {
-    modules: [
-      { id: "1", title: "Animals1" },
-      { id: "2", title: "Animals2" },
-      { id: "3", title: "Fruits1" },
-      { id: "4", title: "Fruits2" },
-      { id: "5", title: "Vehicles1" },
-      { id: "6", title: "Vehicles2" },
-      { id: "7", title: "Misc1" },
-      { id: "8", title: "Misc2" },
-    ],
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      predefinedImageSets: [],
+      loading: false,
+      loadingMessage: "",
+    };
+    this.onSelectHandler = this.onSelectHandler.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      ...this.state,
+      loading: true,
+      loadingMessage: "Getting Quiz Modules. Please wait.",
+    });
+    getPredefinedImageSets()
+      .then((predefinedImageSets) => {
+        this.setState({ ...this.state, predefinedImageSets });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        this.setState({ ...this.state, loading: false });
+      });
+  }
+
+  onSelectHandler(imageSet) {
+    this.setState({
+      ...this.state,
+      loading: true,
+      loadingMessage: "Getting your Quiz Ready. Please wait.",
+    });
+    dummy(imageSet.imageLinks)
+      .then((data) => {
+        this.props.history.push({
+          pathname: "/quiz",
+          state: { quizData: data },
+        });
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        this.setState({ ...this.state, loading: false });
+      });
+  }
+
   render() {
     return (
       <div className="container">
+        {this.state.loading && <Loading message={this.state.loadingMessage} />}
         <h4 className="center">
           Please select any modules you want to learn from
           <div className="modules">
-            {this.state.modules.map((module) => {
+            {this.state.predefinedImageSets.map((module) => {
               return (
-                <SelfLearningModules title={module.title} key={module.id} />
+                <SelfLearningModules
+                  name={module.name}
+                  key={module.docId}
+                  displayPicture={module.displayPicture || module.imageLinks[0]}
+                  onSelect={() => this.onSelectHandler(module)}
+                />
               );
             })}
           </div>

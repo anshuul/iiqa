@@ -22,19 +22,38 @@
 
 .quiz {
   background-image: url("../../assets/quiz.jpg");
-  height: 93vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 92.8vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .options {
-  width: 14rem;
+  width: 65%;
   height: 3rem;
   background-color: white;
   border: 1px solid black;
-  margin-left: 2.5rem;
-  margin-right: 2.5rem;
+  /* margin: 2.5rem; */
   display: flex;
   flex-wrap: wrap;
   align-content: center;
   text-align: center;
   justify-content: center;
+}
+
+.optionsContainer {
+  display: flex;
+  justify-content: center;
+  width: 300px;
+  min-width: 300px;
+  cursor: pointer;
+}
+
+@media only screen and (max-height: 699px) {
+  .optionsContainer {
+    margin-bottom: 2rem;
+  }
 }
