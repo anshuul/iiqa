@@ -53,15 +53,28 @@ function Quiz(props) {
       event.target.className = "options red";
     }
     setTimeout(() => {
-      setCurrentQuestionIndex(
-        (currentQuestionIndex) => currentQuestionIndex + 1
-      );
+      if (currentQuestionIndex + 1 === quizData.length) {
+        setShowScore(true);
+      } else {
+        setCurrentQuestionIndex(
+          (currentQuestionIndex) => currentQuestionIndex + 1
+        );
+      }
       event.target.className = "options";
     }, 2000);
   };
 
+  const processQuestion = (questionText) => {
+    let questionArr = questionText.trim().split(" ");
+    if (questionArr[questionArr.length - 2] === "in") {
+      questionArr[questionArr.length - 1] = "the image ?";
+      return questionArr.join(" ");
+    }
+    return questionArr.join(" ");
+  };
+
   return showScore ? (
-    <FinalScore score={score} outOff={quizData.length} />
+    <FinalScore score={score} outOff={quizData.length} {...props} />
   ) : (
     <div className="quiz">
       {quizData && (
@@ -98,7 +111,7 @@ function Quiz(props) {
               className="question"
               style={{ fontSize: "30px", textAlign: "center" }}
             >
-              {quizData[currentQuestionIndex].question}
+              {processQuestion(quizData[currentQuestionIndex].question)}
             </p>
           </div>
 

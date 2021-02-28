@@ -44,11 +44,11 @@ class SelfLearning extends Component {
       loading: true,
       loadingMessage: "Getting your Quiz Ready. Please wait.",
     });
-    dummy(imageSet.imageLinks)
+    getQuizData(imageSet.imageLinks)
       .then((data) => {
         this.props.history.push({
           pathname: "/quiz",
-          state: { quizData: data },
+          state: { quizData: data.result },
         });
       })
       .catch((err) => console.log(err))

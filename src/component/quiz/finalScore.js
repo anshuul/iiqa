@@ -3,7 +3,7 @@ import "./FinalScore.css";
 
 const finalScore = (props) => {
   const buttonHandler = () => {
-    props.history.push("/classroom");
+    props.history.goBack();
   };
   return (
     <div className="finalScore">
