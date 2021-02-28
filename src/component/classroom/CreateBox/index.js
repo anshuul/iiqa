@@ -39,7 +39,7 @@ class CreateBox extends Component {
     createHandler(){
         console.log(this.state)
         this.setState({...this.state, loading:true})
-        createNewClassroom(this.state.name, this.state.colorChose, this.props.currentUser.uid, this.state.displayPictureChose)
+        createNewClassroom(this.state.name.trim(), this.state.colorChose, this.props.currentUser.uid, this.state.displayPictureChose)
         .then(message => {
             alert(message)
         })

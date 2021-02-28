@@ -46,6 +46,10 @@ p {
     /* padding:10px; */
 }
 
+.displayPictureModified {
+    margin-top: 47.5px;
+}
+
 @media only screen and (max-width: 501px) {
     .customContainer {
       margin-right: 3%;

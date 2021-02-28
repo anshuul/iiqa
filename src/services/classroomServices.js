@@ -17,7 +17,7 @@ export async function loadClassroomForStudents(userId){
         let responseData = []
         const listOfClassrooms = await Classroom.where('studentIds', 'array-contains', userId).get()
         if(listOfClassrooms.empty){
-            return 
+            return []
         }
         listOfClassrooms.forEach(classroom => {
             console.log(classroom.data())
@@ -43,7 +43,7 @@ export async function loadClassroomsForTeacher(userId){
         let responseData = []
         const listOfClassrooms = await Classroom.where('teacherId', '==', userId).get()
         if(listOfClassrooms.empty){
-            return 
+            return []
         }
         listOfClassrooms.forEach(classroom => {
             console.log(classroom.data())
@@ -62,7 +62,7 @@ export async function getAvatarImageLinks(){
      */
     const listOfAvatars = await Avatar.get()
     if(listOfAvatars.empty){
-        throw new Error('No Avatar present')
+        return []
     }
     let responseData = []
     listOfAvatars.forEach(avatarDoc => {
