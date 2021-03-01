@@ -136,7 +136,8 @@ class Dashboard extends Component {
       getQuizzesForClassroom(ogDocId)
       .then(quizActivitiesData => {
         console.log(quizActivitiesData)
-          this.setState({...this.state, quizActivities:quizActivitiesData})
+        quizActivitiesData.sort((a, b) => a.dateTimeForCreation - b.dateTimeForCreation)
+        this.setState({...this.state, quizActivities:quizActivitiesData})
       })
       .catch(err => {
         alert(err.message)

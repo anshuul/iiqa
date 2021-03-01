@@ -175,12 +175,7 @@ export async function createNewQuiz(quizData, classroomDocId){
   try {
     var currentdate = new Date(); 
     const { id:quizDocId } = await firestore.collection(`classrooms/${classroomDocId}/quizzes`).add({
-      dateTimeOfCreation: currentdate.getDate() + "/"
-                          + (currentdate.getMonth()+1)  + "/" 
-                          + currentdate.getFullYear() + " at "  
-                          + currentdate.getHours() + ":"  
-                          + currentdate.getMinutes() + ":" 
-                          + currentdate.getSeconds(),
+      dateTimeOfCreation: currentdate,
       quizData: JSON.stringify(quizData)
     })
 

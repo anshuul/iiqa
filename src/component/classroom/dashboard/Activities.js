@@ -21,7 +21,7 @@ function Activities({activities, onClickActivityHandler}) {
               cursor:'pointer',
             }}
           >
-            Quiz uploaded on {activity.dateTimeOfCreation}
+            Quiz uploaded on {activity.dateTimeOfCreation.toDate().toDateString()} {activity.dateTimeOfCreation.toDate().toLocaleTimeString('en-US')}
           </div>
         );
       })}

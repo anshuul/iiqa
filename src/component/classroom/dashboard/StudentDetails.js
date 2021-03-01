@@ -1,29 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Scores from "../../scores/scores";
 
 class StudentDetails extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isScoresBoxDisplayed: false,
-    };
-    this.enableScoresBox = this.enableScoresBox.bind(this);
-    this.disableScoresBox = this.disableScoresBox.bind(this);
-  }
-  enableScoresBox() {
-    this.setState({ isScoresBoxDisplayed: true });
-  }
-
-  disableScoresBox() {
-    this.setState({ isScoresBoxDisplayed: false });
-  }
   render() {
     return (
       <div>
-        {this.state.isScoresBoxDisplayed && (
-          <Scores cancelHandler={this.disableScoresBox} />
-        )}
         {this.props.studentsNameList.map((studentName) => {
           return (
             <div
