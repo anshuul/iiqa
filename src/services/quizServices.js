@@ -1,5 +1,6 @@
 import { auth, firestore } from "../shared/firebase";
 import { getClassroomData, Classroom } from "./classroomServices";
+import { getProfileDataFromDocId } from './userServices'
 
 const ImageSet = firestore.collection("imagesets");
 const PredefinedImageSetsListRef = ImageSet.doc("predefinedImageSets");
@@ -247,25 +248,73 @@ export async function getFilteredActivitiesAccToStudent(arrayOfQuizActvities, st
 
   try {
     console.log(arrayOfQuizActvities)
+    console.log(studentId)
     let filteredArrayOfQuizActivities = []
     for(const quizActivity of arrayOfQuizActvities) {
       const listOfAttendeesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizActivity.docId}/attendees`).get()
       if(listOfAttendeesResp.empty){
         console.log(arrayOfQuizActvities)
         filteredArrayOfQuizActivities.push(quizActivity)
+      } else {
+        listOfAttendeesResp.forEach(attendeeData => {
+          console.log(attendeeData.data())
+          if(attendeeData.data().studentDocId !== studentId){
+            console.log(quizActivity)
+            filteredArrayOfQuizActivities.push(quizActivity)
+          }
+          console.log(filteredArrayOfQuizActivities)
+        })
       }
-      
-      listOfAttendeesResp.forEach(attendeeData => {
-        console.log(attendeeData.data())
-        if(!attendeeData.data().studentDocId === studentId){
-          filteredArrayOfQuizActivities.push(quizActivity)
-        }
-      })
-      console.log(filteredArrayOfQuizActivities)
 
     }
     return filteredArrayOfQuizActivities
 
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
+export async function getAttendeesAndScores(classroomDocId, quizDocId){
+  /**
+   * @param classroomDocId
+   * @param quizDocId
+   * 
+   * @return attendee name and score
+   */
+
+  try {
+    const listOfAttendeesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`).get()
+    if(listOfAttendeesResp.empty){
+      return []
+    }
+    let attendeesDataArray = []
+    listOfAttendeesResp.forEach(async attendee => {
+      attendeesDataArray.push({docId:attendee.id, ...attendee.data()})
+    })
+    return attendeesDataArray
+  } catch (err) {
+    throw new Error(err)
+  }
+
+}
+
+export async function isStudentEligibleForQuiz(classroomDocId, quizDocId, studentId){
+  try {
+    const listOfAttendeesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`).get()
+    let eligibilityArr = []
+    if(!listOfAttendeesResp.empty){
+      console.log(listOfAttendeesResp)
+      listOfAttendeesResp.forEach(async attendee => {
+        console.log(attendee.data().studentDocId)
+        if(attendee.data().studentDocId === studentId)
+          eligibilityArr.push(false)
+        else
+          eligibilityArr.push(true)
+      })
+      return eligibilityArr.every(val => val === true)
+    }
+    else
+      return true
   } catch (err) {
     throw new Error(err)
   }
