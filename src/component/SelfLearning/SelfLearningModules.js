@@ -14,7 +14,7 @@ const SelfLearningModules = (props) => {
   return (
     <div
       className={finalClassName}
-      style={{ width: "250px", marginLeft: "20px", height: "120px" }}
+      style={{ width: "250px", marginLeft: "20px", height: "120px", cursor:'pointer' }}
       onClick={() => props.onSelect()}
     >
       <div className="card-content white-text">
@@ -37,6 +37,7 @@ const SelfLearningModules = (props) => {
         >
           <img
             src={props.displayPicture}
+            alt='displayPicture'
             style={{ height: "45px", width: "45px", margin: "auto" }}
           />
         </div>
@@ -45,4 +46,4 @@ const SelfLearningModules = (props) => {
   );
 };
 
-export default SelfLearningModules;
+export default React.memo(SelfLearningModules);

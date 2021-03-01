@@ -21,6 +21,7 @@ class SelfLearning extends Component {
   }
 
   componentDidMount() {
+    window.speechSynthesis.cancel()
     this.setState({
       ...this.state,
       loading: true,

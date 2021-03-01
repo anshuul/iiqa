@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./FinalScore.css";
 import { saveQuizScore } from '../../services/quizServices'
 
 const FinalScore = (props) => {
+
+  const [bgImage, setBgImage] = useState()
+
+  const loadAsyncBGImage = () => {
+    return new Promise((resolve, reject) => {
+      resolve(require('../../assets/score.jpg'))
+    })
+  }
+
+  useEffect(()=>{
+    loadAsyncBGImage()
+    .then(bgImage => {
+      setBgImage(bgImage)
+    })
+  },[])
+
   console.log(props)
   const buttonHandler = () => {
     const { classroomDocId, studentDocId, quizDocId } = props.location.state
@@ -23,7 +39,7 @@ const FinalScore = (props) => {
     }
   };
   return (
-    <div className="finalScore">
+    <div className="finalScore" style={{backgroundImage:{bgImage}}}>
       <p>
         yayyy!! You scored {props.score}/{props.outOff}
       </p>
