@@ -148,17 +148,12 @@ function Quiz(props) {
                 (optionTitle, index) => (
                   <div className="optionsContainer" key={index}>
                     <div
-                      className="options"
+                      className="options font-quiz text-2xl"
                       onClick={(event) =>
                         onOptionPressHandler(event, optionTitle)
                       }
                     >
-                      <p
-                        className="font-quiz text-2xl"
-                        style={{ fontSize: "20px", width: "100%" }}
-                      >
-                        {optionTitle}
-                      </p>
+                      {optionTitle}
                     </div>
                   </div>
                 )
