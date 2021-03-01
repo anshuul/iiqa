@@ -1,8 +1,9 @@
 import React from "react";
 import "./FinalScore.css";
 
-const finalScore = (props) => {
+const FinalScore = (props) => {
   const buttonHandler = () => {
+    localStorage.removeItem("quizToken");
     props.history.goBack();
   };
   return (
@@ -28,4 +29,4 @@ const finalScore = (props) => {
   );
 };
 
-export default finalScore;
+export default FinalScore;

@@ -4,6 +4,7 @@ import Activities from "./Activities";
 import "./Dashboard.css";
 import Avatar from "../../../assets/dp.svg";
 import {
+  encryptInformationForRouting,
   decryptInformationAfterRouting,
   getClassroomData,
 } from "../../../services/classroomServices";
@@ -11,6 +12,7 @@ import {
   getProfileDataFromDocId,
   getOnlyUserProfile,
 } from "../../../services/userServices";
+import { getQuizzesForClassroom } from '../../../services/quizServices'
 import Loading from "../../layout/Loading";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context/authContext";
@@ -28,6 +30,7 @@ class Dashboard extends Component {
         color: "",
         code: "",
       },
+      quizActivities:[],
       classroomLoading: false,
       activitiesLoading: false,
       studentsListLoading: false,
@@ -60,12 +63,12 @@ class Dashboard extends Component {
 
   componentDidMount() {
     this.loadUserData();
-    this.setState({ ...this.state, classroomLoading: true });
     const { compoundedInfo } = this.props.match.params;
     const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(
       compoundedInfo
     );
     console.log(ogDocId, ogTeacherId);
+    this.setState({ ...this.state, classroomLoading: true });
     getClassroomData(ogDocId)
       .then((data) => {
         const { name: title, displayPicture, color } = data;
@@ -97,6 +100,15 @@ class Dashboard extends Component {
       .finally(() => {
         this.setState({ ...this.state, classroomLoading: false });
       });
+    
+      getQuizzesForClassroom(ogDocId)
+      .then(quizActivitiesData => {
+        console.log(quizActivitiesData)
+        this.setState({...this.state, quizActivities:quizActivitiesData})
+      })
+      .catch(err => {
+        alert(err.message)
+      })
   }
 
   render() {
@@ -153,13 +165,13 @@ class Dashboard extends Component {
                     }}
                   >
                     Code :{" "}
-                    <p
+                    <span
                       style={{
                         fontSize: "15px",
                       }}
                     >
                       {this.state.classroomData.code}
-                    </p>
+                    </span>
                   </p>
                 </div>
               </div>
@@ -233,7 +245,7 @@ class Dashboard extends Component {
                 height: "270px",
               }}
             >
-              <Activities />
+              <Activities activities={this.state.quizActivities} classroomDocId={this.state.classroomData.code} history={this.props.history} />
             </div>
           </div>
           <div

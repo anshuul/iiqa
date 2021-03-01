@@ -1,8 +1,9 @@
 import { auth, firestore } from "../shared/firebase";
-import { getClassroomData } from "./classroomServices";
+import { getClassroomData, Classroom } from "./classroomServices";
 
 const ImageSet = firestore.collection("imagesets");
 const PredefinedImageSetsListRef = ImageSet.doc("predefinedImageSets");
+const Quiz = firestore.collection('quizzes')
 
 export function getPromiseForFetchingImageSet(classroomDocId) {
   return Promise.all([
@@ -100,7 +101,7 @@ function processImageSetsLinksForAPI(imageLinks) {
 }
 
 export async function dummy(imageSets) {
-  return [
+  return {result: [
     {
       answer: {
         correct_answer: "yes",
@@ -128,7 +129,7 @@ export async function dummy(imageSets) {
         "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
       question: " is the baby happy ?",
     },
-  ];
+  ]};
 }
 
 export async function getQuizData(imageSets) {
@@ -160,4 +161,55 @@ export async function getQuizData(imageSets) {
   });
 
   return quizApiResponse.json();
+}
+
+export async function createNewQuiz(quizData, classroomDocId){
+  /**
+   * @param quizData set of quistion answrs and imageLinks to be stored
+   * @param classroomDocId
+   * 
+   * @return return quiz docId 
+   */
+
+  try {
+    var currentdate = new Date(); 
+    const { id:quizDocId } = await firestore.collection(`classrooms/${classroomDocId}/quizzes`).add({
+      dateTimeOfCreation: currentdate.getDate() + "/"
+                          + (currentdate.getMonth()+1)  + "/" 
+                          + currentdate.getFullYear() + " at "  
+                          + currentdate.getHours() + ":"  
+                          + currentdate.getMinutes() + ":" 
+                          + currentdate.getSeconds(),
+      quizData: JSON.stringify(quizData)
+    })
+
+    return quizDocId
+
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
+export async function getQuizzesForClassroom(classroomDocId){
+  /**
+   * @param classroomDocId
+   * 
+   * @return array of quizzes and data
+   */
+
+  try {
+
+    const listOfQuizzesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes`).get()
+    if(listOfQuizzesResp.empty)
+      return []
+    
+    const arrayOfQuizData = []
+    listOfQuizzesResp.forEach(eachQuizData => {
+      arrayOfQuizData.push({docId: eachQuizData.id, ...eachQuizData.data()})
+    })
+    return arrayOfQuizData
+
+  } catch (err) {
+    throw new Error(err)
+  }
 }

@@ -44,7 +44,7 @@ class SelfLearning extends Component {
       loading: true,
       loadingMessage: "Getting your Quiz Ready. Please wait.",
     });
-    getQuizData(imageSet.imageLinks)
+    dummy(imageSet.imageLinks)
       .then((data) => {
         this.props.history.push({
           pathname: "/quiz",

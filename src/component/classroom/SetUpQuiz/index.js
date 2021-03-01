@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './index.css'
 import { decryptInformationAfterRouting, getClassroomData } from '../../../services/classroomServices'
-import { getImageSet, getPredefinedImageSets, getClassroomImageSet, getPromiseForFetchingImageSet, createImageSetForClassroom } from '../../../services/quizServices'
+import { createNewQuiz, dummy, getPromiseForFetchingImageSet, createImageSetForClassroom } from '../../../services/quizServices'
 import ImageStack from './ImageStack'
 import Loading from '../../layout/Loading'
 
@@ -64,6 +64,22 @@ export default class index extends Component {
                 this.setState({...this.state, loading:false})
             })
         }
+        this.setState({...this.state, loading:true, loadingMessage:'Creating your Quiz.'})
+        dummy(this.state.imageSetImages)
+        .then(data => {
+            console.log(data.result)
+            return createNewQuiz(data.result, this.state.currentClassroomDocId)
+        })
+        .then(quizDocId => {
+            console.log('quiz created on ',quizDocId)
+            alert('Quiz created')
+        })
+        .catch(err => {
+            alert(err.message)
+        })
+        .finally(()=>{
+            this.setState({...this.state, loading:false})
+        })
     }
 
     checkBoxChangeHandler(event){

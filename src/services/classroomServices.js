@@ -1,7 +1,7 @@
 import { auth, firestore } from '../shared/firebase'
 import { getOnlyUserProfile } from './userServices'
 
-const Classroom = firestore.collection('classrooms')
+export const Classroom = firestore.collection('classrooms')
 const Avatar = firestore.collection('avatars')
 
 export async function loadClassroomForStudents(userId){
@@ -148,17 +148,17 @@ export async function getClassroomData(docId){
     }
 }
 
-export function encryptInformationForRouting(docId, teacherId){
+export function encryptInformationForRouting(info1, info2){
     /**
-     * @param docId this is classroom docId
-     * @param teacherId this is docID of teacher of this classroom
+     * @param info1 
+     * @param info2 
      * 
      * @return encrypted version of given information
      */
 
     let encryptedVersion = ''
-    for(let i = 0; i < docId.length; i++){
-        encryptedVersion += docId[i] + teacherId[i]
+    for(let i = 0; i < info1.length; i++){
+        encryptedVersion += info1[i] + info2[i]
     }
     console.log(encryptedVersion)
     return encryptedVersion
@@ -171,11 +171,11 @@ export function decryptInformationAfterRouting(encryptedVersion){
      * @return orinal information
      */
 
-    let ogDocId = '', ogTeacherId = ''
+    let info1 = '', info2 = ''
     for(let i = 0; i < encryptedVersion.length; i+=2){
-        ogDocId += encryptedVersion[i]
-        ogTeacherId += encryptedVersion[i+1]
+        info1 += encryptedVersion[i]
+        info2 += encryptedVersion[i+1]
     }
-    console.log(ogDocId,' ', ogTeacherId)
-    return [ogDocId, ogTeacherId]
+    console.log(info1,' ', info2)
+    return [info1, info2]
 }

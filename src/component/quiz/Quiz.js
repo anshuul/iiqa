@@ -3,6 +3,7 @@ import "./Quiz.css";
 import Dog from "../../assets/dog.jpg";
 import FinalScore from "./FinalScore";
 import Speech from "react-speech";
+import { decryptInformationAfterRouting } from '../../services/classroomServices'
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
@@ -11,19 +12,23 @@ function Quiz(props) {
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
 
+
   useEffect(() => {
     console.log(props.location.state.quizData);
     // logic to prevent refreshing of quiz
     if (localStorage.getItem("quizToken")) {
-      // incase of quiz from dashboard, quizId can be retrieved. So On refresh opbejct for that quizId will be retried and score will be updated and saved/
-      props.history.push("/selflearn");
+      // incase of quiz from dashboard, quizId can be retrieved. So On refresh object for that quizId will be retried and score will be updated and saved/
+      props.history.goBack();
       localStorage.removeItem("quizToken");
     } else {
-      localStorage.setItem("quizToken", "started");
       if (props.location.state.quizData) {
+        localStorage.setItem("quizToken", "started");
         setQuizData(props.location.state.quizData);
       } else {
         // get quiz data from quiz id in url
+        // const { compoundedInfo } = props.match.params
+        // const [ classroomDocId, quizDocId ] = decryptInformationAfterRouting(compoundedInfo)
+
         console.log("else block");
       }
 
