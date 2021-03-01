@@ -7,15 +7,20 @@ const FinalScore = (props) => {
   const buttonHandler = () => {
     const { classroomDocId, studentDocId, quizDocId } = props.location.state
     console.log(props.location.state)
-    saveQuizScore(classroomDocId, quizDocId, studentDocId, props.score, props.outOff)
-    .then(message => {
-      alert(message)
+    if(classroomDocId && studentDocId && quizDocId){
+      saveQuizScore(classroomDocId, quizDocId, studentDocId, props.score, props.outOff)
+      .then(message => {
+        alert(message)
+        localStorage.removeItem("quizToken");
+        props.history.goBack();
+      })
+      .catch(err => {
+        alert(err.message)
+      })
+    } else {
       localStorage.removeItem("quizToken");
       props.history.goBack();
-    })
-    .catch(err => {
-      alert(err.message)
-    })
+    }
   };
   return (
     <div className="finalScore">

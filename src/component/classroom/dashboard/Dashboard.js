@@ -84,7 +84,7 @@ class Dashboard extends Component {
         });
       }
       else {
-        alert('You are not eligible for the quiz')
+        alert('You are not eligible for the quiz. As you already attended this quiz.')
       }
     })
   }
