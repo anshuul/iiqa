@@ -12,10 +12,11 @@ import {
   getProfileDataFromDocId,
   getOnlyUserProfile,
 } from "../../../services/userServices";
-import { getQuizzesForClassroom, getFilteredActivitiesAccToStudent } from '../../../services/quizServices'
+import { getQuizzesForClassroom, getFilteredActivitiesAccToStudent, isStudentEligibleForQuiz } from '../../../services/quizServices'
 import Loading from "../../layout/Loading";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context/authContext";
+import Score from '../../scores/scores'
 
 class Dashboard extends Component {
   constructor(props) {
@@ -34,8 +35,11 @@ class Dashboard extends Component {
       classroomLoading: false,
       activitiesLoading: false,
       studentsListLoading: false,
+      isScoreDisplayed:false,
+      selectedQuizActivityDocId:'',
     };
     this.onSelectActivityByStudentHandler = this.onSelectActivityByStudentHandler.bind(this)
+    this.onSelectActivityByTeacherHandler = this.onSelectActivityByTeacherHandler.bind(this)
   }
 
   loadStudentsList(studentIdsList) {
@@ -65,15 +69,28 @@ class Dashboard extends Component {
   onSelectActivityByStudentHandler = (quizData, quizDocId) => {
     const decryptedQuizData = JSON.parse(quizData)
     console.log(decryptedQuizData)
-    this.props.history.push({
-      pathname: "/quiz",
-      state: { 
-        quizData: decryptedQuizData,
-        quizDocId,
-        classroomDocId: this.state.classroomData.code,
-        studentDocId: this.state.userData.docId,
-      },
-    });
+    isStudentEligibleForQuiz(this.state.classroomData.code, quizDocId, this.state.userData.docId)
+    .then(isStudentEligible => {
+      if(isStudentEligible){
+        console.log(isStudentEligible)
+        this.props.history.push({
+          pathname: "/quiz",
+          state: { 
+            quizData: decryptedQuizData,
+            quizDocId,
+            classroomDocId: this.state.classroomData.code,
+            studentDocId: this.state.userData.docId,
+          },
+        });
+      }
+      else {
+        alert('You are not eligible for the quiz')
+      }
+    })
+  }
+
+  onSelectActivityByTeacherHandler = (_, quizDocId) => {
+    this.setState({...this.state, isScoreDisplayed:true, selectedQuizActivityDocId:quizDocId})
   }
 
   componentDidMount() {
@@ -119,17 +136,6 @@ class Dashboard extends Component {
       getQuizzesForClassroom(ogDocId)
       .then(quizActivitiesData => {
         console.log(quizActivitiesData)
-        if(this.state.userData.isStudent){
-          getFilteredActivitiesAccToStudent(quizActivitiesData, this.state.userData.docId, this.state.classroomData.code)
-          .then(filteredData => {
-            console.log(filteredData)
-            this.setState({...this.state, quizActivities:filteredData})
-          })
-          .catch(err => {
-            throw new Error(err)
-          })
-        }
-        else
           this.setState({...this.state, quizActivities:quizActivitiesData})
       })
       .catch(err => {
@@ -143,6 +149,7 @@ class Dashboard extends Component {
         {this.state.classroomLoading && (
           <Loading message="Getting Classroom Dashboard Ready. Please wait." />
         )}
+        {this.state.isScoreDisplayed && <Score classroomDocId={this.state.classroomData.code} selectedActivityDocId = {this.state.selectedQuizActivityDocId}  cancelHandler={()=>this.setState({...this.state, isScoreDisplayed:false})} />}
         <div className="row">
           <div
             className={`col s12 m12 ${this.state.classroomData.color} lighten-2`}
@@ -271,7 +278,10 @@ class Dashboard extends Component {
                 height: "270px",
               }}
             >
-              <Activities activities={this.state.quizActivities} classroomDocId={this.state.classroomData.code} onClickActivityHandler={this.onSelectActivityByStudentHandler} />
+              <Activities
+                activities={this.state.quizActivities}
+                classroomDocId={this.state.classroomData.code}
+                onClickActivityHandler={this.state.userData.isStudent ? this.onSelectActivityByStudentHandler : this.onSelectActivityByTeacherHandler} />
             </div>
           </div>
           <div
