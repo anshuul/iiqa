@@ -213,3 +213,60 @@ export async function getQuizzesForClassroom(classroomDocId){
     throw new Error(err)
   }
 }
+
+export async function saveQuizScore(classroomDocId, quizDocId, studentDocId, score, outOffScore){
+  /**
+   * @param classroomDocId
+   * @param quizDocId
+   * @param studentDocId
+   * 
+   * @return sucess message on saving the score
+   */
+
+  try {
+    console.log(classroomDocId, quizDocId, studentDocId, score, outOffScore)
+    const { id:attendeeDocId } = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`).add({
+      studentDocId,
+      score: `${score}/${outOffScore}`
+    })
+
+    return 'Your score saved'
+
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
+export async function getFilteredActivitiesAccToStudent(arrayOfQuizActvities, studentId, classroomDocId){
+  /**
+   * @param arrayOfQuizActvities
+   * @param studentId
+   * 
+   * @return filtered data set
+   */
+
+  try {
+    console.log(arrayOfQuizActvities)
+    let filteredArrayOfQuizActivities = []
+    for(const quizActivity of arrayOfQuizActvities) {
+      const listOfAttendeesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizActivity.docId}/attendees`).get()
+      if(listOfAttendeesResp.empty){
+        console.log(arrayOfQuizActvities)
+        filteredArrayOfQuizActivities.push(quizActivity)
+      }
+      
+      listOfAttendeesResp.forEach(attendeeData => {
+        console.log(attendeeData.data())
+        if(!attendeeData.data().studentDocId === studentId){
+          filteredArrayOfQuizActivities.push(quizActivity)
+        }
+      })
+      console.log(filteredArrayOfQuizActivities)
+
+    }
+    return filteredArrayOfQuizActivities
+
+  } catch (err) {
+    throw new Error(err)
+  }
+}

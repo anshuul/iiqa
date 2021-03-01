@@ -4,6 +4,7 @@ import Dog from "../../assets/dog.jpg";
 import FinalScore from "./FinalScore";
 import Speech from "react-speech";
 import { decryptInformationAfterRouting } from '../../services/classroomServices'
+import { saveQuizScore } from '../../services/quizServices'
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
@@ -14,7 +15,7 @@ function Quiz(props) {
 
 
   useEffect(() => {
-    console.log(props.location.state.quizData);
+    console.log(props);
     // logic to prevent refreshing of quiz
     if (localStorage.getItem("quizToken")) {
       // incase of quiz from dashboard, quizId can be retrieved. So On refresh object for that quizId will be retried and score will be updated and saved/
@@ -66,7 +67,7 @@ function Quiz(props) {
         );
       }
       event.target.className = "options";
-    }, 2000);
+    }, 500);
   };
 
   const processQuestion = (questionText) => {
@@ -79,7 +80,7 @@ function Quiz(props) {
   };
 
   return showScore ? (
-    <FinalScore score={score} outOff={quizData.length} {...props} />
+    <FinalScore score={score} outOff={quizData.length}  {...props} />
   ) : (
     <div className="quiz">
       {quizData && (

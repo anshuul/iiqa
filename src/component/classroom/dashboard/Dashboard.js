@@ -12,7 +12,7 @@ import {
   getProfileDataFromDocId,
   getOnlyUserProfile,
 } from "../../../services/userServices";
-import { getQuizzesForClassroom } from '../../../services/quizServices'
+import { getQuizzesForClassroom, getFilteredActivitiesAccToStudent } from '../../../services/quizServices'
 import Loading from "../../layout/Loading";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context/authContext";
@@ -35,6 +35,7 @@ class Dashboard extends Component {
       activitiesLoading: false,
       studentsListLoading: false,
     };
+    this.onSelectActivityByStudentHandler = this.onSelectActivityByStudentHandler.bind(this)
   }
 
   loadStudentsList(studentIdsList) {
@@ -59,6 +60,20 @@ class Dashboard extends Component {
       .catch((err) => {
         alert(err.message);
       });
+  }
+
+  onSelectActivityByStudentHandler = (quizData, quizDocId) => {
+    const decryptedQuizData = JSON.parse(quizData)
+    console.log(decryptedQuizData)
+    this.props.history.push({
+      pathname: "/quiz",
+      state: { 
+        quizData: decryptedQuizData,
+        quizDocId,
+        classroomDocId: this.state.classroomData.code,
+        studentDocId: this.state.userData.docId,
+      },
+    });
   }
 
   componentDidMount() {
@@ -104,7 +119,18 @@ class Dashboard extends Component {
       getQuizzesForClassroom(ogDocId)
       .then(quizActivitiesData => {
         console.log(quizActivitiesData)
-        this.setState({...this.state, quizActivities:quizActivitiesData})
+        if(this.state.userData.isStudent){
+          getFilteredActivitiesAccToStudent(quizActivitiesData, this.state.userData.docId, this.state.classroomData.code)
+          .then(filteredData => {
+            console.log(filteredData)
+            this.setState({...this.state, quizActivities:filteredData})
+          })
+          .catch(err => {
+            throw new Error(err)
+          })
+        }
+        else
+          this.setState({...this.state, quizActivities:quizActivitiesData})
       })
       .catch(err => {
         alert(err.message)
@@ -245,7 +271,7 @@ class Dashboard extends Component {
                 height: "270px",
               }}
             >
-              <Activities activities={this.state.quizActivities} classroomDocId={this.state.classroomData.code} history={this.props.history} />
+              <Activities activities={this.state.quizActivities} classroomDocId={this.state.classroomData.code} onClickActivityHandler={this.onSelectActivityByStudentHandler} />
             </div>
           </div>
           <div
