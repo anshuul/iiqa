@@ -12,11 +12,15 @@ import {
   getProfileDataFromDocId,
   getOnlyUserProfile,
 } from "../../../services/userServices";
-import { getQuizzesForClassroom, getFilteredActivitiesAccToStudent, isStudentEligibleForQuiz } from '../../../services/quizServices'
+import {
+  getQuizzesForClassroom,
+  getFilteredActivitiesAccToStudent,
+  isStudentEligibleForQuiz,
+} from "../../../services/quizServices";
 import Loading from "../../layout/Loading";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context/authContext";
-import Score from '../../scores/scores'
+import Score from "../../scores/scores";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -31,15 +35,19 @@ class Dashboard extends Component {
         color: "",
         code: "",
       },
-      quizActivities:[],
+      quizActivities: [],
       classroomLoading: false,
       activitiesLoading: false,
       studentsListLoading: false,
-      isScoreDisplayed:false,
-      selectedQuizActivityDocId:'',
+      isScoreDisplayed: false,
+      selectedQuizActivityDocId: "",
     };
-    this.onSelectActivityByStudentHandler = this.onSelectActivityByStudentHandler.bind(this)
-    this.onSelectActivityByTeacherHandler = this.onSelectActivityByTeacherHandler.bind(this)
+    this.onSelectActivityByStudentHandler = this.onSelectActivityByStudentHandler.bind(
+      this
+    );
+    this.onSelectActivityByTeacherHandler = this.onSelectActivityByTeacherHandler.bind(
+      this
+    );
   }
 
   loadStudentsList(studentIdsList) {
@@ -67,31 +75,39 @@ class Dashboard extends Component {
   }
 
   onSelectActivityByStudentHandler = (quizData, quizDocId) => {
-    const decryptedQuizData = JSON.parse(quizData)
-    console.log(decryptedQuizData)
-    isStudentEligibleForQuiz(this.state.classroomData.code, quizDocId, this.state.userData.docId)
-    .then(isStudentEligible => {
-      if(isStudentEligible){
-        console.log(isStudentEligible)
+    const decryptedQuizData = JSON.parse(quizData);
+    console.log(decryptedQuizData);
+    isStudentEligibleForQuiz(
+      this.state.classroomData.code,
+      quizDocId,
+      this.state.userData.docId
+    ).then((isStudentEligible) => {
+      if (isStudentEligible) {
+        console.log(isStudentEligible);
         this.props.history.push({
           pathname: "/quiz",
-          state: { 
+          state: {
             quizData: decryptedQuizData,
             quizDocId,
             classroomDocId: this.state.classroomData.code,
             studentDocId: this.state.userData.docId,
           },
         });
+      } else {
+        alert(
+          "You are not eligible for the quiz. As you already attended this quiz."
+        );
       }
-      else {
-        alert('You are not eligible for the quiz. As you already attended this quiz.')
-      }
-    })
-  }
+    });
+  };
 
   onSelectActivityByTeacherHandler = (_, quizDocId) => {
-    this.setState({...this.state, isScoreDisplayed:true, selectedQuizActivityDocId:quizDocId})
-  }
+    this.setState({
+      ...this.state,
+      isScoreDisplayed: true,
+      selectedQuizActivityDocId: quizDocId,
+    });
+  };
 
   componentDidMount() {
     this.loadUserData();
@@ -132,25 +148,35 @@ class Dashboard extends Component {
       .finally(() => {
         this.setState({ ...this.state, classroomLoading: false });
       });
-    
-      getQuizzesForClassroom(ogDocId)
-      .then(quizActivitiesData => {
-        console.log(quizActivitiesData)
-        quizActivitiesData.sort((a, b) => a.dateTimeForCreation - b.dateTimeForCreation)
-        this.setState({...this.state, quizActivities:quizActivitiesData})
+
+    getQuizzesForClassroom(ogDocId)
+      .then((quizActivitiesData) => {
+        console.log(quizActivitiesData);
+        quizActivitiesData.sort(
+          (a, b) => b.dateTimeOfCreation.seconds - a.dateTimeOfCreation.seconds
+        );
+        this.setState({ ...this.state, quizActivities: quizActivitiesData });
       })
-      .catch(err => {
-        alert(err.message)
-      })
+      .catch((err) => {
+        alert(err.message);
+      });
   }
 
   render() {
     return (
-      <div className="dashboard container">
+      <div className="dashboard container" style={{ height: "93vh" }}>
         {this.state.classroomLoading && (
           <Loading message="Getting Classroom Dashboard Ready. Please wait." />
         )}
-        {this.state.isScoreDisplayed && <Score classroomDocId={this.state.classroomData.code} selectedActivityDocId = {this.state.selectedQuizActivityDocId}  cancelHandler={()=>this.setState({...this.state, isScoreDisplayed:false})} />}
+        {this.state.isScoreDisplayed && (
+          <Score
+            classroomDocId={this.state.classroomData.code}
+            selectedActivityDocId={this.state.selectedQuizActivityDocId}
+            cancelHandler={() =>
+              this.setState({ ...this.state, isScoreDisplayed: false })
+            }
+          />
+        )}
         <div className="row">
           <div
             className={`col s12 m12 ${this.state.classroomData.color} lighten-2`}
@@ -258,7 +284,7 @@ class Dashboard extends Component {
             </div>
           </div>
         )}
-        <div className="row">
+        <div className="row" style={{ height: "70%" }}>
           <div
             className="col s12 m8 "
             style={{
@@ -266,7 +292,7 @@ class Dashboard extends Component {
               marginTop: "20px",
               borderRadius: "15px",
               boxShadow: "10px 10px 10px #d3d3d3",
-              height: "350px",
+              height: "100%",
             }}
           >
             <h5 className="center">Activities</h5>
@@ -276,13 +302,18 @@ class Dashboard extends Component {
                 paddingTop: "5px",
                 overflowX: "hidden",
                 overflowY: "auto",
-                height: "270px",
+                height: "85%",
               }}
             >
               <Activities
                 activities={this.state.quizActivities}
                 classroomDocId={this.state.classroomData.code}
-                onClickActivityHandler={this.state.userData.isStudent ? this.onSelectActivityByStudentHandler : this.onSelectActivityByTeacherHandler} />
+                onClickActivityHandler={
+                  this.state.userData.isStudent
+                    ? this.onSelectActivityByStudentHandler
+                    : this.onSelectActivityByTeacherHandler
+                }
+              />
             </div>
           </div>
           <div

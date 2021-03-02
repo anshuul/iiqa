@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./Quiz.css";
-import Dog from "../../assets/dog.jpg";
-import FinalScore from "./FinalScore";
+import FinalScore from "./finalScore";
 import Speech from "react-speech";
-import { decryptInformationAfterRouting } from '../../services/classroomServices'
-import { saveQuizScore } from '../../services/quizServices'
-import { textToSpeech } from '../../shared/utils'
-import volumeIcon from '../../assets/volume.svg'
+import { decryptInformationAfterRouting } from "../../services/classroomServices";
+import { saveQuizScore } from "../../services/quizServices";
+import { textToSpeech } from "../../shared/utils";
+import volumeIcon from "../../assets/volume.svg";
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
@@ -14,7 +13,6 @@ function Quiz(props) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
-
 
   useEffect(() => {
     console.log(props);
@@ -53,19 +51,29 @@ function Quiz(props) {
   //   }
   // }, [currentQuestionIndex]);
 
-  useEffect(()=>{
-    if(quizData && currentQuestionIndex >= 0 && currentQuestionIndex < quizData.length)
-      textToSpeech(`For the above Image, Question is, ${quizData[currentQuestionIndex].question}`)
-  }, [currentQuestionIndex, quizData])
+  useEffect(() => {
+    if (
+      quizData &&
+      currentQuestionIndex >= 0 &&
+      currentQuestionIndex < quizData.length
+    )
+      textToSpeech(
+        `For the above Image, Question is, ${processQuestion(
+          quizData[currentQuestionIndex].question
+        )}`
+      );
+  }, [currentQuestionIndex, quizData]);
 
   const onOptionPressHandler = (event, optionTitle) => {
-    event.target.disabled=true
+    event.target.disabled = true;
     if (optionTitle === quizData[currentQuestionIndex].answer.correct_answer) {
-      textToSpeech(`Your are right. Correct answer is ${optionTitle}`)
+      textToSpeech(`Your are right. Correct answer is ${optionTitle}`);
       setScore((score) => score + 1);
       event.target.className = "options green";
     } else {
-      textToSpeech(`Your are wrong. Correct answer is ${quizData[currentQuestionIndex].answer.correct_answer}`)
+      textToSpeech(
+        `Your are wrong. Correct answer is ${quizData[currentQuestionIndex].answer.correct_answer}`
+      );
       event.target.className = "options red";
     }
     setTimeout(() => {
@@ -90,7 +98,7 @@ function Quiz(props) {
   };
 
   return showScore ? (
-    <FinalScore score={score} outOff={quizData.length}  {...props} />
+    <FinalScore score={score} outOff={quizData.length} {...props} />
   ) : (
     <div className="quiz">
       {quizData && (
@@ -111,7 +119,6 @@ function Quiz(props) {
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               backgroundSize: "cover",
-              
             }}
           >
             {/* <img

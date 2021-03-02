@@ -1,10 +1,10 @@
 import { auth, firestore } from "../shared/firebase";
 import { getClassroomData, Classroom } from "./classroomServices";
-import { getProfileDataFromDocId } from './userServices'
+import { getProfileDataFromDocId } from "./userServices";
 
 const ImageSet = firestore.collection("imagesets");
 const PredefinedImageSetsListRef = ImageSet.doc("predefinedImageSets");
-const Quiz = firestore.collection('quizzes')
+const Quiz = firestore.collection("quizzes");
 
 export function getPromiseForFetchingImageSet(classroomDocId) {
   return Promise.all([
@@ -102,35 +102,41 @@ function processImageSetsLinksForAPI(imageLinks) {
 }
 
 export async function dummy(imageSets) {
-  return {result: [
-    {
-      answer: {
-        correct_answer: "yes",
-        options: ["yes", "no"],
-      },
-      image_path:
-        "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
-      question: " is the baby happy ?",
-    },
-    {
-      answer: {
-        correct_answer: "yes",
-        options: ["no", "yes"],
-      },
-      image_path:
-        "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
-      question: " is the baby happy ?",
-    },
-    {
-      answer: {
-        correct_answer: "yes",
-        options: ["yes", "no"],
-      },
-      image_path:
-        "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
-      question: " is the baby happy ?",
-    },
-  ]};
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        result: [
+          {
+            answer: {
+              correct_answer: "yes",
+              options: ["yes", "no"],
+            },
+            image_path:
+              "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
+            question: " is the baby happy ?",
+          },
+          {
+            answer: {
+              correct_answer: "yes",
+              options: ["no", "yes"],
+            },
+            image_path:
+              "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
+            question: " is the baby happy ?",
+          },
+          {
+            answer: {
+              correct_answer: "yes",
+              options: ["yes", "no"],
+            },
+            image_path:
+              "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
+            question: " is the baby happy ?",
+          },
+        ],
+      });
+    }, [5000]);
+  });
 }
 
 export async function getQuizData(imageSets) {
@@ -164,153 +170,170 @@ export async function getQuizData(imageSets) {
   return quizApiResponse.json();
 }
 
-export async function createNewQuiz(quizData, classroomDocId){
+export async function createNewQuiz(quizData, classroomDocId) {
   /**
    * @param quizData set of quistion answrs and imageLinks to be stored
    * @param classroomDocId
-   * 
-   * @return return quiz docId 
+   *
+   * @return return quiz docId
    */
 
   try {
-    var currentdate = new Date(); 
-    const { id:quizDocId } = await firestore.collection(`classrooms/${classroomDocId}/quizzes`).add({
-      dateTimeOfCreation: currentdate,
-      quizData: JSON.stringify(quizData)
-    })
+    var currentdate = new Date();
+    const { id: quizDocId } = await firestore
+      .collection(`classrooms/${classroomDocId}/quizzes`)
+      .add({
+        dateTimeOfCreation: currentdate,
+        quizData: JSON.stringify(quizData),
+      });
 
-    return quizDocId
-
+    return quizDocId;
   } catch (err) {
-    throw new Error(err)
+    throw new Error(err);
   }
 }
 
-export async function getQuizzesForClassroom(classroomDocId){
+export async function getQuizzesForClassroom(classroomDocId) {
   /**
    * @param classroomDocId
-   * 
+   *
    * @return array of quizzes and data
    */
 
   try {
+    const listOfQuizzesResp = await firestore
+      .collection(`classrooms/${classroomDocId}/quizzes`)
+      .get();
+    if (listOfQuizzesResp.empty) return [];
 
-    const listOfQuizzesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes`).get()
-    if(listOfQuizzesResp.empty)
-      return []
-    
-    const arrayOfQuizData = []
-    listOfQuizzesResp.forEach(eachQuizData => {
-      arrayOfQuizData.push({docId: eachQuizData.id, ...eachQuizData.data()})
-    })
-    return arrayOfQuizData
-
+    const arrayOfQuizData = [];
+    listOfQuizzesResp.forEach((eachQuizData) => {
+      arrayOfQuizData.push({ docId: eachQuizData.id, ...eachQuizData.data() });
+    });
+    return arrayOfQuizData;
   } catch (err) {
-    throw new Error(err)
+    throw new Error(err);
   }
 }
 
-export async function saveQuizScore(classroomDocId, quizDocId, studentDocId, score, outOffScore){
+export async function saveQuizScore(
+  classroomDocId,
+  quizDocId,
+  studentDocId,
+  score,
+  outOffScore
+) {
   /**
    * @param classroomDocId
    * @param quizDocId
    * @param studentDocId
-   * 
+   *
    * @return sucess message on saving the score
    */
 
   try {
-    console.log(classroomDocId, quizDocId, studentDocId, score, outOffScore)
-    const { id:attendeeDocId } = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`).add({
-      studentDocId,
-      score: `${score}/${outOffScore}`
-    })
+    console.log(classroomDocId, quizDocId, studentDocId, score, outOffScore);
+    const { id: attendeeDocId } = await firestore
+      .collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`)
+      .add({
+        studentDocId,
+        score: `${score}/${outOffScore}`,
+      });
 
-    return 'Your score saved'
-
+    return "Your score saved";
   } catch (err) {
-    throw new Error(err)
+    throw new Error(err);
   }
 }
 
-export async function getFilteredActivitiesAccToStudent(arrayOfQuizActvities, studentId, classroomDocId){
+export async function getFilteredActivitiesAccToStudent(
+  arrayOfQuizActvities,
+  studentId,
+  classroomDocId
+) {
   /**
    * @param arrayOfQuizActvities
    * @param studentId
-   * 
+   *
    * @return filtered data set
    */
 
   try {
-    console.log(arrayOfQuizActvities)
-    console.log(studentId)
-    let filteredArrayOfQuizActivities = []
-    for(const quizActivity of arrayOfQuizActvities) {
-      const listOfAttendeesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizActivity.docId}/attendees`).get()
-      if(listOfAttendeesResp.empty){
-        console.log(arrayOfQuizActvities)
-        filteredArrayOfQuizActivities.push(quizActivity)
+    console.log(arrayOfQuizActvities);
+    console.log(studentId);
+    let filteredArrayOfQuizActivities = [];
+    for (const quizActivity of arrayOfQuizActvities) {
+      const listOfAttendeesResp = await firestore
+        .collection(
+          `classrooms/${classroomDocId}/quizzes/${quizActivity.docId}/attendees`
+        )
+        .get();
+      if (listOfAttendeesResp.empty) {
+        console.log(arrayOfQuizActvities);
+        filteredArrayOfQuizActivities.push(quizActivity);
       } else {
-        listOfAttendeesResp.forEach(attendeeData => {
-          console.log(attendeeData.data())
-          if(attendeeData.data().studentDocId !== studentId){
-            console.log(quizActivity)
-            filteredArrayOfQuizActivities.push(quizActivity)
+        listOfAttendeesResp.forEach((attendeeData) => {
+          console.log(attendeeData.data());
+          if (attendeeData.data().studentDocId !== studentId) {
+            console.log(quizActivity);
+            filteredArrayOfQuizActivities.push(quizActivity);
           }
-          console.log(filteredArrayOfQuizActivities)
-        })
+          console.log(filteredArrayOfQuizActivities);
+        });
       }
-
     }
-    return filteredArrayOfQuizActivities
-
+    return filteredArrayOfQuizActivities;
   } catch (err) {
-    throw new Error(err)
+    throw new Error(err);
   }
 }
 
-export async function getAttendeesAndScores(classroomDocId, quizDocId){
+export async function getAttendeesAndScores(classroomDocId, quizDocId) {
   /**
    * @param classroomDocId
    * @param quizDocId
-   * 
+   *
    * @return attendee name and score
    */
 
   try {
-    const listOfAttendeesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`).get()
-    if(listOfAttendeesResp.empty){
-      return []
+    const listOfAttendeesResp = await firestore
+      .collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`)
+      .get();
+    if (listOfAttendeesResp.empty) {
+      return [];
     }
-    let attendeesDataArray = []
-    listOfAttendeesResp.forEach(async attendee => {
-      attendeesDataArray.push({docId:attendee.id, ...attendee.data()})
-    })
-    return attendeesDataArray
+    let attendeesDataArray = [];
+    listOfAttendeesResp.forEach(async (attendee) => {
+      attendeesDataArray.push({ docId: attendee.id, ...attendee.data() });
+    });
+    return attendeesDataArray;
   } catch (err) {
-    throw new Error(err)
+    throw new Error(err);
   }
-
 }
 
-export async function isStudentEligibleForQuiz(classroomDocId, quizDocId, studentId){
+export async function isStudentEligibleForQuiz(
+  classroomDocId,
+  quizDocId,
+  studentId
+) {
   try {
-    const listOfAttendeesResp = await firestore.collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`).get()
-    let eligibilityArr = []
-    if(!listOfAttendeesResp.empty){
-      console.log(listOfAttendeesResp)
-      listOfAttendeesResp.forEach(async attendee => {
-        console.log(attendee.data().studentDocId)
-        if(attendee.data().studentDocId === studentId)
-          eligibilityArr.push(false)
-        else
-          eligibilityArr.push(true)
-      })
-      return eligibilityArr.every(val => val === true)
-    }
-    else
-      return true
+    const listOfAttendeesResp = await firestore
+      .collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`)
+      .get();
+    let eligibilityArr = [];
+    if (!listOfAttendeesResp.empty) {
+      console.log(listOfAttendeesResp);
+      listOfAttendeesResp.forEach(async (attendee) => {
+        console.log(attendee.data().studentDocId);
+        if (attendee.data().studentDocId === studentId)
+          eligibilityArr.push(false);
+        else eligibilityArr.push(true);
+      });
+      return eligibilityArr.every((val) => val === true);
+    } else return true;
   } catch (err) {
-    throw new Error(err)
+    throw new Error(err);
   }
 }
