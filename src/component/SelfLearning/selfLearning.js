@@ -21,7 +21,7 @@ class SelfLearning extends Component {
   }
 
   componentDidMount() {
-    window.speechSynthesis.cancel()
+    window.speechSynthesis.cancel();
     this.setState({
       ...this.state,
       loading: true,
@@ -47,6 +47,7 @@ class SelfLearning extends Component {
     });
     dummy(imageSet.imageLinks)
       .then((data) => {
+        console.log(data);
         this.props.history.push({
           pathname: "/quiz",
           state: { quizData: data.result },

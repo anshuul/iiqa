@@ -2,39 +2,39 @@ import React from "react";
 import { Link } from "react-router-dom";
 import SignedInLinks from "./SignedInLinks";
 import SignedOutLinks from "./SignedOutLinks";
-import { AuthContext } from '../../context/authContext'
+import { AuthContext } from "../../context/authContext";
 
-class NavbarComponent extends React.Component{
-
-  shouldComponentUpdate(nextProps){
-    return (this.props.currentUser.uid !== nextProps.currentUser.uid)
+class NavbarComponent extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.currentUser.uid !== nextProps.currentUser.uid;
   }
 
-  render(){
+  render() {
     return (
-      
-          <nav className="nav-wrapper grey darken-3  ">
-            <div className="container left-align">
-              <span style={{ fontSize: 30 }}>
-                <Link to="/" className=" heading">
-                  IIQA
-                </Link>
-              </span>
-              {this.props.currentUser.uid && this.props.currentUser.uid !== '' ? <SignedInLinks /> : <SignedOutLinks />}
-            </div>
-          </nav>
-      
+      <nav className="nav-wrapper grey darken-3  ">
+        <div className="container left-align">
+          <span style={{ fontSize: 30 }}>
+            <Link to="/" className=" heading">
+              IIQA
+            </Link>
+          </span>
+          {this.props.currentUser.uid && this.props.currentUser.uid !== "" ? (
+            <SignedInLinks />
+          ) : (
+            <SignedOutLinks />
+          )}
+        </div>
+      </nav>
     );
-};}
+  }
+}
 
-export default function Navbar(){
+export default function Navbar() {
   return (
     <AuthContext.Consumer>
-      {({currentUser})=> {
-        return ( 
-          <NavbarComponent currentUser={currentUser} />
-        )}
-      }
-    </AuthContext.Consumer> 
-  )
+      {({ currentUser }) => {
+        return <NavbarComponent currentUser={currentUser} />;
+      }}
+    </AuthContext.Consumer>
+  );
 }
