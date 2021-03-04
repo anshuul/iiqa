@@ -293,7 +293,7 @@ class Dashboard extends Component {
               marginTop: "20px",
               borderRadius: "15px",
               boxShadow: "10px 10px 10px #d3d3d3",
-              height: "100%",
+              height: "80%",
             }}
           >
             <h5 className="center">Activities</h5>
@@ -303,7 +303,7 @@ class Dashboard extends Component {
                 paddingTop: "5px",
                 overflowX: "hidden",
                 overflowY: "auto",
-                height: "85%",
+                height: "80%",
               }}
             >
               <Activities
@@ -324,7 +324,7 @@ class Dashboard extends Component {
               marginTop: "20px",
               borderRadius: "15px",
               boxShadow: "10px 10px 10px #d3d3d3",
-              height: "350px",
+              height: "80%",
             }}
           >
             <h5 className="center">Student Names</h5>
@@ -334,7 +334,7 @@ class Dashboard extends Component {
                 paddingTop: "5px",
                 overflowX: "hidden",
                 overflowY: "auto",
-                height: "270px",
+                height: "80%",
               }}
             >
               <StudentDetails studentsNameList={this.state.studentsNameList} />
