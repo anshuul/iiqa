@@ -321,18 +321,12 @@ export async function isStudentEligibleForQuiz(
   try {
     const listOfAttendeesResp = await firestore
       .collection(`classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`)
+      .where('studentDocId', '==', studentId)
       .get();
-    let eligibilityArr = [];
-    if (!listOfAttendeesResp.empty) {
-      console.log(listOfAttendeesResp);
-      listOfAttendeesResp.forEach(async (attendee) => {
-        console.log(attendee.data().studentDocId);
-        if (attendee.data().studentDocId === studentId)
-          eligibilityArr.push(false);
-        else eligibilityArr.push(true);
-      });
-      return eligibilityArr.every((val) => val === true);
-    } else return true;
+    if(listOfAttendeesResp.empty)
+      return true
+    else
+      return false
   } catch (err) {
     throw new Error(err);
   }
