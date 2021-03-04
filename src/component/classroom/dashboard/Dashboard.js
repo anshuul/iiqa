@@ -190,7 +190,7 @@ class Dashboard extends Component {
             }}
           >
             <div className="content">
-              <div className="left">
+              <div className="left" style={{width:'30%',minWidth:'200px'}}>
                 <div className="classroom">
                   <p
                     style={{
@@ -238,20 +238,11 @@ class Dashboard extends Component {
               </div>
               <div
                 className="imageclass right"
-                style={{
-                  backgroundColor: "white",
-                  height: "70px",
-                  width: "70px",
-                  borderRadius: "50px",
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "20px",
-                }}
               >
                 <img
+                  id='image'
                   src={this.state.classroomData.displayPicture}
                   alt=""
-                  style={{ height: "45px", width: "45px", margin: "auto" }}
                 />
               </div>
             </div>
