@@ -6,33 +6,35 @@ const FinalizeQuizModules = (props) => {
     <div
       className="quizMain"
       style={{
-        height: "250px",
-        width: "230px",
+        height: "40%",
+        width: "30%",
+        minWidth:'230px',
         border: "1px solid #d3d3d3",
-        marginLeft: "20px",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
+        justifyContent: "space-evenly",
+        alignItems:'center',
         boxShadow: "5px 5px 5px #d3d3d3",
         borderRadius: "10px",
+        padding:'20px 0',
         marginTop: "10px",
       }}
     >
-      <center>
-        <div className="image">
-          <img src={props.image} alt="" height="100" width="100" />
-        </div>
-      </center>
+      <div className="image">
+        <img src={props.image} alt="" height="250" width="200" />
+      </div>
 
-      <p className="textClass">{props.question}</p>
+      <div>
+        <p className="textClass center">{props.question}</p>
 
-      <p className="textClass">
-        <strong>Correct Answer: </strong> {props.answer}
-      </p>
-      <p className="textClass">
-        <strong>Other Options: </strong> {props.otherOptions[0]},
-        {props.otherOptions[1]},{props.otherOptions[2]}
-      </p>
+        <p className="textClass center">
+          <strong>Correct Answer: </strong> {props.answer}
+        </p>
+        <p className="textClass center">
+          <strong>Other Options: </strong> {props.otherOptions[0]}, 
+          {props.otherOptions[1]}, {props.otherOptions[2]}
+        </p>
+      </div>
     </div>
   );
 };

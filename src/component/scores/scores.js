@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./scores.css";
+import { encryptInformationForRouting } from '../../services/classroomServices'
 import { getAttendeesAndScores } from '../../services/quizServices'
 import { getProfileDataFromDocId } from '../../services/userServices'
 import Loading from '../layout/Loading'
@@ -17,6 +18,10 @@ class Scores extends Component {
       data.push({name:`${fname} ${lname}`, score:attendee.score})
     }
     return data
+  }
+
+  redirectToViewQuiz(){
+    this.props.history.push(`/finalizequiz/${encryptInformationForRouting(this.props.classroomDocId, this.props.selectedActivityDocId)}`)
   }
 
   componentDidMount(){
@@ -44,12 +49,21 @@ class Scores extends Component {
       <div className="scoresContainer">
         {this.state.loading && <Loading message='Getting scores' />}
         <div className="scoresContent">
-          <div
-            onClick={() => this.props.cancelHandler()}
-            className="left-align blue darken-2 btn-flat btn-small"
-            style={{color:'white'}}
-          >
-            Back
+          <div style={{display:'flex', justifyContent:'space-between', width:'100%'}} >
+            <div
+              onClick={() => this.props.cancelHandler()}
+              className="left-align blue darken-2 btn-flat btn-small"
+              style={{color:'white'}}
+            >
+              Back
+            </div>
+            <div
+              onClick={() => this.redirectToViewQuiz()}
+              className="right-align blue darken-2 btn-flat btn-small"
+              style={{color:'white'}}
+            >
+              View Quiz
+            </div>
           </div>
           {this.state.attendeeData.length > 0 ? this.state.attendeeData.map((data) => {
             return (

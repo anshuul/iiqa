@@ -337,3 +337,27 @@ export async function isStudentEligibleForQuiz(
     throw new Error(err);
   }
 }
+
+
+export async function getGeneratedQuiz(classroomDocId, quizDocId){
+  /**
+   * @param classroomDocId
+   * @param quizDocId
+   * 
+   * @return quiz data for the given classroom and quiz id
+   */
+
+  try {
+    const quizObj = await firestore.collection(`classrooms/${classroomDocId}/quizzes`).doc(quizDocId).get()
+    if(!quizObj.exists){
+      throw new Error('No quiz found')
+    }
+    let { quizData, dateTimeOfCreation } = quizObj.data()
+    quizData = JSON.parse(quizData)
+    const dateTimeObj = dateTimeOfCreation.toDate()
+    dateTimeOfCreation = `${dateTimeObj.toDateString()} ${dateTimeObj.toLocaleTimeString()}`
+    return { dateTimeOfCreation, quizData }
+  } catch (err) {
+    throw new Error(err)
+  }
+}

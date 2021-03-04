@@ -2,74 +2,42 @@ import React, { Component } from "react";
 import Dog from "../../assets/dog.jpg";
 import FinalizeQuizModules from "./FinalizeQuizModules";
 import "./FinalizeQuiz.css";
+import { decryptInformationAfterRouting } from '../../services/classroomServices'
+import { getGeneratedQuiz } from '../../services/quizServices'
 
 class FinalizeQuiz extends Component {
   state = {
-    quiz: [
-      {
-        questionId: "1",
-        image: Dog,
-        question: "What is the animal in the image?",
-        answer: "dog",
-        otherOptions: ["cat", "lion", "elephant"],
-      },
-      {
-        questionId: "1",
-        image: Dog,
-        question: "What is the animal in the image?",
-        answer: "dog",
-        otherOptions: ["cat", "lion", "elephant"],
-      },
-      {
-        questionId: "1",
-        image: Dog,
-        question: "What is the animal in the image?",
-        answer: "dog",
-        otherOptions: ["cat", "lion", "elephant"],
-      },
-      {
-        questionId: "1",
-        image: Dog,
-        question: "What is the animal in the image?",
-        answer: "dog",
-        otherOptions: ["cat", "lion", "elephant"],
-      },
-      {
-        questionId: "1",
-        image: Dog,
-        question: "What is the animal in the image?",
-        answer: "dog",
-        otherOptions: ["cat", "lion", "elephant"],
-      },
-      {
-        questionId: "1",
-        image: Dog,
-        question: "What is the animal in the image?",
-        answer: "dog",
-        otherOptions: ["cat", "lion", "elephant"],
-      },
-      {
-        questionId: "1",
-        image: Dog,
-        question: "What is the animal in the image?",
-        answer: "dog",
-        otherOptions: ["cat", "lion", "elephant"],
-      },
-    ],
+    dateTimeOfCreation:'',
+    quizData: [],
   };
+
+  componentDidMount(){
+    const [ classroomDocId, quizDocId ] = decryptInformationAfterRouting(this.props.match.params.compoundedInfo)
+    console.log(classroomDocId, quizDocId)
+    getGeneratedQuiz(classroomDocId, quizDocId)
+    .then(quizDataResp => {
+      const { quizData, dateTimeOfCreation } = quizDataResp
+      this.setState({...this.state, quizData, dateTimeOfCreation})
+    })
+    .catch(err => {
+      console.error(err)
+    })
+  }
+
   render() {
     return (
       <div className="container">
-        <h4>This is finalize quiz!</h4>
+        <h4>This the Quiz generated</h4>
+        <p style={{color:'lightgrey'}}>{this.state.dateTimeOfCreation}</p>
         <div className="finalizeQuiz">
-          {this.state.quiz.map((quiz) => {
+          {this.state.quizData.map((quiz, index) => {
             return (
               <FinalizeQuizModules
-                key={quiz.questionId}
-                image={quiz.image}
+                key={index}
+                image={quiz.image_path}
                 question={quiz.question}
-                answer={quiz.answer}
-                otherOptions={quiz.otherOptions}
+                answer={quiz.answer.correct_answer}
+                otherOptions={quiz.answer.options}
               />
             );
           })}

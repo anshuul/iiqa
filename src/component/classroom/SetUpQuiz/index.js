@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./index.css";
 import {
+  encryptInformationForRouting,
   decryptInformationAfterRouting,
   getClassroomData,
 } from "../../../services/classroomServices";
@@ -74,7 +75,7 @@ export default class index extends Component {
         loading: true,
         loadingMessage: "Creating your Quiz.",
       });
-    getQuizData(this.state.imageSetImages)
+    dummy(this.state.imageSetImages)
       .then((data) => {
         console.log(data.result);
         return createNewQuiz(data.result, this.state.currentClassroomDocId);
@@ -82,6 +83,7 @@ export default class index extends Component {
       .then((quizDocId) => {
         console.log("quiz created on ", quizDocId);
         alert("Quiz created");
+        this.props.history.push(`/finalizequiz/${encryptInformationForRouting(this.state.currentClassroomDocId, quizDocId)}`)
       })
       .catch((err) => {
         alert(err.message);

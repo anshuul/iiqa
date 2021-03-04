@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./finalScore.css";
+import "./FinalScore.css";
 import { saveQuizScore } from "../../services/quizServices";
 
 const FinalScore = (props) => {

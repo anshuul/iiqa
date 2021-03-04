@@ -172,6 +172,7 @@ class Dashboard extends Component {
           <Score
             classroomDocId={this.state.classroomData.code}
             selectedActivityDocId={this.state.selectedQuizActivityDocId}
+            history={this.props.history}
             cancelHandler={() =>
               this.setState({ ...this.state, isScoreDisplayed: false })
             }
