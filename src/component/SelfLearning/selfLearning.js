@@ -21,6 +21,7 @@ class SelfLearning extends Component {
   }
 
   componentDidMount() {
+    localStorage.removeItem("quizToken");
     window.speechSynthesis.cancel();
     this.setState({
       ...this.state,
@@ -29,7 +30,7 @@ class SelfLearning extends Component {
     });
     getPredefinedImageSets()
       .then((predefinedImageSets) => {
-        predefinedImageSets.sort((a, b) => a.name.localeCompare(b.name))
+        predefinedImageSets.sort((a, b) => a.name.localeCompare(b.name));
         this.setState({ ...this.state, predefinedImageSets });
       })
       .catch((err) => {
@@ -46,7 +47,7 @@ class SelfLearning extends Component {
       loading: true,
       loadingMessage: "Getting your Quiz Ready. Please wait.",
     });
-    dummy(imageSet.imageLinks)
+    getQuizData(imageSet.imageLinks)
       .then((data) => {
         console.log(data);
         this.props.history.push({

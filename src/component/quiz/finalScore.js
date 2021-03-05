@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./FinalScore.css";
+import "./finalScore.css";
 import { saveQuizScore } from "../../services/quizServices";
 
 const FinalScore = (props) => {
   const [bgImage, setBgImage] = useState();
+  const [isScoreSaved, setIsScoreSaved] = useState(false);
 
   const loadAsyncBGImage = () => {
     return new Promise((resolve, reject) => {
@@ -18,7 +19,8 @@ const FinalScore = (props) => {
   }, []);
 
   console.log(props);
-  const buttonHandler = () => {
+
+  useEffect(() => {
     const { classroomDocId, studentDocId, quizDocId } = props.location.state;
     console.log(props.location.state);
     if (classroomDocId && studentDocId && quizDocId) {
@@ -31,13 +33,18 @@ const FinalScore = (props) => {
       )
         .then((message) => {
           alert(message);
-          localStorage.removeItem("quizToken");
-          props.history.goBack();
+          setIsScoreSaved(true);
         })
         .catch((err) => {
           alert(err.message);
         });
     } else {
+      setIsScoreSaved(true);
+    }
+  }, []);
+
+  const buttonHandler = () => {
+    if (isScoreSaved) {
       localStorage.removeItem("quizToken");
       props.history.goBack();
     }
