@@ -29,6 +29,7 @@ class SelfLearning extends Component {
     });
     getPredefinedImageSets()
       .then((predefinedImageSets) => {
+        predefinedImageSets.sort((a, b) => a.name.localeCompare(b.name))
         this.setState({ ...this.state, predefinedImageSets });
       })
       .catch((err) => {
