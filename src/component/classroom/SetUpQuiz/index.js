@@ -75,7 +75,7 @@ export default class index extends Component {
         loading: true,
         loadingMessage: "Creating your Quiz.",
       });
-    dummy(this.state.imageSetImages)
+    getQuizData(this.state.imageSetImages)
       .then((data) => {
         console.log(data.result);
         return createNewQuiz(data.result, this.state.currentClassroomDocId);
@@ -83,7 +83,12 @@ export default class index extends Component {
       .then((quizDocId) => {
         console.log("quiz created on ", quizDocId);
         alert("Quiz created");
-        this.props.history.push(`/finalizequiz/${encryptInformationForRouting(this.state.currentClassroomDocId, quizDocId)}`)
+        this.props.history.push(
+          `/finalizequiz/${encryptInformationForRouting(
+            this.state.currentClassroomDocId,
+            quizDocId
+          )}`
+        );
       })
       .catch((err) => {
         alert(err.message);
@@ -157,6 +162,8 @@ export default class index extends Component {
       .then(([predefinedImageSets, classroomImageSets]) => {
         console.log(predefinedImageSets);
         console.log(classroomImageSets);
+        predefinedImageSets.sort((a, b) => a.name.localeCompare(b.name));
+        classroomImageSets.sort((a, b) => b.name.localeCompare(a.name));
         predefinedImageSetsState = predefinedImageSets;
         classroomImageSetsState = classroomImageSets;
       })

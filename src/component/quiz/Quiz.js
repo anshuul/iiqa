@@ -24,6 +24,7 @@ function Quiz(props) {
     } else {
       if (props.location.state.quizData) {
         localStorage.setItem("quizToken", "started");
+        console.log(localStorage.getItem("quizToken"));
         setQuizData(props.location.state.quizData);
       } else {
         // get quiz data from quiz id in url
