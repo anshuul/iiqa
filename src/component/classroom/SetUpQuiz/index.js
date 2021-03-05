@@ -26,6 +26,10 @@ export default class index extends Component {
       loadingMessage: "",
       isCollectionToBeSaved: false,
       currentClassroomDocId: "",
+      uploadedImages: {
+        file:[],
+        imagePreviewUrl:'',
+      },
     };
     this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(
       this
@@ -36,6 +40,8 @@ export default class index extends Component {
     this.onCrosshandler = this.onCrosshandler.bind(this);
     this.setUpQuizHandler = this.setUpQuizHandler.bind(this);
     this.checkBoxChangeHandler = this.checkBoxChangeHandler.bind(this);
+    this.chooseFileChangeHandler = this.chooseFileChangeHandler.bind(this)
+    this.onCrosshandlerForUploadedImages = this.onCrosshandlerForUploadedImages.bind(this)
   }
 
   fillImagesToBeDisplayed(selectedImageSet) {
@@ -139,6 +145,36 @@ export default class index extends Component {
       ...this.state,
       isCollectionToBeSaved: event.target.checked,
     });
+  }
+
+  chooseFileChangeHandler(event) {
+    let reader = new FileReader();
+    let file = event.target.files[0];
+
+    reader.onloadend = () => {
+      this.setState({
+        ...this.state,
+        uploadedImages: {
+          file: [...this.state.uploadedImages.file, file],
+          imagePreviewUrl: [...this.state.uploadedImages.imagePreviewUrl, reader.result] 
+        }
+      });
+    }
+
+    reader.readAsDataURL(file)
+  }
+
+  onCrosshandlerForUploadedImages(index){
+    let files = this.state.uploadedImages.file
+    let imageURLs = this.state.uploadedImages.imagePreviewUrl
+
+    this.setState({
+      ...this.state,
+      uploadedImages:{
+        file: files.filter((file, fileIndex) => fileIndex !== index),
+        imagePreviewUrl: imageURLs.filter((url, urlIndex) => urlIndex !== index)
+      }
+    })
   }
 
   componentDidMount() {
@@ -246,6 +282,26 @@ export default class index extends Component {
                   ></div>
                 </div>
               ))}
+              {[...this.state.uploadedImages.imagePreviewUrl].map((imageURL, index) => (
+                <div className="customImageBlockContainer" key={index}>
+                  <div
+                    className="cancelIcon"
+                    onClick={() => this.onCrosshandlerForUploadedImages(index)}
+                  >
+                    X
+                  </div>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundImage: `url(${imageURL})`,
+                      backgroundSize: "200px",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  ></div>
+                </div>
+              ))}
             </div>
             {/* buton container */}
             <div className="customButtonContainer">
@@ -265,6 +321,12 @@ export default class index extends Component {
               >
                 Set Up Quiz
               </div>
+              <input
+                ref='file'
+                type='file'
+                className='customQuizButton'
+                onChange={this.chooseFileChangeHandler}
+              />
             </div>
           </div>
         </div>
