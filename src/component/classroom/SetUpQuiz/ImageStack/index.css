@@ -1,6 +1,6 @@
 .imageStackContainer {
     width:90px;
-    height:130px;
+    height:110px;
     display:flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -11,7 +11,7 @@
 
 .imageStackDisplayPicture {
     width:100%;
-    height:100%;
+    height:85%;
     box-shadow: 2px 2px 7px #d3d3d3;
     /* border: 1px solid blue; */
 }
