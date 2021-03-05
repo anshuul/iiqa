@@ -11,6 +11,7 @@ import {
   getPromiseForFetchingImageSet,
   createImageSetForClassroom,
   getQuizData,
+  uploadImagesToFirebaseStorage,
 } from "../../../services/quizServices";
 import ImageStack from "./ImageStack";
 import Loading from "../../layout/Loading";
@@ -42,6 +43,7 @@ export default class index extends Component {
     this.checkBoxChangeHandler = this.checkBoxChangeHandler.bind(this);
     this.chooseFileChangeHandler = this.chooseFileChangeHandler.bind(this)
     this.onCrosshandlerForUploadedImages = this.onCrosshandlerForUploadedImages.bind(this)
+    this.uploadImages = this.uploadImages.bind(this)
   }
 
   fillImagesToBeDisplayed(selectedImageSet) {
@@ -74,14 +76,15 @@ export default class index extends Component {
     this.setState({ ...this.state, imageSetImages: filteredImages });
   }
 
-  createQuiz() {
-    !this.state.loading &&
+  createQuiz(uploadedFilesURLs) {
+    !this.state.loading ?
       this.setState({
         ...this.state,
         loading: true,
         loadingMessage: "Creating your Quiz.",
-      });
-    getQuizData(this.state.imageSetImages)
+      }) : this.setState({...this.state, loadingMessage: "Creating your Quiz.",})
+      console.log(uploadedFilesURLs)
+      getQuizData([...this.state.imageSetImages, ...uploadedFilesURLs])
       .then((data) => {
         console.log(data.result);
         return createNewQuiz(data.result, this.state.currentClassroomDocId);
@@ -104,38 +107,54 @@ export default class index extends Component {
       });
   }
 
+  uploadImages(){
+    uploadImagesToFirebaseStorage(this.state.uploadedImages.file)
+    .then(fileNamesArr => {
+      console.log(fileNamesArr)
+    })
+    .catch(err => {
+      console.error(err)
+    })
+  }
+
   setUpQuizHandler() {
     // this.setState({ ...this.state, loading: true });
-    if (this.state.imageSetImages.length === 0)
-      alert("Please elect some image first");
+    if (this.state.imageSetImages.length === 0 && this.state.uploadedImages.file.length === 0)
+      alert("Please select some image first");
     else {
-      if (this.state.isCollectionToBeSaved) {
-        !this.state.loading &&
-          this.setState({
-            ...this.state,
-            loading: true,
-            loadingMessage:
-              "Saving your collection first. and then Creating quiz.",
-          });
-        console.log(this.state.currentClassroomDocId);
-        createImageSetForClassroom(
-          this.state.currentClassroomDocId,
-          this.state.imageSetImages
-        )
+      this.setState({...this.state, loading:true, loadingMessage:'Uploading your Chosen Images'})
+      uploadImagesToFirebaseStorage(this.state.uploadedImages.file)
+      .then(uploadedFilesURLs => {
+        console.log(uploadedFilesURLs)
+        if (this.state.isCollectionToBeSaved) {
+          !this.state.loading?
+            this.setState({
+              ...this.state,
+              loading: true,
+              loadingMessage:
+                "Saving your collection first. and then Creating quiz.",
+            }) : this.setState({...this.state, loadingMessage:"Saving your collection first. and then Creating quiz.",})
+          console.log(this.state.currentClassroomDocId);
+          createImageSetForClassroom(
+              this.state.currentClassroomDocId,
+              [...this.state.imageSetImages, ...uploadedFilesURLs]
+            )
           .then((message) => {
             console.log(message);
-            this.createQuiz();
+            this.createQuiz(uploadedFilesURLs);
           })
           .catch((err) => {
             alert(err.message);
+            console.error(err)
             //   this.setState({ ...this.state, loading: false });
           })
           .finally(() => {
             // this.setState({ ...this.state, loading: false });
           });
-      } else {
-        this.createQuiz();
-      }
+        } else {
+          this.createQuiz(uploadedFilesURLs);
+        }
+      })
     }
   }
 
@@ -159,6 +178,7 @@ export default class index extends Component {
           imagePreviewUrl: [...this.state.uploadedImages.imagePreviewUrl, reader.result] 
         }
       });
+      console.log(file)
     }
 
     reader.readAsDataURL(file)
@@ -305,6 +325,13 @@ export default class index extends Component {
             </div>
             {/* buton container */}
             <div className="customButtonContainer">
+              <div className="btn blue darken-3 z-depth-0 customQuizButton">
+                <input
+                  ref='file'
+                  type='file'
+                  onChange={this.chooseFileChangeHandler}
+                />
+              </div>
               <p>
                 <label>
                   <input
@@ -321,12 +348,6 @@ export default class index extends Component {
               >
                 Set Up Quiz
               </div>
-              <input
-                ref='file'
-                type='file'
-                className='customQuizButton'
-                onChange={this.chooseFileChangeHandler}
-              />
             </div>
           </div>
         </div>

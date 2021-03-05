@@ -81,11 +81,12 @@
 }
 
 .customQuizButton {
-    margin-left:20px;
+    margin-left: 20px;
+    margin-right:20px;
     font-size: 18px;
     /* height: 35px; */
     font-size: 80%;
-    margin-bottom:0px
+    margin-bottom:5px
 }
 
 .customImageBlockContainer {
@@ -196,5 +197,10 @@
 
     .customImageBlockContainer {
         width:100%;
+    }
+
+    .customButtonContainer {
+        flex-direction: column;
+        align-items: center;
     }
 }

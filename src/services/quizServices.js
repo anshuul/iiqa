@@ -1,4 +1,4 @@
-import { auth, firestore } from "../shared/firebase";
+import { auth, firestore, storage } from "../shared/firebase";
 import { getClassroomData, Classroom } from "./classroomServices";
 import { getProfileDataFromDocId } from "./userServices";
 
@@ -351,6 +351,48 @@ export async function getGeneratedQuiz(classroomDocId, quizDocId){
     const dateTimeObj = dateTimeOfCreation.toDate()
     dateTimeOfCreation = `${dateTimeObj.toDateString()} ${dateTimeObj.toLocaleTimeString()}`
     return { dateTimeOfCreation, quizData }
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
+function getFirebaseFileUrl(fileName){
+  return `https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/uploadedImages%2F${fileName}?alt=media`
+}
+
+export async function uploadImagesToFirebaseStorage(imageFiles){
+  /**
+   * @param imageFiles
+   * 
+   * @return array of urls
+   */
+
+  try {
+
+    if(imageFiles.length === 0){
+      return []
+    }
+
+    const filesNamesArr = imageFiles.map(file => {
+      const ogFileName = file.name
+      const nameOfFile = ogFileName.slice(0,ogFileName.lastIndexOf('.'))
+      const ext = ogFileName.slice(ogFileName.lastIndexOf('.'))
+      const modifiedfileName = `${nameOfFile}${Date.now()}${ext}`
+      return modifiedfileName
+    })
+
+    const uploadTasks = imageFiles.map((file, index) => {
+      console.log(filesNamesArr[index])
+      return storage.ref(`/uploadedImages/${filesNamesArr[index]}`).put(file)
+    })    
+
+    const snapshotArr = await Promise.all(uploadTasks)
+    if(snapshotArr.length === uploadTasks.length){
+      return filesNamesArr.map(fileName => getFirebaseFileUrl(fileName))
+    } else {
+      throw new Error('Could not upload all the files')
+    }
+
   } catch (err) {
     throw new Error(err)
   }
