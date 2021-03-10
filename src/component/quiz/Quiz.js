@@ -120,7 +120,7 @@ function Quiz(props) {
               src={quizData[currentQuestionIndex].image_path}
               alt="quizimage"
               height="100%"
-              // width="250"
+              width="100%"
               style={{ margin: "auto" }}
             />
           </div>
