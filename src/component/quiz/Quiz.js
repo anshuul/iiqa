@@ -115,20 +115,14 @@ function Quiz(props) {
         >
           <div
             className="imageClass"
-            style={{
-              backgroundImage: `url(${quizData[currentQuestionIndex].image_path})`,
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-            }}
           >
-            {/* <img
-              src={currentQuestionSet.image_path}
-              alt="image"
-              height="230"
-              width="250"
+            <img
+              src={quizData[currentQuestionIndex].image_path}
+              alt="quizimage"
+              height="100%"
+              // width="250"
               style={{ margin: "auto" }}
-            /> */}
+            />
           </div>
 
           <div className="questionClass">

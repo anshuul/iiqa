@@ -1,10 +1,11 @@
 .imageClass {
   border: 4px solid black;
-  width: 20rem;
+  width: auto;
   height: 18rem;
   margin-top: 5rem;
   display: flex;
   justify-content: center;
+  background-color: white;
 }
 
 .questionClass {
