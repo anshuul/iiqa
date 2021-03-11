@@ -14,6 +14,7 @@ function Quiz(props) {
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
   const [isOptionSelected, setIsOptionSelected] = useState(false)
+  const [isImgLoaded, setIsImgLoaded] = useState(true)
 
   useEffect(() => {
     console.log(props);
@@ -59,12 +60,14 @@ function Quiz(props) {
       currentQuestionIndex >= 0 &&
       currentQuestionIndex < quizData.length
     )
-    {  textToSpeech(
+    {  
+      isImgLoaded && textToSpeech(
         `For the above Image, Question is, ${processQuestion(
           quizData[currentQuestionIndex].question
         )}`
       );
       setIsOptionSelected(false)
+      setIsImgLoaded(false)
     }
   }, [currentQuestionIndex, quizData]);
 
@@ -129,16 +132,17 @@ function Quiz(props) {
               height="100%"
               width="100%"
               style={{ margin: "auto" }}
+              onLoad={()=>setIsImgLoaded(true)}
             />
           </div>
 
           <div className="questionClass">
-            <p
+            {isImgLoaded && <p
               className="question"
               style={{ fontSize: "30px", textAlign: "center" }}
             >
               {processQuestion(quizData[currentQuestionIndex].question)}
-            </p>
+            </p>}
           </div>
 
           {quizData[currentQuestionIndex].answer && (
@@ -153,7 +157,7 @@ function Quiz(props) {
                 height: "100%",
               }}
             >
-              {quizData[currentQuestionIndex].answer.options.map(
+              {isImgLoaded && quizData[currentQuestionIndex].answer.options.map(
                 (optionTitle, index) => (
                   <div className="optionsContainer" key={index}>
                     <div
