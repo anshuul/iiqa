@@ -59,11 +59,13 @@ function Quiz(props) {
       currentQuestionIndex >= 0 &&
       currentQuestionIndex < quizData.length
     )
-      textToSpeech(
+    {  textToSpeech(
         `For the above Image, Question is, ${processQuestion(
           quizData[currentQuestionIndex].question
         )}`
       );
+      setIsOptionSelected(false)
+    }
   }, [currentQuestionIndex, quizData]);
 
   const onOptionPressHandler = (event, optionTitle) => {
