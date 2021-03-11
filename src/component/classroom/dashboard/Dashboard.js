@@ -110,6 +110,8 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
+    localStorage.removeItem("quizToken");
+    window.speechSynthesis.cancel()
     this.loadUserData();
     const { compoundedInfo } = this.props.match.params;
     const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(

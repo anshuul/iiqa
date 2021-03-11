@@ -14,10 +14,11 @@ function Quiz(props) {
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
   const [isOptionSelected, setIsOptionSelected] = useState(false)
-  const [isImgLoaded, setIsImgLoaded] = useState(true)
+  const [isImgLoaded, setIsImgLoaded] = useState(false)
 
   useEffect(() => {
     console.log(props);
+    // setIsImgLoaded(false)
     // logic to prevent refreshing of quiz
     if (localStorage.getItem("quizToken")) {
       // incase of quiz from dashboard, quizId can be retrieved. So On refresh object for that quizId will be retried and score will be updated and saved/
@@ -39,6 +40,10 @@ function Quiz(props) {
       console.log("rendered");
       // setCurrentQuestionSet(quizData[currentQuestionIndex]);
     }
+
+    const reset = () => setIsImgLoaded(false)
+
+    return () => reset()
   }, []);
 
   useEffect(() => {
@@ -54,6 +59,16 @@ function Quiz(props) {
   //   }
   // }, [currentQuestionIndex]);
 
+  const onImageLoadHandler = () => {
+    !isImgLoaded && setIsImgLoaded(true)
+    textToSpeech(
+      `For the above Image, Question is, ${processQuestion(
+        quizData[currentQuestionIndex].question
+      )}`
+    );
+    console.log(isImgLoaded)
+  }
+
   useEffect(() => {
     if (
       quizData &&
@@ -61,13 +76,13 @@ function Quiz(props) {
       currentQuestionIndex < quizData.length
     )
     {  
-      isImgLoaded && textToSpeech(
-        `For the above Image, Question is, ${processQuestion(
-          quizData[currentQuestionIndex].question
-        )}`
-      );
+      // isImgLoaded && textToSpeech(
+      //   `For the above Image, Question is, ${processQuestion(
+      //     quizData[currentQuestionIndex].question
+      //   )}`
+      // );
       setIsOptionSelected(false)
-      setIsImgLoaded(false)
+      isImgLoaded && setIsImgLoaded(false)
     }
   }, [currentQuestionIndex, quizData]);
 
@@ -132,7 +147,7 @@ function Quiz(props) {
               height="100%"
               width="100%"
               style={{ margin: "auto" }}
-              onLoad={()=>setIsImgLoaded(true)}
+              onLoad={onImageLoadHandler}
             />
           </div>
 
