@@ -13,6 +13,7 @@ function Quiz(props) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
+  const [isOptionSelected, setIsOptionSelected] = useState(false)
 
   useEffect(() => {
     console.log(props);
@@ -66,7 +67,11 @@ function Quiz(props) {
   }, [currentQuestionIndex, quizData]);
 
   const onOptionPressHandler = (event, optionTitle) => {
-    event.target.disabled = true;
+    if(isOptionSelected){
+      return
+    } else {
+      setIsOptionSelected(true)
+    }
     if (optionTitle === quizData[currentQuestionIndex].answer.correct_answer) {
       textToSpeech(`Your are right. Correct answer is ${optionTitle}`);
       setScore((score) => score + 1);
