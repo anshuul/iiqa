@@ -4,6 +4,7 @@ import { encryptInformationForRouting } from '../../services/classroomServices'
 import { getAttendeesAndScores } from '../../services/quizServices'
 import { getProfileDataFromDocId } from '../../services/userServices'
 import Loading from '../layout/Loading'
+import ModalWrapper from "../layout/ModalWrapper";
 
 class Scores extends Component {
   state = {
@@ -46,7 +47,7 @@ class Scores extends Component {
 
   render() {
     return (
-      <div className="scoresContainer">
+      <ModalWrapper>
         {this.state.loading && <Loading message='Getting scores' />}
         <div className="scoresContent">
           <div style={{display:'flex', justifyContent:'space-between', width:'100%'}} >
@@ -90,7 +91,7 @@ class Scores extends Component {
             );
           }): <div>No Scores Available</div>}
         </div>
-      </div>
+      </ModalWrapper>
     );
   }
 }

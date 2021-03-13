@@ -1,7 +1,7 @@
-.boxContainer {
+/* .boxContainer {
     height: 100vh;
     width: 100vw;
-    position: absolute;
+    position: fixed;
     display:flex;
     flex:1;
     justify-content: center;
@@ -10,7 +10,7 @@
     z-index: 3;
     left:0;
     top:0;
-}
+} */
 
 .createBoxContent {
     display: flex;

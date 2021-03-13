@@ -6,6 +6,7 @@ import { getAvatarImageLinks, createNewClassroom } from '../../../services/class
 import Avatar from '../../layout/Avatar'
 import Loading from '../../layout/Loading'
 import { AuthContext } from '../../../context/authContext'
+import ModalWrapper from '../../layout/ModalWrapper'
 
 class CreateBox extends Component {
 
@@ -66,7 +67,7 @@ class CreateBox extends Component {
 
     render() {
         return (
-            <div className='boxContainer'>
+            <ModalWrapper>
                 {this.state.loading && <Loading message='Creating your Classroom. Please wait.' />}
                 <div className='createBoxContent' >
                     <div className='previewContainer'>
@@ -129,7 +130,7 @@ class CreateBox extends Component {
                         </form>
                     </div>
                 </div>
-            </div>
+            </ModalWrapper>
         )
     }
 }

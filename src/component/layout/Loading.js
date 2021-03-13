@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import './Loading.css'
+import ModalWrapper from '../layout/ModalWrapper'
 
 export default class Loading extends Component {
     render() {
         return (
-            <div className='loaderContainer' >
+            <ModalWrapper>
                 <div className='loaderContent' >
                     <div className="preloader-wrapper small active">
                         <div className="spinner-layer spinner-blue-only">
@@ -19,7 +20,7 @@ export default class Loading extends Component {
                     </div>
                     <p style={{marginTop:'10px'}}>{this.props.message}</p>
                 </div>
-            </div>
+            </ModalWrapper>
         )
     }
 }

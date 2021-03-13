@@ -1,0 +1,13 @@
+.boxContainer {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    display:flex;
+    flex:1;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 3;
+    left:0;
+    top:0;
+}
