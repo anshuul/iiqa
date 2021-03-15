@@ -331,12 +331,12 @@ export default class index extends Component {
                     X
                   </div>
                   <div className='customGeneratedQuizBlock' >
-                    <p className="textClass center">{question}</p>
+                    <p className="customTextClass center">{question}</p>
 
-                    <p className="textClass center">
+                    <p className="customTextClass center">
                       <strong>Correct Answer: </strong> {answer.correct_answer}
                     </p>
-                    <p className="textClass center">
+                    <p className="customTextClass center">
                       <strong>Options: </strong>
                       {answer.options.map(option => (`${option}, `))}
                     </p>
