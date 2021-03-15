@@ -50,6 +50,7 @@
     padding: 25px;
     background-color: #F5F5F5;
     border-radius: 20px;
+    max-height: 600px;
     /* box-shadow: 5px 0px 8px #d3d3d3; */
 }
 
@@ -113,6 +114,10 @@
     /* box-shadow: 5px 0px 8px #d3d3d3; */
 }
 
+.textClass {
+    font-size:14px;
+}
+
 .cancelIcon{
     /* border:1px solid black; */
     /* position: absolute; */
@@ -120,7 +125,6 @@
     /* margin-top: 0.5%;
     margin-left:15.7%; */
     margin: 5px;
-    z-index: 300;
     width:20px;
     text-align: center;
     background-color: #d3d3d3;

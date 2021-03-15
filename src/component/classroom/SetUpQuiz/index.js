@@ -337,7 +337,7 @@ export default class index extends Component {
                       <strong>Correct Answer: </strong> {answer.correct_answer}
                     </p>
                     <p className="textClass center">
-                      <strong>Other Options: </strong>
+                      <strong>Options: </strong>
                       {answer.options.map(option => (`${option}, `))}
                     </p>
                   </div>

@@ -359,7 +359,8 @@ export async function uploadImagesToFirebaseStorage(imageFiles){
       const ogFileName = file.name
       const nameOfFile = ogFileName.slice(0,ogFileName.lastIndexOf('.'))
       const ext = ogFileName.slice(ogFileName.lastIndexOf('.'))
-      const modifiedfileName = `${nameOfFile}${Date.now()}${ext}`
+      const uniquePart = new Date().toDateString().split(' ').join('')
+      const modifiedfileName = `${nameOfFile}${uniquePart}${ext}`
       return modifiedfileName
     })
 
