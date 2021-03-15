@@ -74,7 +74,7 @@
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: flex-end;
-    padding:0px 10px;
+    padding:10px 10px 10px 0px;
     align-content: space-evenly;
     /* border:1px solid brown; */
     /* height:10%; */
@@ -86,7 +86,7 @@
     font-size: 18px;
     /* height: 35px; */
     font-size: 80%;
-    margin-bottom:5px
+    margin-bottom:10px
 }
 
 .customImageBlockContainer {
@@ -96,12 +96,27 @@
     min-width:200px;
     height:200px;
     margin-bottom:15px;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.customGeneratedQuizBlock{
+    background-color: white;
+    width:100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    /* box-shadow: 5px 0px 8px #d3d3d3; */
 }
 
 .cancelIcon{
     /* border:1px solid black; */
     /* position: absolute; */
-    float: right;
+    /* float: right; */
     /* margin-top: 0.5%;
     margin-left:15.7%; */
     margin: 5px;

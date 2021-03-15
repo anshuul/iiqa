@@ -31,6 +31,7 @@ export default class index extends Component {
         file:[],
         imagePreviewUrl:'',
       },
+      generatedQuiz: [],
     };
     this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(
       this
@@ -43,13 +44,17 @@ export default class index extends Component {
     this.checkBoxChangeHandler = this.checkBoxChangeHandler.bind(this);
     this.chooseFileChangeHandler = this.chooseFileChangeHandler.bind(this)
     this.onCrosshandlerForUploadedImages = this.onCrosshandlerForUploadedImages.bind(this)
+    this.onCrosshandlerForGeneratedQuizImages = this.onCrosshandlerForGeneratedQuizImages.bind(this)
     this.uploadImages = this.uploadImages.bind(this)
+    this.uploadQuiz = this.uploadQuiz.bind(this)
   }
 
   fillImagesToBeDisplayed(selectedImageSet) {
-    const { imageSetImages } = this.state;
+    const { imageSetImages, generatedQuiz } = this.state;
+    console.log('generatedQuiz from fill method',generatedQuiz)
     selectedImageSet.imageLinks.forEach((imageLink) => {
-      !imageSetImages.includes(imageLink) && imageSetImages.unshift(imageLink);
+      if(!imageSetImages.includes(imageLink) && !generatedQuiz.find(quizObj => quizObj.image_path === imageLink))
+        imageSetImages.unshift(imageLink);
     });
     this.setState({ ...this.state, imageSetImages });
   }
@@ -68,27 +73,18 @@ export default class index extends Component {
     this.fillImagesToBeDisplayed(selectedImageSet);
   }
 
-  onCrosshandler(link) {
+  onCrosshandler(indexParam) {
     const { imageSetImages } = this.state;
     const filteredImages = imageSetImages.filter(
-      (imageLink) => imageLink !== link
+      (_, index) => index !== indexParam
     );
     this.setState({ ...this.state, imageSetImages: filteredImages });
   }
 
-  createQuiz(uploadedFilesURLs) {
-    !this.state.loading ?
-      this.setState({
-        ...this.state,
-        loading: true,
-        loadingMessage: "Creating your Quiz.",
-      }) : this.setState({...this.state, loadingMessage: "Creating your Quiz.",})
-      console.log(uploadedFilesURLs)
-      getQuizData([...this.state.imageSetImages, ...uploadedFilesURLs])
-      .then((data) => {
-        console.log(data.result);
-        return createNewQuiz(data.result, this.state.currentClassroomDocId);
-      })
+  uploadQuiz(){
+    if(this.state.generatedQuiz.length > 0){
+      this.setState({...this.state, loading:true, loadingMessage:'Uploading your Quiz'})
+      createNewQuiz(this.state.generatedQuiz, this.state.currentClassroomDocId)
       .then((quizDocId) => {
         console.log("quiz created on ", quizDocId);
         alert("Quiz created");
@@ -104,6 +100,39 @@ export default class index extends Component {
       })
       .finally(() => {
         this.setState({ ...this.state, loading: false });
+      });
+    } else {
+      alert('Please generate a quiz first.')
+    }
+  }
+
+  createQuiz(uploadedFilesURLs) {
+    !this.state.loading ?
+      this.setState({
+        ...this.state,
+        loading: true,
+        loadingMessage: "Creating your Quiz.",
+      }) : this.setState({...this.state, loadingMessage: "Creating your Quiz.",})
+      console.log(uploadedFilesURLs)
+      getQuizData([...this.state.imageSetImages, ...uploadedFilesURLs])
+      .then(({result}) => {
+        console.log(result);
+        this.setState({
+                        ...this.state,
+                        generatedQuiz: [...this.state.generatedQuiz, ...result],
+                        imageSetImages:[],
+                        uploadedImages: {
+                          file:[],
+                          imagePreviewUrl:'',
+                        },
+                      })
+      })
+      .catch((err) => {
+        alert(err.message);
+      })
+      .finally(() => {
+        this.setState({ ...this.state, loading: false });
+        console.log('generatedQuiz',this.state.generatedQuiz)
       });
   }
 
@@ -135,6 +164,7 @@ export default class index extends Component {
                 "Saving your collection first. and then Creating quiz.",
             }) : this.setState({...this.state, loadingMessage:"Saving your collection first. and then Creating quiz.",})
           console.log(this.state.currentClassroomDocId);
+          // TODO: make promise.all for this
           createImageSetForClassroom(
               this.state.currentClassroomDocId,
               [...this.state.imageSetImages, ...uploadedFilesURLs]
@@ -195,6 +225,12 @@ export default class index extends Component {
         imagePreviewUrl: imageURLs.filter((url, urlIndex) => urlIndex !== index)
       }
     })
+  }
+
+  onCrosshandlerForGeneratedQuizImages(indexParam){
+    let { generatedQuiz } = this.state
+    generatedQuiz = generatedQuiz.filter((_, index) => index !== indexParam)
+    this.setState({...this.state, generatedQuiz})
   }
 
   componentDidMount() {
@@ -282,44 +318,58 @@ export default class index extends Component {
           <div className="customImageViewContainer">
             {/* display container */}
             <div className="customDisplayContainer">
-              {this.state.imageSetImages.map((imageLink, index) => (
-                <div className="customImageBlockContainer" key={index}>
+              {this.state.generatedQuiz && this.state.generatedQuiz.map(({image_path, question, answer}, index) => (
+                <div className="customImageBlockContainer" key={index}
+                  style={{
+                    backgroundImage: `url(${image_path})`,
+                  }}
+                >
                   <div
                     className="cancelIcon"
-                    onClick={() => this.onCrosshandler(imageLink)}
+                    onClick={() => this.onCrosshandlerForGeneratedQuizImages(index)}
                   >
                     X
                   </div>
+                  <div className='customGeneratedQuizBlock' >
+                    <p className="textClass center">{question}</p>
+
+                    <p className="textClass center">
+                      <strong>Correct Answer: </strong> {answer.correct_answer}
+                    </p>
+                    <p className="textClass center">
+                      <strong>Other Options: </strong>
+                      {answer.options.map(option => (`${option}, `))}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {this.state.imageSetImages.map((imageLink, index) => (
+                <div className="customImageBlockContainer" key={index}
+                  style={{
+                    backgroundImage: `url(${imageLink})`,
+                  }}
+                >
                   <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      backgroundImage: `url(${imageLink})`,
-                      backgroundSize: "200px",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  ></div>
+                    className="cancelIcon"
+                    onClick={() => this.onCrosshandler(index)}
+                  >
+                    X
+                  </div>
+                  
                 </div>
               ))}
               {[...this.state.uploadedImages.imagePreviewUrl].map((imageURL, index) => (
-                <div className="customImageBlockContainer" key={index}>
+                <div className="customImageBlockContainer" key={index}
+                  style={{
+                    backgroundImage: `url(${imageURL})`,
+                  }}
+                >
                   <div
                     className="cancelIcon"
                     onClick={() => this.onCrosshandlerForUploadedImages(index)}
                   >
                     X
                   </div>
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      backgroundImage: `url(${imageURL})`,
-                      backgroundSize: "200px",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  ></div>
                 </div>
               ))}
             </div>
@@ -332,7 +382,7 @@ export default class index extends Component {
                   onChange={this.chooseFileChangeHandler}
                 />
               </div>
-              <p>
+              <p className='customQuizButton'>
                 <label>
                   <input
                     type="checkbox"
@@ -346,7 +396,13 @@ export default class index extends Component {
                 className="btn blue darken-3 z-depth-0 customQuizButton"
                 onClick={this.setUpQuizHandler}
               >
-                Set Up Quiz
+                Generate Quiz
+              </div>
+              <div
+                className="btn blue darken-3 z-depth-0 customQuizButton"
+                onClick={this.uploadQuiz}
+              >
+                Upload Quiz
               </div>
             </div>
           </div>

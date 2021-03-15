@@ -102,40 +102,22 @@ function processImageSetsLinksForAPI(imageLinks) {
 }
 
 export async function dummy(imageSets) {
+  const respObj = {
+                    answer: {
+                      correct_answer: "yes",
+                      options: ["yes", "no"],
+                    },
+                    image_path:
+                      "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/misc%2Fbaby.jpeg?alt=media",
+                    question: " is the baby happy ?",
+                  }
+  const resp = imageSets.map(_ => respObj)
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
-        result: [
-          {
-            answer: {
-              correct_answer: "yes",
-              options: ["yes", "no"],
-            },
-            image_path:
-              "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
-            question: " is the baby happy ?",
-          },
-          {
-            answer: {
-              correct_answer: "yes",
-              options: ["no", "yes"],
-            },
-            image_path:
-              "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
-            question: " is the baby happy ?",
-          },
-          {
-            answer: {
-              correct_answer: "yes",
-              options: ["yes", "no"],
-            },
-            image_path:
-              "https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/random%2Fbaby.jpeg?alt=media",
-            question: " is the baby happy ?",
-          },
-        ],
+        result: resp
       });
-    }, [5000]);
+    }, [1000]);
   });
 }
 
