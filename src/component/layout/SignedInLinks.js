@@ -13,6 +13,7 @@ const SignedInLinks = () => {
         getOnlyUserProfile(currentUser.uid)
           .then((userData) => {
             const { fname, lname } = userData;
+            console.log(currentUser)
             setInitials(
               `${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`
             );

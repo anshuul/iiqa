@@ -22,7 +22,7 @@ class JoinBox extends Component {
 
     joinHandler(){
         this.setState({...this.state, loading:true})
-        joinClassroom(this.state.classroomCode, this.props.currentUser.uid)
+        joinClassroom(this.state.classroomCode, this.props.currentUser.docId)
         .then((message)=>{
             alert(message)
             this.props.cancelHandler()

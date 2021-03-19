@@ -80,7 +80,7 @@ class Dashboard extends Component {
     isStudentEligibleForQuiz(
       this.state.classroomData.code,
       quizDocId,
-      this.state.userData.docId
+      this.props.currentUser.docId
     ).then((isStudentEligible) => {
       if (isStudentEligible) {
         console.log(isStudentEligible);
@@ -90,7 +90,7 @@ class Dashboard extends Component {
             quizData: decryptedQuizData,
             quizDocId,
             classroomDocId: this.state.classroomData.code,
-            studentDocId: this.state.userData.docId,
+            studentDocId: this.props.currentUser.docId,
           },
         });
       } else {
@@ -112,7 +112,7 @@ class Dashboard extends Component {
   componentDidMount() {
     localStorage.removeItem("quizToken");
     window.speechSynthesis.cancel()
-    this.loadUserData();
+    // this.loadUserData();
     const { compoundedInfo } = this.props.match.params;
     const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(
       compoundedInfo
@@ -121,18 +121,9 @@ class Dashboard extends Component {
     this.setState({ ...this.state, classroomLoading: true });
     getClassroomData(ogDocId)
       .then((data) => {
-        const { name: title, displayPicture, color } = data;
-        this.setState({
-          ...this.state,
-          classroomData: { title, displayPicture, color, code: ogDocId },
-        });
-        console.log(data);
-        return this.loadClassroomDataAsync(data.teacherId, data.studentIds);
-      })
-      .then((dataList) => {
-        console.log(dataList);
-        const [teacherData, studentsDataList] = dataList;
-        const studentsNameList = studentsDataList.map((eachData) => {
+        console.log(data)
+        const { name: title, displayPicture, color, studentDataList, teacherData } = data;
+        const studentsNameList = studentDataList.map((eachData) => {
           return {
             name: `${eachData.fname} ${eachData.lname}`,
             id: eachData.docId,
@@ -140,6 +131,7 @@ class Dashboard extends Component {
         });
         this.setState({
           ...this.state,
+          classroomData: { title, displayPicture, color, code: ogDocId },
           teacherName: `${teacherData.fname} ${teacherData.lname}`,
           studentsNameList,
         });
@@ -154,9 +146,6 @@ class Dashboard extends Component {
     getQuizzesForClassroom(ogDocId)
       .then((quizActivitiesData) => {
         console.log(quizActivitiesData);
-        quizActivitiesData.sort(
-          (a, b) => b.dateTimeOfCreation.seconds - a.dateTimeOfCreation.seconds
-        );
         this.setState({ ...this.state, quizActivities: quizActivitiesData });
       })
       .catch((err) => {
@@ -250,7 +239,7 @@ class Dashboard extends Component {
             </div>
           </div>
         </div>
-        {this.state.userData.isTeacher && (
+        {this.props.currentUser.isTeacher && (
           <div className="row">
             <div
               className="col s12 m12"
@@ -303,7 +292,7 @@ class Dashboard extends Component {
                 activities={this.state.quizActivities}
                 classroomDocId={this.state.classroomData.code}
                 onClickActivityHandler={
-                  this.state.userData.isStudent
+                  this.props.currentUser.isStudent
                     ? this.onSelectActivityByStudentHandler
                     : this.onSelectActivityByTeacherHandler
                 }

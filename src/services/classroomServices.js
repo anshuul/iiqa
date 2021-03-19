@@ -1,8 +1,6 @@
 import { auth, firestore } from '../shared/firebase'
 import { getOnlyUserProfile } from './userServices'
-
-export const Classroom = firestore.collection('classrooms')
-const Avatar = firestore.collection('avatars')
+import { dbAPI } from '../shared/utils'
 
 export async function loadClassroomForStudents(userId){
     /**
@@ -13,20 +11,10 @@ export async function loadClassroomForStudents(userId){
      * from docid get the list of classrom user is part of
      */
     try {
-        console.log(userId)
-        let responseData = []
-        const listOfClassrooms = await Classroom.where('studentIds', 'array-contains', userId).get()
-        if(listOfClassrooms.empty){
-            return []
-        }
-        listOfClassrooms.forEach(classroom => {
-            console.log(classroom.data())
-            responseData = [...responseData, {docId: classroom.id, ...classroom.data()}]
-        })
-        console.log(responseData)
-        return responseData
+        const { data } = await dbAPI.get(`/classrooms/?studentDocId=${userId}`)
+        return data.classroomData
     } catch (err) {
-        throw new Error(err)
+        throw new Error(err.response.data.error)
     }
 }
 
@@ -39,20 +27,10 @@ export async function loadClassroomsForTeacher(userId){
      * from docid get the list of classrom user is part of
      */
     try {
-        console.log(userId)
-        let responseData = []
-        const listOfClassrooms = await Classroom.where('teacherId', '==', userId).get()
-        if(listOfClassrooms.empty){
-            return []
-        }
-        listOfClassrooms.forEach(classroom => {
-            console.log(classroom.data())
-            responseData = [...responseData, {docId: classroom.id, ...classroom.data()}]
-        })
-        console.log(responseData)
-        return responseData 
+        const { data } = await dbAPI.get(`/classrooms/?teacherDocId=${userId}`)
+        return data.classroomData
     } catch (err) {
-        throw new Error(err)
+        throw new Error(err.response.data.error)
     }
 }
 
@@ -60,16 +38,12 @@ export async function getAvatarImageLinks(){
     /**
      * @return list of image links of all stored avatars from db
      */
-    const listOfAvatars = await Avatar.get()
-    if(listOfAvatars.empty){
-        return []
+     try {
+        const {data} = await dbAPI.get(`/avatars`)
+        return data.avatars
+    } catch (err) {
+        throw new Error(err.response.data.error)
     }
-    let responseData = []
-    listOfAvatars.forEach(avatarDoc => {
-        console.log(avatarDoc.data())
-        responseData = [...responseData, avatarDoc.data().imageLink]
-    })
-    return responseData
 }
 
 export async function createNewClassroom(name, color, teacherId, displayPicture){
@@ -86,15 +60,14 @@ export async function createNewClassroom(name, color, teacherId, displayPicture)
      * make a new doc in classroom collection with given data
      */
 
-    try {
-        const { docId } = await getOnlyUserProfile(teacherId)
-        console.log(docId)
-        await Classroom.add({
-            name, color, teacherId: docId, studentIds:[], displayPicture
+     try {
+        const {data} = await dbAPI.post(`/classrooms`, {
+            name, color, displayPicture, teacherDocId:teacherId
         })
-        return 'New Classroom created'
+        return data.message
     } catch (err) {
-        throw new Error(err)
+        console.log(err.response)
+        throw new Error( err.response.data.error)
     }
 }
 
@@ -110,22 +83,14 @@ export async function joinClassroom(code, studentId){
      * add docid in array of studentIds of searched classroom
      */
 
-    try {
-        const classroomRef = Classroom.doc(code)
-        const classroom = await classroomRef.get()
-        if(!classroom.exists){
-            throw new Error('No such Classroom of this code exists.')
-        }
-        const { docId } = await getOnlyUserProfile(studentId)
-        if(classroom.data().studentIds.includes(docId)) {
-            throw new Error('You are already a part of this classroom')
-        }
-        await classroomRef.set({
-            ...classroom.data(), studentIds: [...classroom.data().studentIds, docId]
-        })
-        return 'Joined Classroom Successfully'
+     try {
+    const {data} = await dbAPI.put(`/classrooms`, {
+        classroomDocId:code, studentDocId:studentId
+    })
+    return data.message
     } catch (err) {
-        throw new Error(err)
+        console.log(err.response)
+        throw new Error( err.response.data.error)
     }
 }
 
@@ -137,14 +102,11 @@ export async function getClassroomData(docId){
      */
 
     try {
-        const classroomRef = Classroom.doc(docId)
-        const classroom = await classroomRef.get()
-        if(!classroom.exists){
-            throw new Error('No such Classroom of this code exists.')
-        }
-        return {docId, ...classroom.data()}
+        const {data} = await dbAPI.get(`/classrooms/?classroomDocId=${docId}`)
+        return data.classroomData
     } catch (err) {
-        throw new Error(err)
+        console.log(err.response)
+        throw new Error( err.response.data.error)
     }
 }
 

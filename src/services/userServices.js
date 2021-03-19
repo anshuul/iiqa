@@ -1,11 +1,10 @@
 import { auth, firestore } from '../shared/firebase'
+import { dbAPI } from '../shared/utils'
 
-const User = firestore.collection('users')
-const Student = firestore.collection('students')
-
-export function signIn(emailId, password){
-    return auth.signInWithEmailAndPassword(emailId, password)
-    // const { uid } = auth.currentUser
+export async function signIn(emailId, password){
+    await auth.signInWithEmailAndPassword(emailId, password)
+    const { uid } = auth.currentUser
+    return uid
     // const currentUser = await getUserProfile(uid)
     // return currentUser
 }
@@ -28,15 +27,19 @@ export async function signUpForTeacher(email, password, fname, lname){
      */
 
     try{
-        await auth.createUserWithEmailAndPassword(email, password)
+        const userCreds = await auth.createUserWithEmailAndPassword(email, password)
+        console.log(userCreds)
         const { uid } = auth.currentUser
-        await User.add({
-            fname, lname, uid, isTeacher:true, isStudent:false
-        })
-        return 'New Teacher Account created Succesfully'
-
+        try {
+            await dbAPI.post('/users/', {
+                fname, lname, uid, isTeacher:true
+            })
+            return uid
+        } catch (err) {
+            throw new Error(err.response.data.error)
+        }
     }catch(err){
-        throw new Error(err)
+        throw err
     }
 }
 
@@ -56,64 +59,60 @@ export async function signUpForStudent(email, password, fname, lname){
     try{
         await auth.createUserWithEmailAndPassword(email, password)
         const { uid } = auth.currentUser
-        const { id } = await User.add({
-            fname, lname, uid, isStudent:true, isTeacher:false
-        })
-        await Student.add({
-            userDocId: id,
-        })
-        return 'New Student created succesfully'
-
+        try {
+            await dbAPI.post('/users/', {
+                fname, lname, uid, isStudent:true
+            })
+            return uid
+        } catch (err) {
+            throw new Error(err.response.data.error)
+        }
     }catch(err){
-        throw new Error(err)
+        throw err
     }
 }
 
 export async function getOnlyUserProfile(id){
-    console.log(id)
-    let userData = null
-    const userProfilesList = await User.where('uid','==',id).get()
-    if(userProfilesList.empty){
-        throw new Error('No matching records')
+    try {
+        const {data} = await dbAPI.get(`/users/?userAuthId=${id}`)
+        return data.user
+    } catch (err) {
+        throw new Error(err.response.data.error)
     }
-    userProfilesList.forEach((userProfile) => {
-        userData = {docId: userProfile.id, ...userProfile.data()}
-    })
-    return userData
 }
 
-export async function getUserProfile(id){
-    /**
-     * @param id
-     * 
-     * @return userProfile
-     * 
-     * get the user doc from given id
-     * get the student data if from doc id if user type is student
-     */
-    if(!id){
-        return null
-    }
-    let userData = null
-    let responseData = null
-    userData = await getOnlyUserProfile(id)
-    if (userData.isStudent){
-        let studentData = null
+// export async function getUserProfile(id){
+//     /**
+//      * @param id
+//      * 
+//      * @return userProfile
+//      * 
+//      * get the user doc from given id
+//      * get the student data if from doc id if user type is student
+//      */
+//     if(!id){
+//         return null
+//     }
+//     let userData = null
+//     let responseData = null
+//     userData = await getOnlyUserProfile(id)
+//     if (userData.isStudent){
+//         let studentData = null
         
-        const studentProfilesList = await Student.where('userDocId', '==', userData.docId).get()
-        if(studentProfilesList.empty){
-            throw new Error('No matching student record')
-        }
-        studentProfilesList.forEach(studentProfile => {
-            studentData = studentProfile.data()
-            responseData = {...userData, ...studentData}
-        })
-    } else {
-        responseData = userData
-    }
-    return responseData
+//         const studentProfilesList = await Student.where('userDocId', '==', userData.docId).get()
+//         if(studentProfilesList.empty){
+//             throw new Error('No matching student record')
+//         }
+//         studentProfilesList.forEach(studentProfile => {
+//             studentData = studentProfile.data()
+//             responseData = {...userData, ...studentData}
+//         })
+//     } else {
+//         responseData = userData
+//     }
+//     return responseData
     
-}
+// }
 
 export async function getProfileDataFromDocId(docId){
     /**
@@ -122,13 +121,10 @@ export async function getProfileDataFromDocId(docId){
      * @return user profile details
      */
 
-    try {
-        const profileDetails = await User.doc(docId).get()
-        if(!profileDetails.exists) {
-            throw new Error ('No such records found')
-        }
-        return {docId, ...profileDetails.data()}
+     try {
+        const {data} = await dbAPI.get(`/users/?userDocId=${docId}`)
+        return data.user
     } catch (err) {
-        throw new Error(err)
+        throw new Error(err.response.data.error)
     }
 }

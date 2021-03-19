@@ -47,6 +47,7 @@ export default class index extends Component {
     this.onCrosshandlerForGeneratedQuizImages = this.onCrosshandlerForGeneratedQuizImages.bind(this)
     this.uploadImages = this.uploadImages.bind(this)
     this.uploadQuiz = this.uploadQuiz.bind(this)
+    this.uploadHandler = this.uploadHandler.bind(this)
   }
 
   fillImagesToBeDisplayed(selectedImageSet) {
@@ -81,6 +82,42 @@ export default class index extends Component {
     this.setState({ ...this.state, imageSetImages: filteredImages });
   }
 
+  uploadHandler(){
+    console.log(this.state.isCollectionToBeSaved)
+    if (this.state.isCollectionToBeSaved) {
+      console.log('if block')
+      !this.state.loading?
+        this.setState({
+          ...this.state,
+          loading: true,
+          loadingMessage:
+            "Saving your collection first.",
+        }) : this.setState({...this.state, loadingMessage:"Saving your collection first.",})
+      console.log(this.state.currentClassroomDocId);
+      console.log(this.state.generatedQuiz.map(quizObj => quizObj.image_path))
+      // TODO: make promise.all for this
+      createImageSetForClassroom(
+          this.state.currentClassroomDocId,
+          this.state.generatedQuiz.map(quizObj => quizObj.image_path)
+        )
+      .then((message) => {
+        console.log(message);
+        this.uploadQuiz()
+      })
+      .catch((err) => {
+        alert(err.message);
+        console.error(err)
+        //   this.setState({ ...this.state, loading: false });
+      })
+      .finally(() => {
+        // this.setState({ ...this.state, loading: false });
+      });
+    } else {
+      console.log('if block')
+      this.uploadQuiz()
+    }
+  }
+
   uploadQuiz(){
     if(this.state.generatedQuiz.length > 0){
       this.setState({...this.state, loading:true, loadingMessage:'Uploading your Quiz'})
@@ -106,7 +143,7 @@ export default class index extends Component {
     }
   }
 
-  createQuiz(uploadedFilesURLs) {
+  generateQuiz(uploadedFilesURLs) {
     !this.state.loading ?
       this.setState({
         ...this.state,
@@ -155,35 +192,7 @@ export default class index extends Component {
       uploadImagesToFirebaseStorage(this.state.uploadedImages.file)
       .then(uploadedFilesURLs => {
         console.log(uploadedFilesURLs)
-        if (this.state.isCollectionToBeSaved) {
-          !this.state.loading?
-            this.setState({
-              ...this.state,
-              loading: true,
-              loadingMessage:
-                "Saving your collection first. and then Creating quiz.",
-            }) : this.setState({...this.state, loadingMessage:"Saving your collection first. and then Creating quiz.",})
-          console.log(this.state.currentClassroomDocId);
-          // TODO: make promise.all for this
-          createImageSetForClassroom(
-              this.state.currentClassroomDocId,
-              [...this.state.imageSetImages, ...uploadedFilesURLs]
-            )
-          .then((message) => {
-            console.log(message);
-            this.createQuiz(uploadedFilesURLs);
-          })
-          .catch((err) => {
-            alert(err.message);
-            console.error(err)
-            //   this.setState({ ...this.state, loading: false });
-          })
-          .finally(() => {
-            // this.setState({ ...this.state, loading: false });
-          });
-        } else {
-          this.createQuiz(uploadedFilesURLs);
-        }
+        this.generateQuiz(uploadedFilesURLs);
       })
     }
   }
@@ -400,7 +409,7 @@ export default class index extends Component {
               </div>
               <div
                 className="btn blue darken-3 z-depth-0 customQuizButton"
-                onClick={this.uploadQuiz}
+                onClick={this.uploadHandler}
               >
                 Upload Quiz
               </div>

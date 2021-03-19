@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 // let messageObj = new SpeechSynthesisUtterance()
 var voices = window.speechSynthesis.getVoices();
 export function textToSpeech(message) {
@@ -10,3 +12,8 @@ export function textToSpeech(message) {
   messageObj.text = message;
   return [window.speechSynthesis.speak(messageObj)];
 }
+
+export const dbAPI = axios.create({
+  baseURL: 'http://127.0.0.1:8000/',
+  headers: { 'Content-Type': 'application/json' },
+})

@@ -37,6 +37,11 @@ class SignUp extends Component {
     this.setState({loading:false})
   }
 
+  componentDidMount() {
+    console.log(this.props)
+  }
+  
+
   render() {
     const validationSchema = yup.object({
       fname: yup.string().required('First Name is required'),
@@ -60,12 +65,17 @@ class SignUp extends Component {
                 this.setState({...this.state, isTypeErrorDisplayed:false})
                 this.enableLoading()
                 let message = ''
+                let uid = null
                 if(this.state.type === '1'){ // 1 for teacher temporary TODO: change to select value condition
-                  message = await signUpForTeacher(values.email, values.password, capitalize(values.fname), capitalize(values.lname))
+                  uid = await signUpForTeacher(values.email, values.password, capitalize(values.fname), capitalize(values.lname))
+                  message = 'New Teacher Account created Succesfully'
                 } else {
-                  message = await signUpForStudent(values.email, values.password, values.fname, values.lname)
+                  uid = await signUpForStudent(values.email, values.password, values.fname, values.lname)
+                  message = 'New Student Account created Succesfully'
                 }
                 alert(message)
+                console.log(this.props.currentUser)
+                this.props.setCurrentUser({uid})
                 this.props.history.push('/classroom')
               }
             }catch(err){
@@ -121,13 +131,13 @@ class SignUp extends Component {
             </div>  
             <div style={{marginRight:'10px'}}>
               <label>
-              <input class="with-gap" value={1} name="group1" type="radio" onChange={this.onTypeRadioChange} />
+              <input className="with-gap" value={1} name="group1" type="radio" onChange={this.onTypeRadioChange} />
               <span>Teacher</span>
               </label>
             </div>
             <div style={{marginRight:'10px'}}>
               <label>
-              <input class="with-gap" value={0} name="group1" type="radio" onChange={this.onTypeRadioChange} />
+              <input className="with-gap" value={0} name="group1" type="radio" onChange={this.onTypeRadioChange} />
               <span>Student</span>
               </label>
             </div>
@@ -190,4 +200,10 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+export default function ComponentWithContext(props) {
+  return (
+    <AuthContext.Consumer>
+    {({currentUser, setCurrentUser}) => <SignUp {...props} currentUser = {currentUser} setCurrentUser={setCurrentUser}/>}
+    </AuthContext.Consumer>
+  )
+}

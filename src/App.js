@@ -24,22 +24,22 @@ class App extends React.Component {
     setCurrentUser: this.setCurrentUser.bind(this),
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (this.state.currentUser.uid !== prevState.currentUser.uid) {
       localStorage.setItem("currentUserId", this.state.currentUser.uid);
     }
   }
 
-  componentDidMount() {
-    auth.onAuthStateChanged((user) => {
-      if (user)
-        this.setState({ ...this.state, currentUser: { uid: user.uid } });
-      else this.setState({ ...this.state, currentUser: { uid: "" } });
-    });
-  }
+  // componentDidMount() {
+  //   auth.onAuthStateChanged((user) => {
+  //     if (user)
+  //       this.setState({ ...this.state, currentUser: { uid: user.uid } });
+  //     else this.setState({ ...this.state, currentUser: { uid: "" } });
+  //   });
+  // }
 
   setCurrentUser(currentUser) {
-    this.setState({ currentUser });
+    this.setState({ ...this.state, currentUser });
   }
 
   render() {

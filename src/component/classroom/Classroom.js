@@ -3,7 +3,7 @@ import Classes from "./classes/Classes";
 import './Classroom.css'
 import { AuthContext } from '../../context/authContext'
 import { loadClassroomForStudents, loadClassroomsForTeacher, encryptInformationForRouting } from '../../services/classroomServices'
-import { getUserProfile } from '../../services/userServices'
+import { getUserProfile, getOnlyUserProfile } from '../../services/userServices'
 import Loading from '../layout/Loading'
 import tempImg from '../../assets/dp2.svg' // temp
 import CreateBox from './CreateBox'
@@ -50,16 +50,17 @@ class ClassroomComponent extends Component {
   loadClassrooms(){
     console.log(this.props.currentUser)
     this.setState({...this.state, loading:true})
-    getUserProfile(this.props.currentUser.uid)
+    getOnlyUserProfile(this.props.currentUser.uid)
     .then(userData => {
       console.log(userData)
-      this.setState({...this.state, currentUserData:userData})
+      // this.setState({...this.state, currentUserData:userData})
+      this.props.setCurrentUser(userData)
       if(userData){
         if(userData.isStudent){
           loadClassroomForStudents(userData.docId)
           .then(listOfClassrooms => {
             console.log(listOfClassrooms)
-            this.setState({classrooms: !listOfClassrooms ? [] : listOfClassrooms })
+            this.setState({...this.state, classrooms: listOfClassrooms })
           })
           .catch(err => {
             throw new Error(err)
@@ -67,7 +68,7 @@ class ClassroomComponent extends Component {
         }
         else {
           loadClassroomsForTeacher(userData.docId)
-          .then(listOfClassrooms => {
+          .then((listOfClassrooms) => {
             console.log(listOfClassrooms)
             this.setState({classrooms: !listOfClassrooms ? [] : listOfClassrooms })
           })
@@ -117,13 +118,13 @@ class ClassroomComponent extends Component {
             <div
               className="buttonclass customButtonGroup"
             >
-              {this.state.currentUserData && this.state.currentUserData.isTeacher && <button
+              {this.props.currentUser && this.props.currentUser.isTeacher && <button
                 onClick={this.enableCreateBox}
                 className="selection blue darken-2 btn-flat btn-large customButton"
               >
                 Create
               </button>}
-              {this.state.currentUserData && this.state.currentUserData.isStudent && <button
+              {this.props.currentUser && this.props.currentUser.isStudent && <button
                 onClick={this.enableJoinBox}
                 className="red darken-2 btn-flat btn-large customButton"
               >
@@ -145,7 +146,7 @@ class ClassroomComponent extends Component {
 export default function Classroom(props){
   return (
     <AuthContext.Consumer>
-      {({currentUser}) => <ClassroomComponent {...props} currentUser = {currentUser}/>}
+      {({currentUser, setCurrentUser}) => <ClassroomComponent {...props} currentUser = {currentUser} setCurrentUser={setCurrentUser}/>}
     </AuthContext.Consumer>
   )
 }

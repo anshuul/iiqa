@@ -17,6 +17,7 @@ class SignIn extends Component {
     signOut()
     .then(()=>{
       console.log('signed out')
+      this.props.setCurrentUser({uid:""})
     })
     .catch(err => alert(err.message))
   }
@@ -55,8 +56,8 @@ class SignIn extends Component {
                 console.log(values.email, values.password)
                 try{
                   this.enableLoading()
-                  await signIn(values.email, values.password)
-                  // setCurrentUser(currentUser)
+                  const uid = await signIn(values.email, values.password)
+                  this.props.setCurrentUser({uid})
                   this.props.history.push('classroom')
                 }catch(err){
                   alert(err.message)
@@ -126,4 +127,10 @@ class SignIn extends Component {
   }
 }
 
-export default SignIn;
+export default function ComponentWithContext(props) {
+  return (
+    <AuthContext.Consumer>
+    {({currentUser, setCurrentUser}) => <SignIn {...props} currentUser = {currentUser} setCurrentUser={setCurrentUser}/>}
+    </AuthContext.Consumer>
+  )
+}

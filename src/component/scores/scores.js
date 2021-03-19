@@ -31,11 +31,7 @@ class Scores extends Component {
     getAttendeesAndScores(this.props.classroomDocId, this.props.selectedActivityDocId)
     .then(attendeeData => {
       console.log(attendeeData)
-      return this.loadStudentsList(attendeeData)
-    })
-    .then(data => {
-      console.log(data)
-      this.setState({...this.state, attendeeData:data})
+      this.setState({...this.state, attendeeData})
     })
     .catch(err => {
       alert(err.message)
@@ -66,10 +62,11 @@ class Scores extends Component {
               View Quiz
             </div>
           </div>
-          {this.state.attendeeData.length > 0 ? this.state.attendeeData.map((data) => {
+          {this.state.attendeeData.length > 0 ? this.state.attendeeData.map((data, index) => {
             return (
               <div
                 className="card-panel"
+                key={index}
                 style={{
                   marginTop: "20px",
                   borderRadius: "10px",
@@ -82,7 +79,7 @@ class Scores extends Component {
               >
                 <p>
                   <strong>Name: </strong>
-                  {data.name}
+                  {`${data.studentData.fname} ${data.studentData.lname}`}
                 </p>
                 <p>
                   <strong>Score:</strong> {data.score}
