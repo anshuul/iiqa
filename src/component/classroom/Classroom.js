@@ -135,7 +135,7 @@ class ClassroomComponent extends Component {
             {/* class group */}
             <div className='classGroup'>
               {this.state.classrooms.map((classroom) => {
-                return <Classes {...classroom} key={classroom.docId} />;
+                return <Classes {...classroom} key={classroom.docId} history={this.props.history}/>;
               })}
             </div>
           </div>

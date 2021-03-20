@@ -113,13 +113,10 @@ class Dashboard extends Component {
     localStorage.removeItem("quizToken");
     window.speechSynthesis.cancel()
     // this.loadUserData();
-    const { compoundedInfo } = this.props.match.params;
-    const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(
-      compoundedInfo
-    );
-    console.log(ogDocId, ogTeacherId);
+    console.log(this.props)
+    const { classroomDocId } = this.props.location.state
     this.setState({ ...this.state, classroomLoading: true });
-    getClassroomData(ogDocId)
+    getClassroomData(classroomDocId)
       .then((data) => {
         console.log(data)
         const { name: title, displayPicture, color, studentDataList, teacherData } = data;
@@ -131,7 +128,7 @@ class Dashboard extends Component {
         });
         this.setState({
           ...this.state,
-          classroomData: { title, displayPicture, color, code: ogDocId },
+          classroomData: { title, displayPicture, color, code: classroomDocId },
           teacherName: `${teacherData.fname} ${teacherData.lname}`,
           studentsNameList,
         });
@@ -143,7 +140,7 @@ class Dashboard extends Component {
         this.setState({ ...this.state, classroomLoading: false });
       });
 
-    getQuizzesForClassroom(ogDocId)
+    getQuizzesForClassroom(classroomDocId)
       .then((quizActivitiesData) => {
         console.log(quizActivitiesData);
         this.setState({ ...this.state, quizActivities: quizActivitiesData });

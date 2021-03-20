@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 
 
 const Classes = (props) => {
+  console.log(props)
   console.log(props.classroom)
   const defaultClassName = "child lighten-2 customTitleContainer";
   const finalClassName = `${defaultClassName} ${props.color}`;
@@ -22,19 +23,23 @@ const Classes = (props) => {
     </React.Fragment>
   )
 
-  if(props.teacherId && props.docId){
-    return (
-          <Link to={`/dashboard/${encryptInformationForRouting(props.docId, props.teacherId)}`} className = 'customContainer'>
-            <ComponentContent/>
-          </Link>
-    );
-  } else {
-    return (
-          <div className = 'customContainer'>
-            <ComponentContent/>
-          </div>
-    );
+  const redirectToDashboard = () => {
+    if(props.teacherId && props.docId) {  
+      props.history.push({
+        pathname:'/dashboard',
+        state: {
+          classroomDocId: props.docId
+        }
+      })
+    }
   }
+
+  
+  return (
+        <div className = 'customContainer' onClick={redirectToDashboard}>
+          <ComponentContent/>
+        </div>
+  );
 };
 
 export default Classes;
