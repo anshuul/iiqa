@@ -9,7 +9,6 @@ import volumeIcon from "../../assets/volume.svg";
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
-  // const [currentQuestionSet, setCurrentQuestionSet] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
@@ -30,15 +29,11 @@ function Quiz(props) {
         console.log(localStorage.getItem("quizToken"));
         setQuizData(props.location.state.quizData);
       } else {
-        // get quiz data from quiz id in url
-        // const { compoundedInfo } = props.match.params
-        // const [ classroomDocId, quizDocId ] = decryptInformationAfterRouting(compoundedInfo)
 
         console.log("else block");
       }
 
       console.log("rendered");
-      // setCurrentQuestionSet(quizData[currentQuestionIndex]);
     }
 
     const reset = () => setIsImgLoaded(false)
@@ -48,16 +43,7 @@ function Quiz(props) {
 
   useEffect(() => {
     console.log("quiz data updated");
-    // setCurrentQuestionSet(quizData[currentQuestionIndex]);
   }, [quizData]);
-
-  // useEffect(() => {
-  //   if (quizData) {
-  //     if (currentQuestionIndex === quizData.length) {
-  //       setShowScore(true);
-  //     }
-  //   }
-  // }, [currentQuestionIndex]);
 
   const onImageLoadHandler = () => {
     !isImgLoaded && setIsImgLoaded(true)
@@ -76,11 +62,6 @@ function Quiz(props) {
       currentQuestionIndex < quizData.length
     )
     {  
-      // isImgLoaded && textToSpeech(
-      //   `For the above Image, Question is, ${processQuestion(
-      //     quizData[currentQuestionIndex].question
-      //   )}`
-      // );
       setIsOptionSelected(false)
       isImgLoaded && setIsImgLoaded(false)
     }

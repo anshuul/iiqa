@@ -13,6 +13,7 @@ class FinalizeQuiz extends Component {
 
   componentDidMount(){
     const{ classroomDocId, quizDocId } = this.props.location.state
+    console.log(classroomDocId, quizDocId)
     getGeneratedQuiz(classroomDocId, quizDocId)
     .then(quizDataResp => {
       const { quizData, dateTimeOfCreation } = quizDataResp

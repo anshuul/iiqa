@@ -51,30 +51,6 @@ class Dashboard extends Component {
     this.onSelectCreateQuizHandler = this.onSelectCreateQuizHandler.bind(this)
   }
 
-  loadStudentsList(studentIdsList) {
-    const promisesForGeneratingStudentsData = studentIdsList.map((docId) =>
-      getProfileDataFromDocId(docId)
-    );
-    return Promise.all(promisesForGeneratingStudentsData);
-  }
-
-  loadClassroomDataAsync(teacherId, studentIds) {
-    return Promise.all([
-      getProfileDataFromDocId(teacherId),
-      this.loadStudentsList(studentIds),
-    ]);
-  }
-
-  loadUserData() {
-    getOnlyUserProfile(this.props.currentUser.uid)
-      .then((userData) => {
-        this.setState({ ...this.state, userData });
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
-  }
-
   onSelectActivityByStudentHandler = (quizData, quizDocId) => {
     const decryptedQuizData = JSON.parse(quizData);
     console.log(decryptedQuizData);

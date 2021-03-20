@@ -22,7 +22,13 @@ class Scores extends Component {
   }
 
   redirectToViewQuiz(){
-    this.props.history.push(`/finalizequiz/${encryptInformationForRouting(this.props.classroomDocId, this.props.selectedActivityDocId)}`)
+    this.props.history.push({
+      pathname:'/finalizequiz',
+      state:{
+        classroomDocId:this.props.classroomDocId,
+        quizDocId:this.props.selectedActivityDocId
+      }
+    })
   }
 
   componentDidMount(){
