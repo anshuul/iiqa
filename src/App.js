@@ -55,12 +55,12 @@ class App extends React.Component {
               <Route path="/classroom" component={Classroom} />
               <Route path="/dashboard" component={Dashboard} />
               <Route
-                path="/set-up-quiz/:compoundedInfo"
+                path="/set-up-quiz"
                 component={SetUpQuiz}
               />
               <Route path="/selflearn" component={SelfLearning} />
               <Route path="/quiz" component={Quiz} />
-              <Route path="/finalizequiz/:compoundedInfo" component={FinalizeQuiz} />
+              <Route path="/finalizequiz" component={FinalizeQuiz} />
             </Switch>
           </div>
         </BrowserRouter>

@@ -12,8 +12,7 @@ class FinalizeQuiz extends Component {
   };
 
   componentDidMount(){
-    const [ classroomDocId, quizDocId ] = decryptInformationAfterRouting(this.props.match.params.compoundedInfo)
-    console.log(classroomDocId, quizDocId)
+    const{ classroomDocId, quizDocId } = this.props.location.state
     getGeneratedQuiz(classroomDocId, quizDocId)
     .then(quizDataResp => {
       const { quizData, dateTimeOfCreation } = quizDataResp

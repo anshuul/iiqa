@@ -48,6 +48,7 @@ class Dashboard extends Component {
     this.onSelectActivityByTeacherHandler = this.onSelectActivityByTeacherHandler.bind(
       this
     );
+    this.onSelectCreateQuizHandler = this.onSelectCreateQuizHandler.bind(this)
   }
 
   loadStudentsList(studentIdsList) {
@@ -108,6 +109,15 @@ class Dashboard extends Component {
       selectedQuizActivityDocId: quizDocId,
     });
   };
+
+  onSelectCreateQuizHandler(){
+    this.props.history.push({
+      pathname: '/set-up-quiz',
+      state:{
+        classroomDocId: this.props.location.state.classroomDocId
+      }
+    })
+  }
 
   componentDidMount() {
     localStorage.removeItem("quizToken");
@@ -247,8 +257,8 @@ class Dashboard extends Component {
                 height: "100px",
               }}
             >
-              <Link
-                to={`/set-up-quiz/${this.props.match.params.compoundedInfo}`}
+              <div
+                onClick={this.onSelectCreateQuizHandler}
                 className="blue darken-2 btn-flat btn-large quiz-button"
                 style={{
                   color: "white",
@@ -260,7 +270,7 @@ class Dashboard extends Component {
                 }}
               >
                 Create Quiz
-              </Link>
+              </div>
             </div>
           </div>
         )}

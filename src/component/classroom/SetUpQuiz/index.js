@@ -125,12 +125,13 @@ export default class index extends Component {
       .then((quizDocId) => {
         console.log("quiz created on ", quizDocId);
         alert("Quiz created");
-        this.props.history.push(
-          `/finalizequiz/${encryptInformationForRouting(
-            this.state.currentClassroomDocId,
+        this.props.history.push({
+          pathname:'/finalizequiz',
+          state: {
+            classroomDocId: this.props.location.state.classroomDocId,
             quizDocId
-          )}`
-        );
+          }
+        });
       })
       .catch((err) => {
         alert(err.message);
@@ -243,23 +244,18 @@ export default class index extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.match.params);
-    const { compoundedInfo } = this.props.match.params;
-    const [ogDocId, ogTeacherId] = decryptInformationAfterRouting(
-      compoundedInfo
-    );
-    console.log(ogDocId, ogTeacherId);
+    const { classroomDocId } = this.props.location.state
 
     let predefinedImageSetsState = [],
       classroomImageSetsState = [];
 
     this.setState({
       ...this.state,
-      currentClassroomDocId: ogDocId,
+      currentClassroomDocId: classroomDocId,
       loading: true,
       loadingMessage: "Getting Image Sets ready. Please wait.",
     });
-    getPromiseForFetchingImageSet(ogDocId)
+    getPromiseForFetchingImageSet(classroomDocId)
       .then(([predefinedImageSets, classroomImageSets]) => {
         console.log(predefinedImageSets);
         console.log(classroomImageSets);
