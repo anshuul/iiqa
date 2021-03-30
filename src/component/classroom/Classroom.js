@@ -35,7 +35,7 @@ class ClassroomComponent extends Component {
   }
 
   componentDidMount(){
-    this.loadClassrooms()
+    this.props.currentUser.docId && this.loadClassrooms()
   }
 
   componentDidUpdate(prevProps, prevState){

@@ -22,6 +22,7 @@ class App extends React.Component {
     currentUser: {
       uid:''
     },
+    loading:true,
     setCurrentUser: this.setCurrentUser.bind(this),
   };
 
@@ -41,9 +42,11 @@ class App extends React.Component {
     if(currentUserUid && !this.state.currentUser.docId) {
       getOnlyUserProfile(currentUserUid)
       .then(userData => {
+        console.log(userData)
         this.setState({...this.state, currentUser:userData})
-    })
+      })
     }
+    this.setState({...this.state, loading:false})
   }
 
   setCurrentUser(currentUser) {
@@ -52,9 +55,10 @@ class App extends React.Component {
   }
 
   render() {
-    return !this.state.currentUser.docId ? <Loading/> : (
+    return (
       <AuthContext.Provider value={this.state}>
-        <BrowserRouter>
+        {this.state.loading && <Loading/>}
+        {this.state.currentUser.docId && <BrowserRouter>
           <div className="App">
             <Navbar />
             <Switch>
@@ -72,9 +76,9 @@ class App extends React.Component {
               <Route path="/finalizequiz" component={FinalizeQuiz} />
             </Switch>
           </div>
-        </BrowserRouter>
+        </BrowserRouter>}
       </AuthContext.Provider>
-    );
+    )
   }
 }
 
