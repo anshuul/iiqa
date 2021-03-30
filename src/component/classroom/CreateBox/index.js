@@ -14,15 +14,15 @@ class CreateBox extends Component {
         super(props)
         this.state = {
             name:'dummy',
-            colorsList:['blue', 'red', 'orange', 'green'],
+            colorsList:['blue', 'red', 'orange', 'green', 'yellow', 'pink'],
             colorChose:'red',
             displayPicturesList: [],
             displayPictureChose:tempImg,
             studentIds:[],
             loading:false
         }
-        this.onColorRadioChange = this.onColorRadioChange.bind(this)
-        this.onAvatarRadioChange = this.onAvatarRadioChange.bind(this)
+        this.onColorSelect = this.onColorSelect.bind(this)
+        this.onAvatarSelect = this.onAvatarSelect.bind(this)
         this.onNameChange = this.onNameChange.bind(this)
         this.createHandler = this.createHandler.bind(this)
     }
@@ -54,12 +54,19 @@ class CreateBox extends Component {
         })
     }
 
-    onColorRadioChange(event){
-        this.setState({...this.state, colorChose:event.target.value})
+    onColorSelect(event){
+        console.log(event)
+        this.setState({...this.state, colorChose:event.target.dataset.color})
+        event.target.parentElement.childNodes.forEach(node => node.classList.remove('focusedCheckBox'))
+        event.target.classList.add('focusedCheckBox')
     }
 
-    onAvatarRadioChange(event){
-        this.setState({...this.state, displayPictureChose:event.target.value})
+    onAvatarSelect(event){
+        event.stopPropagation()
+        console.log(event)
+        this.setState({...this.state, displayPictureChose:event.target.currentSrc})
+        event.target.parentElement.parentElement.parentElement.childNodes.forEach(node => node.childNodes[0].classList.remove('focusedCheckBox'))
+        event.target.parentElement.classList.add('focusedCheckBox')
     }
 
     onNameChange(event){
@@ -92,41 +99,36 @@ class CreateBox extends Component {
                                     autoFocus
                                 />
                             </div>
-                            <div className='checkBoxGroup' >
-                                <div style={{marginRight:'10px'}}>
+                            <div className='checkBoxContainer' >
+                                <div style={{marginBottom:'10px'}}>
                                     <label style={{fontSize:'1rem'}}>
                                     Choose Color:
                                     </label>
-                                </div>  
-                                {this.state.colorsList.map(color => (
-                                    <div className='checkBox' key={color}>
-                                        <label>
-                                        <input className="with-gap" value={color} name="group1" type="radio" onChange={this.onColorRadioChange} />
-                                        <span>{color}</span>
-                                        </label>
-                                    </div>
-                                ))} 
+                                </div>
+                                <div className='checkBoxGroup'>
+                                    {this.state.colorsList.map(color => (
+                                        <div className={`checkBox colorBand ${color}`} key={color} data-color={color} onClick={this.onColorSelect}>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className='checkBoxGroup' >
-                                <div style={{marginRight:'10px'}}>
+                            <div className='checkBoxContainer' >
+                                <div style={{marginBottom:'10px'}}>
                                     <label style={{fontSize:'1rem'}}>
                                     Choose Avatar:
                                     </label>
                                 </div>   
-                                {this.state.displayPicturesList.map((displayPictureLink, index) => (
-                                    <div className='checkBox' key={index}>
-                                        <label>
-                                        <input className="with-gap"value={displayPictureLink} name="group2" type="radio" onChange={this.onAvatarRadioChange} />
-                                        <span>
+                                <div className='checkBoxGroup'>
+                                    {this.state.displayPicturesList.map((displayPictureLink, index) => (
+                                        <div className='checkBox' key={index} data-avatar={displayPictureLink} onClick={this.onAvatarSelect}>
                                             <Avatar displayPicture={displayPictureLink} className='customAvatar' />
-                                        </span>
-                                        </label>
-                                    </div>    
-                                ))}
+                                        </div>    
+                                    ))}
+                                </div>
                             </div>
                             <div className='buttonGroup'>
-                                <div className='btn blue darken-3 z-depth-0' onClick={this.createHandler} >Create</div>
                                 <div className='btn red darken-3 z-depth-0' onClick={()=>this.props.cancelHandler()}>Cancel</div>
+                                <div className='btn blue darken-3 z-depth-0' onClick={this.createHandler} >Create</div>
                             </div>
                         </form>
                     </div>
