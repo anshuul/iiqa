@@ -22,7 +22,7 @@ class App extends React.Component {
     currentUser: {
       uid:''
     },
-    loading:true,
+    // loading:true,
     setCurrentUser: this.setCurrentUser.bind(this),
   };
 
@@ -55,10 +55,10 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(this.state.currentUser)
     return (
       <AuthContext.Provider value={this.state}>
-        {this.state.loading && <Loading/>}
-        {this.state.currentUser.docId && <BrowserRouter>
+        {<BrowserRouter>
           <div className="App">
             <Navbar />
             <Switch>
