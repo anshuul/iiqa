@@ -103,15 +103,13 @@ class Dashboard extends Component {
     const { classroomDocId } = this.props.location.state
     this.setState({ ...this.state, classroomLoading: true });
     getClassroomData(classroomDocId)
-      .then((data) => {
+      .then((data) => { 
         console.log(data)
         const { name: title, displayPicture, color, studentDataList, teacherData } = data;
-        const studentsNameList = studentDataList.map((eachData) => {
-          return {
-            name: `${eachData.fname} ${eachData.lname}`,
-            id: eachData.docId,
-          };
-        });
+        const studentsNameList = studentDataList.map((eachData) => ({
+          name: `${eachData.fname} ${eachData.lname}`,
+          id: eachData.docId,
+        }));
         this.setState({
           ...this.state,
           classroomData: { title, displayPicture, color, code: classroomDocId },

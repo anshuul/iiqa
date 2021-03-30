@@ -1,5 +1,3 @@
-import { auth, firestore } from '../shared/firebase'
-import { getOnlyUserProfile } from './userServices'
 import { dbAPI } from '../shared/utils'
 
 export async function loadClassroomForStudents(userId){
@@ -12,7 +10,8 @@ export async function loadClassroomForStudents(userId){
      */
     try {
         const { data } = await dbAPI.get(`/classrooms/?studentDocId=${userId}`)
-        return data.classroomData
+        console.log(data.classrooms)
+        return data.classrooms
     } catch (err) {
         throw new Error(err.response.data.error)
     }
@@ -28,7 +27,7 @@ export async function loadClassroomsForTeacher(userId){
      */
     try {
         const { data } = await dbAPI.get(`/classrooms/?teacherDocId=${userId}`)
-        return data.classroomData
+        return data.classrooms
     } catch (err) {
         throw new Error(err.response.data.error)
     }
@@ -84,8 +83,8 @@ export async function joinClassroom(code, studentId){
      */
 
      try {
-    const {data} = await dbAPI.put(`/classrooms`, {
-        classroomDocId:code, studentDocId:studentId
+    const {data} = await dbAPI.patch(`/classrooms/${code}`, {
+        studentDocId:studentId
     })
     return data.message
     } catch (err) {
@@ -94,15 +93,15 @@ export async function joinClassroom(code, studentId){
     }
 }
 
-export async function getClassroomData(docId){
+export async function getClassroomData(classroomDocId){
     /**
-     * @param docId
+     * @param classroomDocId
      * 
      * @return complete data of classroom
      */
 
     try {
-        const {data} = await dbAPI.get(`/classrooms/?classroomDocId=${docId}`)
+        const {data} = await dbAPI.get(`/classrooms/${classroomDocId}`)
         return data.classroomData
     } catch (err) {
         console.log(err.response)

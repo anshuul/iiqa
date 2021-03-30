@@ -1,12 +1,6 @@
-import { auth, firestore, storage } from "../shared/firebase";
-import { getClassroomData } from "./classroomServices";
-import { getProfileDataFromDocId } from "./userServices";
+import { storage } from "../shared/firebase";
 
 import { dbAPI } from '../shared/utils'
-
-const ImageSet = firestore.collection("imagesets");
-const PredefinedImageSetsListRef = ImageSet.doc("predefinedImageSets");
-const Quiz = firestore.collection("quizzes");
 
 export function getPromiseForFetchingImageSet(classroomDocId) {
   return Promise.all([
@@ -42,7 +36,7 @@ export async function getClassroomImageSet(classroomDocId) {
    */
 
   try {
-    const { data } = await dbAPI.get(`/classrooms/imageset/?classroomDocId=${classroomDocId}`)
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/imagesets`)
     return data.imageSets
   } catch (err) {
       throw new Error(err.response.data.error)
@@ -62,7 +56,7 @@ export async function createImageSetForClassroom(docId, imageLinks) {
    */
 
    try {
-    const { data } = await dbAPI.post(`/classrooms/imageset`, {
+    const { data } = await dbAPI.post(`/classrooms/imagesets`, {
       classroomDocId:docId, imageLinks
     })
     return data.message
@@ -80,7 +74,7 @@ export async function getQuizData(imageSets) {
    */
 
    try {
-    const { data } = await dbAPI.post(`/classrooms/quiz/?generate=True`, {
+    const { data } = await dbAPI.post(`/classrooms/quizzes/?generate=True`, {
       imageLinksArray: imageSets
     })
     return data
@@ -99,7 +93,7 @@ export async function createNewQuiz(quizData, classroomDocId) {
    */
 
    try {
-    const { data } = await dbAPI.post(`/classrooms/quiz`, {
+    const { data } = await dbAPI.post(`/classrooms/quizzes`, {
       classroomDocId, quizData
     })
     return data.quizDocId
@@ -116,8 +110,8 @@ export async function getQuizzesForClassroom(classroomDocId) {
    */
 
    try {
-    const { data } = await dbAPI.get(`/classrooms/quiz/?classroomDocId=${classroomDocId}`)
-    return data.quizData
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes`)
+    return data.quizzes
     } catch (err) {
         throw new Error(err.response.data.error)
     }
@@ -139,7 +133,7 @@ export async function saveQuizScore(
    */
 
    try {
-    const { data } = await dbAPI.post(`/classrooms/quiz/attendees`, {
+    const { data } = await dbAPI.post(`/classrooms/quizzes/attendees`, {
       classroomDocId, quizDocId, studentDocId, score, outOffScore
     })
     return data.message
@@ -157,7 +151,7 @@ export async function getAttendeesAndScores(classroomDocId, quizDocId) {
    */
 
   try {
-    const { data } = await dbAPI.get(`/classrooms/quiz/attendees?classroomDocId=${classroomDocId}&quizDocId=${quizDocId}`)
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`)
     return data.attendees
   } catch (err) {
       throw new Error(err.response.data.error)
@@ -170,7 +164,7 @@ export async function isStudentEligibleForQuiz(
   studentId
 ) {
   try {
-    const { data } = await dbAPI.get(`/classrooms/quiz/attendees?classroomDocId=${classroomDocId}&quizDocId=${quizDocId}&eligibilityCheck=True&studentDocId=${studentId}`)
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees/${studentId}?eligibilityCheck=True`)
     return Number(data.eligibilityStatus)
   } catch (err) {
       throw new Error(err.response.data.error)
@@ -187,7 +181,7 @@ export async function getGeneratedQuiz(classroomDocId, quizDocId){
    */
 
   try {
-    const { data } = await dbAPI.get(`/classrooms/quiz/?classroomDocId=${classroomDocId}&quizDocId=${quizDocId}`)
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}`)
     return data.quizData
   } catch (err) {
       throw new Error(err.response.data.error)

@@ -1,4 +1,4 @@
-import { auth, firestore } from '../shared/firebase'
+import { auth } from '../shared/firebase'
 import { dbAPI } from '../shared/utils'
 
 export async function signIn(emailId, password){

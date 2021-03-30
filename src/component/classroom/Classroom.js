@@ -56,6 +56,7 @@ class ClassroomComponent extends Component {
       // this.setState({...this.state, currentUserData:userData})
       this.props.setCurrentUser(userData)
       if(userData){
+        console.log('reacher here in if block of user data check')
         if(userData.isStudent){
           loadClassroomForStudents(userData.docId)
           .then(listOfClassrooms => {
@@ -67,10 +68,11 @@ class ClassroomComponent extends Component {
           })
         }
         else {
+          console.log('reacher here in else block of user data teacher check')
           loadClassroomsForTeacher(userData.docId)
           .then((listOfClassrooms) => {
             console.log(listOfClassrooms)
-            this.setState({classrooms: !listOfClassrooms ? [] : listOfClassrooms })
+            this.setState({classrooms: listOfClassrooms })
           })
           .catch(err => {
             throw new Error(err)
