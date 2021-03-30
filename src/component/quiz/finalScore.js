@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./finalScore.css";
 import { saveQuizScore } from "../../services/quizServices";
+import { getHeightForMainContainer } from '../../shared/utils'
 
 const FinalScore = (props) => {
   const [bgImage, setBgImage] = useState();
@@ -50,7 +51,7 @@ const FinalScore = (props) => {
     }
   };
   return (
-    <div className="finalScore" style={{ backgroundImage: { bgImage } }}>
+    <div className="finalScore" style={{ height:getHeightForMainContainer() }}>
       <p>
         yayyy!! You scored {props.score}/{props.outOff}
       </p>

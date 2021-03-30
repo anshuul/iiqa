@@ -6,6 +6,7 @@ import { decryptInformationAfterRouting } from "../../services/classroomServices
 import { saveQuizScore } from "../../services/quizServices";
 import { textToSpeech } from "../../shared/utils";
 import volumeIcon from "../../assets/volume.svg";
+import { getHeightForMainContainer } from '../../shared/utils'
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
@@ -104,15 +105,10 @@ function Quiz(props) {
     return questionArr.join(" ");
   };
 
-  const getHeightForQuizContainer = () => {
-    const heightOfNavbarInVH = (100 * 64) / window.innerHeight
-    return `${100-heightOfNavbarInVH}vh`
-  }
-
   return showScore ? (
     <FinalScore score={score} outOff={quizData.length} {...props} />
   ) : (
-    <div className="quiz" style={{height:getHeightForQuizContainer()}}>
+    <div className="quiz" style={{height:getHeightForMainContainer()}}>
       {quizData && (
         <div
           style={{

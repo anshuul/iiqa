@@ -1,5 +1,6 @@
 import React from "react";
 import ModuleImage from "../../assets/dp.svg";
+import Avatar from '../layout/Avatar'
 
 const SelfLearningModules = (props) => {
   console.log("redered quiz modules");
@@ -24,23 +25,8 @@ const SelfLearningModules = (props) => {
         >
           {props.name}
         </span>
-        <div
-          className="imageclass right"
-          style={{
-            backgroundColor: "white",
-            height: "70px",
-            width: "70px",
-            borderRadius: "50px",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <img
-            src={props.displayPicture}
-            alt='displayPicture'
-            style={{ height: "45px", width: "45px", margin: "auto" }}
-          />
-        </div>
+        <Avatar displayPicture={props.displayPicture} />
+        
       </div>
     </div>
   );

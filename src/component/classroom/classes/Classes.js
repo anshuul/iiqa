@@ -15,7 +15,7 @@ const Classes = (props) => {
     <React.Fragment>
       <div className={finalClassName}>
         <p>{props.name}</p>
-        <Avatar displayPicture={props.displayPicture} className={props.name ? 'displayPicture' : 'displayPictureModified'}/>
+        <Avatar displayPicture={props.displayPicture} className={props.name ? 'displayPictureDefault' : 'displayPictureModified'}/>
       </div>
       <div className="footer">
         <p>Total Students: {props.studentIds.length}</p>

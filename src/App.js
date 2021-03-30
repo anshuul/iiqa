@@ -15,6 +15,7 @@ import AuthRoute from "./routes/AuthRoute";
 import SelfLearning from "./component/SelfLearning/selfLearning";
 import Quiz from "./component/quiz/Quiz";
 import FinalizeQuiz from "./component/FinalizeQuiz/FinalizeQuiz";
+import Loading from './component/layout/Loading'
 
 class App extends React.Component {
   state = {
@@ -35,10 +36,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log('on refresh')
     const currentUserUid = localStorage.getItem("currentUserId")
-    if(currentUserUid) {
+    if(currentUserUid && !this.state.currentUser.docId) {
       getOnlyUserProfile(currentUserUid)
-      .then(userData => this.setState({...this.state, currentUser:userData}))
+      .then(userData => {
+        this.setState({...this.state, currentUser:userData})
+    })
     }
   }
 
@@ -48,7 +52,7 @@ class App extends React.Component {
   }
 
   render() {
-    return (
+    return !this.state.currentUser.docId ? <Loading/> : (
       <AuthContext.Provider value={this.state}>
         <BrowserRouter>
           <div className="App">
