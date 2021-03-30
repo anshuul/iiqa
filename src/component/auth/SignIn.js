@@ -8,6 +8,8 @@ import { AuthContext } from '../../context/authContext'
 import Loading from '../layout/Loading'
 import ErrorText from '../layout/ErrorText'
 
+import { getOnlyUserProfile } from '../../services/userServices'
+
 class SignIn extends Component {
   state = {
     loading: false,
@@ -57,7 +59,8 @@ class SignIn extends Component {
                 try{
                   this.enableLoading()
                   const uid = await signIn(values.email, values.password)
-                  this.props.setCurrentUser({uid})
+                  const userData = await getOnlyUserProfile(uid)
+                  this.props.setCurrentUser({...userData})
                   this.props.history.push('classroom')
                 }catch(err){
                   alert(err.message)

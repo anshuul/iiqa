@@ -50,15 +50,11 @@ class ClassroomComponent extends Component {
   loadClassrooms(){
     console.log(this.props.currentUser)
     this.setState({...this.state, loading:true})
-    getOnlyUserProfile(this.props.currentUser.uid)
-    .then(userData => {
-      console.log(userData)
-      // this.setState({...this.state, currentUserData:userData})
-      this.props.setCurrentUser(userData)
-      if(userData){
+    try {
+      if(this.props.currentUser){
         console.log('reacher here in if block of user data check')
-        if(userData.isStudent){
-          loadClassroomForStudents(userData.docId)
+        if(this.props.currentUser.isStudent){
+          loadClassroomForStudents(this.props.currentUser.docId)
           .then(listOfClassrooms => {
             console.log(listOfClassrooms)
             this.setState({...this.state, classrooms: listOfClassrooms })
@@ -69,7 +65,7 @@ class ClassroomComponent extends Component {
         }
         else {
           console.log('reacher here in else block of user data teacher check')
-          loadClassroomsForTeacher(userData.docId)
+          loadClassroomsForTeacher(this.props.currentUser.docId)
           .then((listOfClassrooms) => {
             console.log(listOfClassrooms)
             this.setState({classrooms: listOfClassrooms })
@@ -79,11 +75,11 @@ class ClassroomComponent extends Component {
           })
         }
       }
-    })
-    .catch(err => console.log(err.message))
-    .finally(()=>{
+    } catch(err){
+      console.log(err.message)
+    } finally{
       this.setState({...this.state, loading:false})
-    })
+    }
   }
 
   enableCreateBox(){

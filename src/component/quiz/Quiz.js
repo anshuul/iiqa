@@ -104,10 +104,15 @@ function Quiz(props) {
     return questionArr.join(" ");
   };
 
+  const getHeightForQuizContainer = () => {
+    const heightOfNavbarInVH = (100 * 64) / window.innerHeight
+    return `${100-heightOfNavbarInVH}vh`
+  }
+
   return showScore ? (
     <FinalScore score={score} outOff={quizData.length} {...props} />
   ) : (
-    <div className="quiz">
+    <div className="quiz" style={{height:getHeightForQuizContainer()}}>
       {quizData && (
         <div
           style={{

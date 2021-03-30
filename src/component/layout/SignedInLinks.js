@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import { getOnlyUserProfile } from "../../services/userServices";
@@ -7,31 +7,23 @@ const SignedInLinks = () => {
   const [initials, setInitials] = useState("");
   const [isSelfLearningDisplayed, setIsSelfLearningDisplayed] = useState(false);
 
+  const getInitials = (fname, lname) => `${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`
+
   return (
     <AuthContext.Consumer>
       {({ currentUser }) => {
-        getOnlyUserProfile(currentUser.uid)
-          .then((userData) => {
-            const { fname, lname } = userData;
-            console.log(currentUser)
-            setInitials(
-              `${fname.charAt(0).toUpperCase()}${lname.charAt(0).toUpperCase()}`
-            );
-            setIsSelfLearningDisplayed(userData.isStudent);
-          })
-          .catch((err) => console.log(err));
         return (
           <ul className="right">
             <li>
               <NavLink to="/signin">Log Out</NavLink>
             </li>
-            {isSelfLearningDisplayed && (
+            {currentUser.isStudent && (
               <li>
                 <NavLink to="/selflearn">Self Learning</NavLink>
               </li>
             )}
             <li>
-              <div className="btn btn-floating blue lighten-1">{initials}</div>
+              <div className="btn btn-floating blue lighten-1">{getInitials(currentUser.fname, currentUser.lname)}</div>
             </li>
           </ul>
         );

@@ -19,26 +19,31 @@ import FinalizeQuiz from "./component/FinalizeQuiz/FinalizeQuiz";
 class App extends React.Component {
   state = {
     currentUser: {
-      uid: localStorage.getItem("currentUserId"),
+      uid:''
     },
     setCurrentUser: this.setCurrentUser.bind(this),
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.currentUser.uid !== prevState.currentUser.uid) {
       localStorage.setItem("currentUserId", this.state.currentUser.uid);
+      // if(this.state.currentUser.uid) {
+      //   const userData = await getOnlyUserProfile(this.state.currentUser.uid)
+      //   this.setState({...this.state, currentUser:userData})
+      // }
     }
   }
 
-  // componentDidMount() {
-  //   auth.onAuthStateChanged((user) => {
-  //     if (user)
-  //       this.setState({ ...this.state, currentUser: { uid: user.uid } });
-  //     else this.setState({ ...this.state, currentUser: { uid: "" } });
-  //   });
-  // }
+  componentDidMount() {
+    const currentUserUid = localStorage.getItem("currentUserId")
+    if(currentUserUid) {
+      getOnlyUserProfile(currentUserUid)
+      .then(userData => this.setState({...this.state, currentUser:userData}))
+    }
+  }
 
   setCurrentUser(currentUser) {
+    console.log('currentUser state updated')
     this.setState({ ...this.state, currentUser });
   }
 
