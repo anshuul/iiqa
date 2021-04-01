@@ -3,6 +3,7 @@ import './Classes.css'
 import Avatar from '../../layout/Avatar'
 import { encryptInformationForRouting } from '../../../services/classroomServices'
 import { Link } from 'react-router-dom'
+import ClassLayoutContainer from '../../layout/ClassLayoutContainer'
 
 
 const Classes = (props) => {
@@ -36,9 +37,9 @@ const Classes = (props) => {
 
   
   return (
-        <div className = 'customContainer' onClick={redirectToDashboard}>
+        <ClassLayoutContainer onClick={redirectToDashboard}>
           <ComponentContent/>
-        </div>
+        </ClassLayoutContainer>
   );
 };
 

@@ -8,6 +8,8 @@ import { AuthContext } from '../../context/authContext'
 import Loading from '../layout/Loading'
 import ErrorText from '../layout/ErrorText'
 
+import { getOnlyUserProfile } from '../../services/userServices'
+
 function capitalize(string){
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
@@ -73,9 +75,9 @@ class SignUp extends Component {
                   uid = await signUpForStudent(values.email, values.password, values.fname, values.lname)
                   message = 'New Student Account created Succesfully'
                 }
+                const userData = await getOnlyUserProfile(uid)
+                this.props.setCurrentUser({...userData})
                 alert(message)
-                console.log(this.props.currentUser)
-                this.props.setCurrentUser({uid})
                 this.props.history.push('/classroom')
               }
             }catch(err){

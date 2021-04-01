@@ -3,6 +3,7 @@ import './index.css'
 import { joinClassroom } from '../../../services/classroomServices'
 import { AuthContext } from '../../../context/authContext'
 import Loading from '../../layout/Loading'
+import ButtonGroup from '../../layout/ButtonGroup'
 
 class JoinBox extends Component {
 
@@ -51,10 +52,10 @@ class JoinBox extends Component {
                                     onChange={this.classroomCodeChangeHandler}
                                 />
                             </div>
-                            <div className='buttonGroup'>
-                                <div className='btn blue darken-3 z-depth-0' onClick={this.joinHandler} >Join</div>
+                            <ButtonGroup>
                                 <div className='btn red darken-3 z-depth-0' onClick={()=>this.props.cancelHandler()}>Cancel</div>
-                            </div>
+                                <div className='btn blue darken-3 z-depth-0' onClick={this.joinHandler} >Join</div>
+                            </ButtonGroup>
                         </form>
                     </div>
                 </div>

@@ -8,6 +8,7 @@ import Loading from '../layout/Loading'
 import tempImg from '../../assets/dp2.svg' // temp
 import CreateBox from './CreateBox'
 import JoinBox from './JoinBox'
+import {CreateTile, JoinTile} from './Tile'
 
 class ClassroomComponent extends Component {
   constructor(props){
@@ -115,26 +116,11 @@ class ClassroomComponent extends Component {
             {this.state.isCreateBoxDisplayed && <CreateBox cancelHandler = {this.disableCreateBox}/>}
             {this.state.isJoinBoxDisplayed && <JoinBox cancelHandler = {this.disableJoinBox}/>}
             {this.state.loading && <Loading message='Loading your classrooms. Please wait.'/>}
-            {/* button bar */}
-            <div
-              className="buttonclass customButtonGroup"
-            >
-              {this.props.currentUser && this.props.currentUser.isTeacher && <button
-                onClick={this.enableCreateBox}
-                className="selection blue darken-2 btn-flat btn-large customButton"
-              >
-                Create
-              </button>}
-              {this.props.currentUser && this.props.currentUser.isStudent && <button
-                onClick={this.enableJoinBox}
-                className="red darken-2 btn-flat btn-large customButton"
-              >
-                Join
-              </button>}
-            </div>
 
             {/* class group */}
             <div className='classGroup'>
+              {this.props.currentUser && this.props.currentUser.isTeacher && <CreateTile onClick={this.enableCreateBox}/>}
+              {this.props.currentUser && this.props.currentUser.isStudent && <JoinTile onClick={this.enableJoinBox}/>}
               {this.state.classrooms.map((classroom) => {
                 return <Classes {...classroom} key={classroom.docId} history={this.props.history}/>;
               })}

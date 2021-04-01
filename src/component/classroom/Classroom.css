@@ -1,8 +1,8 @@
 .classGroup {
-    padding:10px;
-    border: '1px solid black';
+    padding-top:30px;
+    padding-left:7%;
     display:flex;
-    flex:100%;
+    flex:1;
     justify-content:left;
     flex-wrap: wrap;
     align-content: space-between;
@@ -25,9 +25,10 @@
     font-weight: bold;
 }
 
-@media only screen and (max-width: 501px) {
+@media only screen and (max-width: 772px) {
     .classGroup {
         justify-content: center;
+        padding-left:0;
     }
-  }
+}
   

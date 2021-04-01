@@ -1,0 +1,11 @@
+.buttonGroup {
+    display:flex;
+    justify-content: space-evenly;
+}
+
+@media only screen and (max-width: 488px) {
+    .buttonGroup {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+}

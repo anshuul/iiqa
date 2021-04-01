@@ -1,0 +1,13 @@
+.customWrapper {
+    display:flex;
+    flex-direction: column;
+    flex:1;
+    justify-content: center;
+    align-items: center;
+}
+
+.customWrapper > p {
+    color:white;
+}
+
+/*#42A5F5*/

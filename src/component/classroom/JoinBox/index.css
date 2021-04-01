@@ -33,13 +33,6 @@
     /* border:1px solid black; */
 }
 
-.buttonGroup {
-    display:flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    align-content: space-evenly;
-}
-
 .btn {
     margin-bottom: 5px;
 }

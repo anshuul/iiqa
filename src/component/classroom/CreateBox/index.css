@@ -33,10 +33,6 @@
     /* border:1px solid black; */
 }
 
-form {
-    width:70%;
-}
-
 .previewContainer {
     display: flex;
     justify-content: center;
@@ -86,13 +82,7 @@ form {
 .colorBand {
     height:20px;
     width:50px;
-}
-
-.buttonGroup {
-    display:flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    align-content: space-between;
+    border-radius:5px;
 }
 
 @media only screen and (max-width: 720px) {
@@ -137,11 +127,5 @@ form {
 @media only screen and (max-width: 350px) {
     .createBoxContent {
         width:100%;
-    }
-}
-
-@media only screen and (max-width: 440px) {
-    .buttonGroup {
-        flex-direction: column-reverse;
     }
 }

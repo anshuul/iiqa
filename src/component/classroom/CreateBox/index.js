@@ -7,6 +7,7 @@ import Avatar from '../../layout/Avatar'
 import Loading from '../../layout/Loading'
 import { AuthContext } from '../../../context/authContext'
 import ModalWrapper from '../../layout/ModalWrapper'
+import ButtonGroup from '../../layout/ButtonGroup'
 
 class CreateBox extends Component {
 
@@ -88,7 +89,7 @@ class CreateBox extends Component {
                     </div>
                     <div className='divider'></div>
                     <div className='createFormContainer'>
-                        <form>
+                        <form style={{width:'70%'}}>
                             <div className="input-field">
                                 <label htmlFor="name">Name of Class</label>
                                 <input
@@ -107,7 +108,7 @@ class CreateBox extends Component {
                                 </div>
                                 <div className='checkBoxGroup'>
                                     {this.state.colorsList.map(color => (
-                                        <div className={`checkBox colorBand ${color}`} key={color} data-color={color} onClick={this.onColorSelect}>
+                                        <div className={`checkBox colorBand ${color} lighten-1`} key={color} data-color={color} onClick={this.onColorSelect}>
                                         </div>
                                     ))}
                                 </div>
@@ -126,10 +127,10 @@ class CreateBox extends Component {
                                     ))}
                                 </div>
                             </div>
-                            <div className='buttonGroup'>
+                            <ButtonGroup>
                                 <div className='btn red darken-3 z-depth-0' onClick={()=>this.props.cancelHandler()}>Cancel</div>
                                 <div className='btn blue darken-3 z-depth-0' onClick={this.createHandler} >Create</div>
-                            </div>
+                            </ButtonGroup>
                         </form>
                     </div>
                 </div>
