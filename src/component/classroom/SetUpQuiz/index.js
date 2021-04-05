@@ -15,6 +15,18 @@ import {
 } from "../../../services/quizServices";
 import ImageStack from "./ImageStack";
 import Loading from "../../layout/Loading";
+import FileInputButton from '../../layout/FileInputButton'
+import { getHeightForMainContainer } from '../../../shared/utils'
+import PlusIcon from '../../../assets/plus-black.svg'
+import MinusIcon from '../../../assets/minus-black.png'
+
+const ExpandIcon = () => (
+  <img alt='expand' src={PlusIcon} className='customDropDownIcon' />
+)
+
+const CollapseIcon = () => (
+  <img alt='collapse' src={MinusIcon} className='customDropDownIcon' />
+)
 
 export default class index extends Component {
   constructor(props) {
@@ -32,6 +44,9 @@ export default class index extends Component {
         imagePreviewUrl:'',
       },
       generatedQuiz: [],
+      isSavedBoxOpen:false,
+      isPredfinedBoxOpen:true,
+      imageContainersHeightValue:'93.5%',
     };
     this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(
       this
@@ -48,6 +63,8 @@ export default class index extends Component {
     this.uploadImages = this.uploadImages.bind(this)
     this.uploadQuiz = this.uploadQuiz.bind(this)
     this.uploadHandler = this.uploadHandler.bind(this)
+    this.toggleSavedImageSetBox = this.toggleSavedImageSetBox.bind(this)
+    this.togglePredefinedImageSetBox = this.togglePredefinedImageSetBox.bind(this)
   }
 
   fillImagesToBeDisplayed(selectedImageSet) {
@@ -95,7 +112,6 @@ export default class index extends Component {
         }) : this.setState({...this.state, loadingMessage:"Saving your collection first.",})
       console.log(this.state.currentClassroomDocId);
       console.log(this.state.generatedQuiz.map(quizObj => quizObj.image_path))
-      // TODO: make promise.all for this
       createImageSetForClassroom(
           this.state.currentClassroomDocId,
           this.state.generatedQuiz.map(quizObj => quizObj.image_path)
@@ -105,9 +121,9 @@ export default class index extends Component {
         this.uploadQuiz()
       })
       .catch((err) => {
-        alert(err.message);
+        alert('Please select some images.')
         console.error(err)
-        //   this.setState({ ...this.state, loading: false });
+          this.setState({ ...this.state, loading: false });
       })
       .finally(() => {
         // this.setState({ ...this.state, loading: false });
@@ -243,6 +259,31 @@ export default class index extends Component {
     this.setState({...this.state, generatedQuiz})
   }
 
+  getHeightOfContainers(isSavedBoxOpen=false, isPredfinedBoxOpen=false){
+    // const { isSavedBoxOpen, isPredfinedBoxOpen } = this.state
+    console.log(isSavedBoxOpen, isPredfinedBoxOpen)
+    if(isSavedBoxOpen && isPredfinedBoxOpen){
+      return '50%'
+    } else if(!isSavedBoxOpen && !isPredfinedBoxOpen){
+      return ''
+    } 
+    return '93.7%'
+  }
+
+  toggleSavedImageSetBox(){
+    let { isSavedBoxOpen, isPredfinedBoxOpen } = this.state
+    isSavedBoxOpen = !isSavedBoxOpen
+    const imageContainersHeightValue = this.getHeightOfContainers(isSavedBoxOpen, isPredfinedBoxOpen)
+    this.setState({...this.state, isSavedBoxOpen, imageContainersHeightValue})
+  }
+
+  togglePredefinedImageSetBox(){
+    let { isSavedBoxOpen, isPredfinedBoxOpen } = this.state
+    isPredfinedBoxOpen = !isPredfinedBoxOpen
+    const imageContainersHeightValue = this.getHeightOfContainers(isSavedBoxOpen, isPredfinedBoxOpen)
+    this.setState({...this.state, isPredfinedBoxOpen, imageContainersHeightValue})
+  }
+
   componentDidMount() {
     const { classroomDocId } = this.props.location.state
 
@@ -282,45 +323,60 @@ export default class index extends Component {
     // const imgSrc = 'https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/avatars%2Fdp2.svg?alt=media'
     // const imgSrc = ''
     return (
-      <div className="container customQuizMainContainer">
+      <div className="container customQuizMainContainer" style={{height:getHeightForMainContainer()}}>
         {this.state.loading && <Loading message={this.state.loadingMessage} />}
         <h5>Choose Images to set up a Quiz...</h5>
+        <p className='grey-text text-lighten-1' >Choose images from the given collections, generate quiz and upload it.</p>
         <div className="customQuizContainer">
           {/* Image sets container */}
-          <div className="customImageSetContainer">
-            <h6 className="customImageSetContainerTitle">Predefined</h6>
-            <div className="customImageSetWrapper">
-              {/* list of image sets display */}
-              {this.state.predefinedImageSets.map((imageSet) => (
-                <ImageStack
-                  key={imageSet.docId}
-                  onClick={() =>
-                    this.onSelectPredefinedImageSetHandler(imageSet.docId)
-                  }
-                  name={imageSet.name}
-                  src={imageSet.displayPicture || imageSet.imageLinks[0]}
-                />
-              ))}
+          <div className='customImageMenuContainer' >
+            <div className="customImageSetContainer" id='predefined' style={{height:this.state.imageContainersHeightValue}}>
+              <div className="customImageSetContainerTitle" onClick={this.togglePredefinedImageSetBox}>
+                <h6>Ready - made</h6>
+                {this.state.isPredfinedBoxOpen ? <CollapseIcon/> : <ExpandIcon/>}
+              </div>
+              {this.state.isPredfinedBoxOpen && <div className="customImageSetWrapper">
+                {/* list of image sets display */}
+                {this.state.predefinedImageSets.map((imageSet) => (
+                  <ImageStack
+                    key={imageSet.docId}
+                    onClick={() =>
+                      this.onSelectPredefinedImageSetHandler(imageSet.docId)
+                    }
+                    name={imageSet.name}
+                    src={imageSet.displayPicture || imageSet.imageLinks[0]}
+                  />
+                ))}
+              </div>}
             </div>
-          </div>
-          <div className="customImageSetContainer">
-            <h6 className="customImageSetContainerTitle">Saved</h6>
-            <div className="customImageSetWrapper">
-              {/* list of image sets display */}
-              {this.state.classroomImageSets.map((imageSet) => (
-                <ImageStack
-                  key={imageSet.docId}
-                  onClick={() =>
-                    this.onSelectClassroomImageSetHandler(imageSet.docId)
-                  }
-                  name={imageSet.name}
-                  src={imageSet.displayPicture || imageSet.imageLinks[0]}
-                />
-              ))}
+            <div className="customImageSetContainer" id='saved' style={{height:this.state.imageContainersHeightValue}}>
+              <div className="customImageSetContainerTitle" onClick={this.toggleSavedImageSetBox}>
+                <h6>Stored</h6>
+                {this.state.isSavedBoxOpen ? <CollapseIcon/> : <ExpandIcon/>}
+              </div>
+              {this.state.isSavedBoxOpen && <div className="customImageSetWrapper">
+                {/* list of image sets display */}
+                {this.state.classroomImageSets.map((imageSet) => (
+                  <ImageStack
+                    key={imageSet.docId}
+                    onClick={() =>
+                      this.onSelectClassroomImageSetHandler(imageSet.docId)
+                    }
+                    name={imageSet.name}
+                    src={imageSet.displayPicture || imageSet.imageLinks[0]}
+                  />
+                ))}
+              </div>}
             </div>
           </div>
           {/* main images view container */}
           <div className="customImageViewContainer">
+            {/* options container */}
+            <div className='customOptionsContainer' >
+              <div className='customOptionsWrapper' >
+                <FileInputButton onChangeHandler={this.chooseFileChangeHandler} />
+              </div>
+            </div>
             {/* display container */}
             <div className="customDisplayContainer">
               {this.state.generatedQuiz && this.state.generatedQuiz.map(({image_path, question, answer}, index) => (
@@ -380,13 +436,8 @@ export default class index extends Component {
             </div>
             {/* buton container */}
             <div className="customButtonContainer">
-              <div className="btn blue darken-3 z-depth-0 customQuizButton">
-                <input
-                  ref='file'
-                  type='file'
-                  onChange={this.chooseFileChangeHandler}
-                />
-              </div>
+              {/*<FileInputButton onChangeHandler={this.chooseFileChangeHandler} />*/}
+              <div className='customButtonWrapper'>
               <p className='customQuizButton'>
                 <label>
                   <input
@@ -408,6 +459,7 @@ export default class index extends Component {
                 onClick={this.uploadHandler}
               >
                 Upload Quiz
+              </div>
               </div>
             </div>
           </div>
