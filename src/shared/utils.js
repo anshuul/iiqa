@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios";
 
 // let messageObj = new SpeechSynthesisUtterance()
 var voices = window.speechSynthesis.getVoices();
@@ -14,11 +14,16 @@ export function textToSpeech(message) {
 }
 
 export const dbAPI = axios.create({
-  baseURL: 'http://127.0.0.1:8000/',
-  headers: { 'Content-Type': 'application/json' },
-})
+  baseURL: "http://127.0.0.1:8000/",
+  headers: { "Content-Type": "application/json" },
+});
 
 export const getHeightForMainContainer = () => {
-  const heightOfNavbarInVH = (100 * 64) / window.innerHeight
-  return `${100-heightOfNavbarInVH}vh`
-}
+  // const heightOfNavbarInVH = (100 * 64) / window.innerHeight;
+  // return `${100 - heightOfNavbarInVH}vh`;
+  const navBar = document.querySelector("nav");
+  let navBarHeight = 0;
+  if (navBar) navBarHeight = navBar.offsetHeight;
+  console.log(navBar, navBarHeight);
+  return `${window.innerHeight - navBarHeight}px`;
+};

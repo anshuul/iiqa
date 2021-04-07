@@ -1,0 +1,105 @@
+.customInputField {
+  margin-bottom: 5px;
+  height: 65px;
+}
+
+.customCol {
+  text-align: left;
+  /*   border: 1px solid #d3d3d3; */
+  background-color: white;
+  box-shadow: -6px 4px 8px #d3d3d3;
+  padding: 0 4% !important;
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+  height: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  /* overflow-y: scroll; */
+}
+
+.customMainContainer {
+  /* background-image: url("../../assets/homeback.jpg"); 
+  background-position: left;
+  background-size: 70% 100%;
+  height: 100%;*/
+  /*   background: linear-gradient(to right, #00b4db, #0083b0); */
+  /* background: linear-gradient(to left, #36d1dc, #5b86e5);
+  background-position: left;
+  background-size: 70% 100%; */
+  /* background-image: url("../../assets/homeback.svg");
+  background-position: left;
+  background-size: 60% 100%;
+  background-repeat: no-repeat; */
+  background-color: #f0f8ff;
+  overflow: hidden;
+}
+
+.customLeftContainer {
+  /* background-size: 50% 100%; */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom {
+  width: 100%;
+  max-width: 100%;
+}
+
+.customRow {
+  height: 100%;
+}
+
+.headingLeftContainer {
+  padding-left: 10%;
+  padding-top: 1%;
+  text-align: left;
+  font-family: "Abril Fatface", cursive;
+}
+
+.headingRightContainer {
+  padding-top: 30px;
+  padding-bottom: 10%;
+  text-align: center;
+  font-family: "Poppins", cursive;
+}
+
+.headingRightContainer p {
+  /* font-family: "Abril Fatface", cursive; */
+  font-size: 45px;
+}
+
+.customSubmitButton {
+  width: 100%;
+  height: 2.5rem;
+  font-size: 18px;
+}
+
+.customLabel {
+  font-size: 1rem !important;
+}
+
+@media only screen and (max-width: 950px) {
+  .customLeftContainer {
+    display: none;
+  }
+
+  .customRow {
+    display: flex;
+  }
+
+  .customCol {
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    box-shadow: 14px -1px 9px 1px #d3d3d3;
+    height: 50%;
+    margin-top: 10%;
+  }
+}
