@@ -15,12 +15,12 @@ import AuthRoute from "./routes/AuthRoute";
 import SelfLearning from "./component/SelfLearning/selfLearning";
 import Quiz from "./component/quiz/Quiz";
 import FinalizeQuiz from "./component/FinalizeQuiz/FinalizeQuiz";
-import Loading from './component/layout/Loading'
+import Loading from "./component/layout/Loading";
 
 class App extends React.Component {
   state = {
     currentUser: {
-      uid:''
+      uid: "",
     },
     // loading:true,
     setCurrentUser: this.setCurrentUser.bind(this),
@@ -37,48 +37,46 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log('on refresh')
-    const currentUserUid = localStorage.getItem("currentUserId")
-    if(currentUserUid && !this.state.currentUser.docId) {
-      getOnlyUserProfile(currentUserUid)
-      .then(userData => {
-        console.log(userData)
-        this.setState({...this.state, currentUser:userData})
-      })
+    console.log("on refresh");
+    const currentUserUid = localStorage.getItem("currentUserId");
+    if (currentUserUid && !this.state.currentUser.docId) {
+      getOnlyUserProfile(currentUserUid).then((userData) => {
+        console.log(userData);
+        this.setState({ ...this.state, currentUser: userData });
+      });
     }
-    this.setState({...this.state, loading:false})
+    this.setState({ ...this.state, loading: false });
   }
 
   setCurrentUser(currentUser) {
-    console.log('currentUser state updated')
+    console.log("currentUser state updated");
     this.setState({ ...this.state, currentUser });
   }
 
   render() {
-    console.log(this.state.currentUser)
+    console.log(this.state.currentUser);
     return (
       <AuthContext.Provider value={this.state}>
-        {<BrowserRouter>
-          <div className="App">
-            <Navbar />
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/signin" component={SignIn} />
-              <AuthRoute path="/signup" component={SignUp} />
-              <Route path="/classroom" component={Classroom} />
-              <Route path="/dashboard" component={Dashboard} />
-              <Route
-                path="/set-up-quiz"
-                component={SetUpQuiz}
-              />
-              <Route path="/selflearn" component={SelfLearning} />
-              <Route path="/quiz" component={Quiz} />
-              <Route path="/finalizequiz" component={FinalizeQuiz} />
-            </Switch>
-          </div>
-        </BrowserRouter>}
+        {
+          <BrowserRouter>
+            <div className="App">
+              <Navbar />
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <Route path="/signin" component={SignIn} />
+                <AuthRoute path="/signup" component={SignUp} />
+                <Route path="/classroom" component={Classroom} />
+                <Route path="/dashboard" component={Dashboard} />
+                <Route path="/set-up-quiz" component={SetUpQuiz} />
+                <Route path="/selflearn" component={SelfLearning} />
+                <Route path="/quiz" component={Quiz} />
+                <Route path="/finalizequiz" component={FinalizeQuiz} />
+              </Switch>
+            </div>
+          </BrowserRouter>
+        }
       </AuthContext.Provider>
-    )
+    );
   }
 }
 
