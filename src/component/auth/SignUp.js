@@ -124,17 +124,10 @@ class SignUp extends Component {
                   alert(message);
                   this.props.history.push("/classroom");
                 }
-<<<<<<< HEAD
-                const userData = await getOnlyUserProfile(uid)
-                this.props.setCurrentUser({...userData})
-                alert(message)
-                this.props.history.push('/classroom')
-=======
               } catch (err) {
-                alert(err.message);
+                alert(err.message)
               } finally {
-                this.disableLoading();
->>>>>>> c6d355304a5f651d43c247ddb9e9d8ca3b3d4dba
+                this.disableLoading()
               }
             }}
           >
@@ -154,6 +147,7 @@ class SignUp extends Component {
                     </h1>
                   </div>
                   <img
+                    alt='HomeBack'
                     src={HomeBack}
                     className="customAuthImage"
                     width="70%"
