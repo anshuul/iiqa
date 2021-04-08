@@ -13,7 +13,7 @@ export default function index({onChangeHandler}) {
             />
             <label for="file" className='fileInputLabel'>
                 <img alt='uploadFileIcon' src={UploadIcon} height='20px' width='20px'/>
-                <p>Choose a file</p>
+                <p id='buttonLabel'>Choose a file</p>
             </label>
         </div>
     )

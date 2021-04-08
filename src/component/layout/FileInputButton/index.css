@@ -22,7 +22,7 @@
     /* font-weight: 700; */
     color: white;
     /* background-color: blue; */
-    display: inline-block;
+    /* display: inline-block; */
 }
 
 .fileInput:focus + .fileInputLabel,

@@ -46,7 +46,7 @@ export default class index extends Component {
       generatedQuiz: [],
       isSavedBoxOpen:false,
       isPredfinedBoxOpen:true,
-      imageContainersHeightValue:'93.5%',
+      imageContainersHeightValue:'95.5%',
     };
     this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(
       this
@@ -267,7 +267,7 @@ export default class index extends Component {
     } else if(!isSavedBoxOpen && !isPredfinedBoxOpen){
       return ''
     } 
-    return '93.7%'
+    return '95.5%'
   }
 
   toggleSavedImageSetBox(){
@@ -331,8 +331,8 @@ export default class index extends Component {
           {/* Image sets container */}
           <div className='customImageMenuContainer' >
             <div className="customImageSetContainer" id='predefined' style={{height:this.state.imageContainersHeightValue}}>
-              <div className="customImageSetContainerTitle" onClick={this.togglePredefinedImageSetBox}>
-                <h6>Ready - made</h6>
+              <div className="customImageSetContainerTitle grey lighten-4" onClick={this.togglePredefinedImageSetBox}>
+                <p>Ready - made</p>
                 {this.state.isPredfinedBoxOpen ? <CollapseIcon/> : <ExpandIcon/>}
               </div>
               {this.state.isPredfinedBoxOpen && <div className="customImageSetWrapper">
@@ -350,8 +350,8 @@ export default class index extends Component {
               </div>}
             </div>
             <div className="customImageSetContainer" id='saved' style={{height:this.state.imageContainersHeightValue}}>
-              <div className="customImageSetContainerTitle" onClick={this.toggleSavedImageSetBox}>
-                <h6>Stored</h6>
+              <div className="customImageSetContainerTitle grey lighten-4" onClick={this.toggleSavedImageSetBox}>
+                <p>Stored</p>
                 {this.state.isSavedBoxOpen ? <CollapseIcon/> : <ExpandIcon/>}
               </div>
               {this.state.isSavedBoxOpen && <div className="customImageSetWrapper">

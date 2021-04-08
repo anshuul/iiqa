@@ -4,7 +4,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* flex:1; */
 }
 
 .customQuizContainer {
@@ -14,6 +13,7 @@
     width:100%;
     justify-content: flex-start;
     margin-top: 1%;
+    /* background-color: rgb(255,228,225); */
     /* border:1px solid #d3d3d3; */
 }
 
@@ -39,12 +39,13 @@
     /* border:1px solid grey; */
     /* border-radius: 20px; */
     /* box-shadow: 5px 0px 8px #d3d3d3; */
-    margin: 0px 20px 0px 0px;
+    /* margin: 0px 20px 0px 0px; */
 }
 
 .customImageSetWrapper {
     display:flex;
     flex-direction: column;
+    justify-content: flex-start;
     /* flex-wrap: wrap; */
     flex:1;
     align-items: center;
@@ -90,9 +91,11 @@
     flex:0.8;
     width:100%;
     max-height: 82%;
+    min-height: 82%;
     /* height:500px; */
     /* max-height:500px; */
-    border:1px solid #d3d3d3;
+    border:1px solid grey;
+    border-radius: 25px;
     /* background-color: white; */
     overflow-y: scroll;
 }
@@ -176,14 +179,21 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     cursor: pointer;
-    min-width:198px;
+    /* color:white; */
+    font-weight: 200;
 }
 
-.customImageSetContainerTitle > h6 {
+.customImageSetContainerTitle > p {
+    text-transform: uppercase;
     flex:1;
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1em;
+    padding:3px 0;
 }
 
 .customDropDownIcon {
@@ -191,6 +201,7 @@
     right:8%;
     cursor: pointer;
     width:15px;
+    /* z-index: 5; */
 }
 
 .customDisplayContainer::-webkit-scrollbar {
@@ -227,21 +238,28 @@
 
     .customQuizMainContainer {
         /* height:100vh; */
+        top:0;
+        flex-wrap: nowrap;
     }
 
     .customImageMenuContainer {
         height:auto;
         width:100%;
+        margin-bottom: 2.5%;
     }
 
     .customImageSetContainerTitle {
-        max-width: 198px;
+        /* max-width: 198px; */
     }
 
     .customQuizContainer {
         flex-direction: column;
         flex:1;
         width:100%;
+    }
+
+    .customOptionsContainer {
+        padding-bottom: 5px;
     }
 
     .customImageSetContainer {
@@ -254,13 +272,14 @@
         /* align-items: center; */
         border:0;
         border-bottom:1px solid #d3d3d3;
-        margin: 0px 0px 20px 0px;
+        /* margin: 0px 0px 20px 0px; */
     }
 
     .customImageSetWrapper {
         flex-direction: row;
         justify-content: flex-start;
         align-items: flex-start;
+        padding-bottom:0;
     }
 
     .customImageViewContainer {
