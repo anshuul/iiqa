@@ -18,14 +18,29 @@
   text-align: left;
 }
 
-@media only screen and (max-width: 635px) {
-  .finalizeQuiz {
-    display: flex;
+.finalizeQuizModules {
+  width: 60%;
+  min-width: 280px;
+  border: 1px solid #d3d3d3;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  box-shadow: 5px 5px 5px #d3d3d3;
+  border-radius: 10px;
+  padding: 20px 10px;
+  margin-bottom: 25px;
+  margin-right: 15px;
+  background-color: #f0f8ff;
+}
+
+@media only screen and (max-width: 823px) {
+  .finalizeQuizModules {
     flex-direction: column;
-    align-items: center;
   }
 }
 
 .container {
-  height: 100% !important;
+  height: 100%;
 }

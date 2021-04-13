@@ -102,7 +102,9 @@ export async function getClassroomData(classroomDocId){
 
     try {
         const {data} = await dbAPI.get(`/classrooms/${classroomDocId}`)
-        return data.classroomData
+        let { classroomData } = data
+        classroomData.name = classroomData.name.toUpperCase()
+        return classroomData
     } catch (err) {
         console.log(err.response)
         throw new Error( err.response.data.error)

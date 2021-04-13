@@ -9,24 +9,23 @@ const SelfLearningModules = (props) => {
     return colors[Math.floor(Math.random() * 4)];
   };
 
-  const defaultClassName = "card lighten-2";
+  const defaultClassName = "card lighten-2 selfLearningModuleContainer";
   const finalClassName = `${defaultClassName} ${randomize()}`;
 
   return (
     <div
       className={finalClassName}
-      style={{ width: "250px", marginLeft: "20px", height: "120px", cursor:'pointer' }}
       onClick={() => props.onSelect()}
     >
-      <div className="card-content white-text">
+      <div className="card-content white-text selfLearningCardContent">
+        <div className="selfLearningModuleImage">
+          <Avatar displayPicture={props.displayPicture} className='selfLearningCustomAvatar' />
+        </div>
         <span
-          className="card-title left"
-          style={{ width: "55%", fontSize: 18 }}
+          className="card-title selfLearningModuleTitle"
         >
           {props.name}
         </span>
-        <Avatar displayPicture={props.displayPicture} />
-        
       </div>
     </div>
   );

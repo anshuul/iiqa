@@ -27,6 +27,8 @@ class ClassroomComponent extends Component {
       loading: false,
       isCreateBoxDisplayed:false,
       isJoinBoxDisplayed:false,
+      errorMessage: '',
+      successMessage: '',
     };
     this.enableCreateBox = this.enableCreateBox.bind(this)
     this.disableCreateBox = this.disableCreateBox.bind(this)
@@ -79,9 +81,10 @@ class ClassroomComponent extends Component {
         }
       }
     })
-    .catch(err =>
-      console.log(err.message)
-    )
+    .catch(err => {
+        console.log(err.message)
+        this.props.errorOpenHandler('Please Login First')
+      })
     .finally(() => this.setState({...this.state, loading:false})
     )
   }
@@ -133,7 +136,14 @@ class ClassroomComponent extends Component {
 export default function Classroom(props){
   return (
     <AuthContext.Consumer>
-      {({currentUser, setCurrentUser}) => <ClassroomComponent {...props} currentUser = {currentUser} setCurrentUser={setCurrentUser}/>}
+      {({currentUser, setCurrentUser, errorClosehandler, successCloseHandler, errorOpenHandler, successOpenHandler}) => 
+      <ClassroomComponent 
+        {...props} 
+        currentUser = {currentUser} 
+        setCurrentUser={setCurrentUser}
+        errorOpenHandler={errorOpenHandler}
+        successOpenHandler={successOpenHandler}  
+      />}
     </AuthContext.Consumer>
   )
 }

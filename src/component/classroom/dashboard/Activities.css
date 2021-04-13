@@ -1,0 +1,59 @@
+.cardBox {
+    display:flex;
+    padding:15px 10px 10px 20px;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border: 1px solid #d3d3d3;
+    /* box-shadow: 2px 2px 5px #d3d3d3; */
+    border-radius: 10px;
+    /* height:100px */
+}
+
+.cardBoxBoxed {
+    box-shadow: 2px 2px 5px #d3d3d3;
+}
+
+.activityDp {    
+    border-radius: 50%;
+    padding:10px 10px 5px 10px
+}
+
+#quizDp {
+    /* background-color: #1565c8; */
+}
+
+#createDp {
+    background-color: #d3d3d3;
+}
+
+.activityData {
+    display:flex;
+    flex-direction: column;
+    padding:0px 10px 10px 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.activityData > p {
+    font-size: 20px;
+}
+
+.activityDetailsContainer {
+    display: flex;
+    margin-top:5px
+}
+
+.activityDateTimeContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 20px;
+    font-size: 12px;
+}
+
+.dateTimeIcon {
+    margin-right: 10px;
+    width:15px
+}

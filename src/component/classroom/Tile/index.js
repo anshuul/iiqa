@@ -5,7 +5,7 @@ import JoinIcon from '../../../assets/join.png'
 import CreateIcon from '../../../assets/create-white.png'
 
 const Wrapper = (props) => (
-    <ClassLayoutContainer {...props}>
+    <ClassLayoutContainer {...props} emphasize={true}>
         <div className='customWrapper blue lighten-1'>
             {props.children}
         </div>

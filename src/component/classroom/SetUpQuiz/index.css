@@ -1,3 +1,7 @@
+.input-field .prefix.active {
+    color: #1565c8 !important;
+}
+
 .customQuizMainContainer {
     display: flex;
     flex:1;
@@ -71,9 +75,10 @@
 
 .customOptionsContainer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     flex:0.1;
+    padding:0px 35px;
 }
 
 .customOptionsWrapper {
@@ -165,11 +170,11 @@
     /* margin-top: 0.5%;
     margin-left:15.7%; */
     margin: 5px;
-    width:20px;
+    width:21px;
     text-align: center;
     background-color: #d3d3d3;
     color:grey;
-    border-radius: 20px;
+    border-radius: 40px;
     cursor:pointer;
     /* font-size: 30px; */
     /* width:100%; */
@@ -183,6 +188,7 @@
     cursor: pointer;
     /* color:white; */
     font-weight: 200;
+    background-color: #F0F8FF;
 }
 
 .customImageSetContainerTitle > p {
@@ -196,12 +202,10 @@
     padding:3px 0;
 }
 
-.customDropDownIcon {
-    position: relative;
-    right:8%;
-    cursor: pointer;
-    width:15px;
-    /* z-index: 5; */
+#quiz-name-label {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .customDisplayContainer::-webkit-scrollbar {
@@ -234,6 +238,13 @@
     background: rgba(180, 179, 179, 0.7);
 }
 
+@media only screen and (max-width:450px){
+    .customOptionsContainer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
 @media only screen and (max-width:575px){
 
     .customQuizMainContainer {
@@ -259,7 +270,7 @@
     }
 
     .customOptionsContainer {
-        padding-bottom: 5px;
+        padding: 0 0 5px 5px;
     }
 
     .customImageSetContainer {

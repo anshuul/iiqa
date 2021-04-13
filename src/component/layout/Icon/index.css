@@ -1,0 +1,7 @@
+.customDropDownIcon {
+    position: relative;
+    right:8%;
+    cursor: pointer;
+    width:15px;
+    /* z-index: 5; */
+}

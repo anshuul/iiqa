@@ -10,6 +10,7 @@ class FinalizeQuiz extends Component {
   state = {
     dateTimeOfCreation: "",
     quizData: [],
+    quizName: '',
   };
 
   componentDidMount() {
@@ -17,8 +18,9 @@ class FinalizeQuiz extends Component {
     console.log(classroomDocId, quizDocId);
     getGeneratedQuiz(classroomDocId, quizDocId)
       .then((quizDataResp) => {
-        const { quizData, dateTimeOfCreation } = quizDataResp;
-        this.setState({ ...this.state, quizData, dateTimeOfCreation });
+        console.log(quizDataResp)
+        const { quizData, dateTimeOfCreation, quizName } = quizDataResp;
+        this.setState({ ...this.state, quizData, dateTimeOfCreation, quizName });
       })
       .catch((err) => {
         console.error(err);
@@ -29,7 +31,7 @@ class FinalizeQuiz extends Component {
     return (
       <div style={{ height: getHeightForMainContainer() }}>
         <div className="container center-align">
-          <h4>This the Quiz generated</h4>
+          <h4>This your generated Quiz {this.state.quizName && `- ${this.state.quizName}`}</h4>
           <p style={{ color: "lightgrey" }}>{this.state.dateTimeOfCreation}</p>
           <div className="finalizeQuiz">
             {this.state.quizData.map((quiz, index) => {

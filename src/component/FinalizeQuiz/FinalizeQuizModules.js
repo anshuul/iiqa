@@ -10,24 +10,7 @@ const FinalizeQuizModules = (props) => {
 
   return (
     <div
-      className="quizMain "
-      style={{
-        // height: "40%",
-        width: "60%",
-        minWidth: "280px",
-        border: "1px solid #d3d3d3",
-        display: "flex",
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        boxShadow: `5px 5px 5px #d3d3d3`,
-        borderRadius: "10px",
-        padding: "20px 10px",
-        marginBottom: "25px",
-        marginRight: "15px",
-        backgroundColor: "#f0f8ff",
-      }}
+      className="finalizeQuizModules"
     >
       <div className="image">
         <img src={props.image} alt="" height="200" width="200" />

@@ -16,6 +16,7 @@ import SelfLearning from "./component/SelfLearning/selfLearning";
 import Quiz from "./component/quiz/Quiz";
 import FinalizeQuiz from "./component/FinalizeQuiz/FinalizeQuiz";
 import Loading from "./component/layout/Loading";
+import { ErrorAlert, InfoAlert } from './component/layout/Alert'
 
 class App extends React.Component {
   state = {
@@ -24,6 +25,12 @@ class App extends React.Component {
     },
     // loading:true,
     setCurrentUser: this.setCurrentUser.bind(this),
+    errorMessage:'',
+    successMessage:'',
+    // errorCloseHandler: this.errorCloseHandler.bind(this),
+    // successCloseHandler: this.errorCloseHandler.bind(this),
+    errorOpenHandler: this.errorOpenHandler.bind(this),
+    successOpenHandler: this.successOpenHandler.bind(this),
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -53,6 +60,26 @@ class App extends React.Component {
     this.setState({ ...this.state, currentUser });
   }
 
+  errorCloseHandler(){
+    console.log('ok')
+    this.setState({...this.state, errorMessage:''})
+  }
+
+  successCloseHandler(){
+    console.log('ok')
+    this.setState({...this.state, successMessage:''})
+  }
+
+  errorOpenHandler(message){
+    console.log('ok')
+    this.setState({...this.state, errorMessage:message})
+  }
+
+  successOpenHandler(message){
+    console.log('ok')
+    this.setState({...this.state, successMessage:message})
+  }
+
   render() {
     console.log(this.state.currentUser);
     return (
@@ -60,6 +87,8 @@ class App extends React.Component {
         {
           <BrowserRouter>
             <div className="App">
+              {this.state.errorMessage && <ErrorAlert message={this.state.errorMessage} onOkClick={this.errorCloseHandler.bind(this)} />}
+              {this.state.successMessage && <InfoAlert message={this.state.successMessage} onOkClick={this.successCloseHandler.bind(this)} />}
               <Navbar />
               <Switch>
                 <Route exact path="/" component={Home} />

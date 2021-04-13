@@ -3,7 +3,7 @@ import "./Quiz.css";
 import FinalScore from "./finalScore";
 import Speech from "react-speech";
 import { decryptInformationAfterRouting } from "../../services/classroomServices";
-import { saveQuizScore } from "../../services/quizServices";
+import { saveQuizScore, caitalizeQuizData } from "../../services/quizServices";
 import { textToSpeech } from "../../shared/utils";
 import volumeIcon from "../../assets/volume.svg";
 import { getHeightForMainContainer } from '../../shared/utils'
@@ -28,7 +28,7 @@ function Quiz(props) {
       if (props.location.state.quizData) {
         localStorage.setItem("quizToken", "started");
         console.log(localStorage.getItem("quizToken"));
-        setQuizData(props.location.state.quizData);
+        setQuizData(caitalizeQuizData(props.location.state.quizData));
       } else {
 
         console.log("else block");

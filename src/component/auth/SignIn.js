@@ -23,7 +23,7 @@ class SignIn extends Component {
         console.log("signed out");
         this.props.setCurrentUser({ uid: "" });
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => this.props.errorOpenHandler(err.message));
   }
 
   // componentDidUpdate(){ // caled when redirected to this page
@@ -80,7 +80,8 @@ class SignIn extends Component {
                     this.props.setCurrentUser({ ...userData });
                     this.props.history.push("classroom");
                   } catch (err) {
-                    alert(err.message);
+                    console.log(err.message);
+                    this.props.errorOpenHandler(err.message)
                   } finally {
                     this.disableLoading();
                   }
@@ -100,7 +101,7 @@ class SignIn extends Component {
                           Sign In to enter a new world of Learning.
                         </h1>
                       </div>
-                      <img src={HomeBack} width="70%" height="70%" />
+                      <img alt='homeback' src={HomeBack} width="70%" height="70%" />
                     </div>
 
                     <div
@@ -135,6 +136,7 @@ class SignIn extends Component {
                           type="password"
                           id="password"
                           {...props.getFieldProps("password")}
+                          onKeyDown={(event) => event.key === 'Enter' && props.handleSubmit()}
                         />
                         {props.touched.password && props.errors.password && (
                           <ErrorText errorText={props.errors.password} />
@@ -168,11 +170,13 @@ class SignIn extends Component {
 export default function ComponentWithContext(props) {
   return (
     <AuthContext.Consumer>
-      {({ currentUser, setCurrentUser }) => (
+      {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
         <SignIn
           {...props}
           currentUser={currentUser}
           setCurrentUser={setCurrentUser}
+          errorOpenHandler={errorOpenHandler}
+          successOpenHandler={successOpenHandler}
         />
       )}
     </AuthContext.Consumer>

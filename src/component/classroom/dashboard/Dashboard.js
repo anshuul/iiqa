@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import StudentDetails from "./StudentDetails";
 import Activities from "./Activities";
 import "./Dashboard.css";
-import Avatar from "../../../assets/dp.svg";
+import Avatar from '../../layout/Avatar'
 import {
   encryptInformationForRouting,
   decryptInformationAfterRouting,
@@ -21,6 +21,8 @@ import Loading from "../../layout/Loading";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context/authContext";
 import Score from "../../scores/scores";
+import CopyIcon from '../../../assets/copy-icon.png'
+import CreateQuizIcon from '../../../assets/create-quiz-icon.png'
 
 class Dashboard extends Component {
   constructor(props) {
@@ -49,6 +51,7 @@ class Dashboard extends Component {
       this
     );
     this.onSelectCreateQuizHandler = this.onSelectCreateQuizHandler.bind(this)
+    this.onCopyHandler = this.onCopyHandler.bind(this)
   }
 
   onSelectActivityByStudentHandler = (quizData, quizDocId) => {
@@ -71,9 +74,8 @@ class Dashboard extends Component {
           },
         });
       } else {
-        alert(
-          "You are not eligible for the quiz. As you already attended this quiz."
-        );
+        console.log("You are not eligible for the quiz. As you already attended this quiz.");
+        this.props.errorOpenHandler("You are not eligible for the quiz. As you already attended this quiz.")
       }
     });
   };
@@ -93,6 +95,10 @@ class Dashboard extends Component {
         classroomDocId: this.props.location.state.classroomDocId
       }
     })
+  }
+
+  onCopyHandler(){
+    navigator.clipboard.writeText(this.state.classroomData.code)
   }
 
   componentDidMount() {
@@ -118,7 +124,8 @@ class Dashboard extends Component {
         });
       })
       .catch((err) => {
-        alert(err.message);
+        console.log(err.message);
+        this.props.errorOpenHandler('Cound not fetch data for Dashboard')
       })
       .finally(() => {
         this.setState({ ...this.state, classroomLoading: false });
@@ -130,7 +137,8 @@ class Dashboard extends Component {
         this.setState({ ...this.state, quizActivities: quizActivitiesData });
       })
       .catch((err) => {
-        alert(err.message);
+        console.log(err.message);
+        this.props.errorOpenHandler('Cound not fetch data for Dashboard')
       });
   }
 
@@ -151,168 +159,88 @@ class Dashboard extends Component {
           />
         )}
         <div className="row">
-          <div
-            className={`col s12 m12 ${this.state.classroomData.color} lighten-2`}
-            style={{
-              border: "1px solid lightgrey",
-              marginTop: "20px",
-              height: "200px",
-              borderRadius: "15px",
-              boxShadow: "10px 10px 10px #d3d3d3",
-            }}
-          >
-            <div className="content">
-              <div className="left" style={{width:'30%',minWidth:'200px'}}>
-                <div className="classroom">
-                  <p
-                    style={{
-                      fontSize: "30px",
-                      paddingTop: "20px",
-                      paddingLeft: "10px",
-                      color: "white",
-                    }}
-                  >
+          <div className={`col s12 m12 ${this.state.classroomData.color} lighten-2 customContentContainer`} >
+            <div className="content customContent">
+              <div className="left customContentClassroomData">
+                  <p className="customContentData" id='classroomData'>
                     {this.state.classroomData.title}
                   </p>
-                </div>
 
-                <div className="teacherclass ">
-                  <p
-                    style={{
-                      fontSize: "20px",
-                      paddingTop: "10px",
-                      paddingLeft: "10px",
-                      color: "white",
-                    }}
-                  >
+                  <p className="customContentData" id='teacherData'>
                     Teacher : {this.state.teacherName}
                   </p>
-                </div>
-                <div className="teacherclass ">
-                  <p
-                    style={{
-                      fontSize: "15px",
-                      paddingTop: "10px",
-                      paddingLeft: "10px",
-                      color: "white",
-                    }}
-                  >
-                    Code :{" "}
+                  
+                  <p className="customContentData" id='codeData'>
+                    Code :{' '}
                     <span
                       style={{
                         fontSize: "15px",
+                        textAlign:'left'
                       }}
+                      id='codeText'
                     >
-                      {this.state.classroomData.code}
+                     {this.state.classroomData.code}
                     </span>
+                    <img alt='copy' src={CopyIcon} id='copyIcon' onClick={this.onCopyHandler}/>
                   </p>
-                </div>
               </div>
-              <div
-                className="imageclass right"
-              >
-                <img
-                  id='image'
-                  src={this.state.classroomData.displayPicture}
-                  alt=""
-                />
+              <div className="right customImageClass">
+                <Avatar displayPicture={this.state.classroomData.displayPicture}/>
               </div>
             </div>
           </div>
         </div>
-        {this.props.currentUser.isTeacher && (
-          <div className="row">
-            <div
-              className="col s12 m12"
-              style={{
-                marginTop: "20px",
-                display: "flex",
-                justifyContent: "center",
-                height: "100px",
-              }}
-            >
-              <div
-                onClick={this.onSelectCreateQuizHandler}
-                className="blue darken-2 btn-flat btn-large quiz-button"
-                style={{
-                  color: "white",
-                  borderRadius: "20px",
-                  minWidth: "45%",
-                  fontSize: "20px",
-                  margin: "auto",
-                  padding: "0px",
-                }}
-              >
-                Create Quiz
+        
+        <div className='customMainAreaContainer' >
+          <div className='customSubMainLeftContainer'>
+          <Title>Students</Title>
+            <StudentDetails studentsNameList={this.state.studentsNameList} />
+          </div>
+          <div className='customSubMainRightContainer' >
+            {this.props.currentUser.isTeacher && <div className="cardBox cardBoxBoxed" onClick={this.onSelectCreateQuizHandler}>
+              <div className='activityDp' id='createDp'>
+                <img alt='assignment' src={CreateQuizIcon} width='30px'/>
               </div>
-            </div>
-          </div>
-        )}
-        <div className="row" style={{ height: "70%" }}>
-          <div
-            className="col s12 m8 "
-            style={{
-              border: "1px solid lightgrey",
-              marginTop: "20px",
-              borderRadius: "15px",
-              boxShadow: "10px 10px 10px #d3d3d3",
-              height: "80%",
-            }}
-          >
-            <h5 className="center">Activities</h5>
-            <div
-              className="center student-details"
-              style={{
-                paddingTop: "5px",
-                overflowX: "hidden",
-                overflowY: "auto",
-                height: "80%",
-              }}
-            >
-              <Activities
-                activities={this.state.quizActivities}
-                classroomDocId={this.state.classroomData.code}
-                onClickActivityHandler={
-                  this.props.currentUser.isStudent
-                    ? this.onSelectActivityByStudentHandler
-                    : this.onSelectActivityByTeacherHandler
-                }
-              />
-            </div>
-          </div>
-          <div
-            className="col s12 m3 offset-m1"
-            style={{
-              border: "1px solid lightgrey",
-              marginTop: "20px",
-              borderRadius: "15px",
-              boxShadow: "10px 10px 10px #d3d3d3",
-              height: "80%",
-            }}
-          >
-            <h5 className="center">Student Names</h5>
-            <div
-              className="center student-details"
-              style={{
-                paddingTop: "5px",
-                overflowX: "hidden",
-                overflowY: "auto",
-                height: "80%",
-              }}
-            >
-              <StudentDetails studentsNameList={this.state.studentsNameList} />
-            </div>
+              <div className='activityData'>
+                <p>Create New Quiz</p>
+              </div>
+            </div>}
+            <Activities
+              activities={this.state.quizActivities}
+              classroomDocId={this.state.classroomData.code}
+              onClickActivityHandler={
+                this.props.currentUser.isStudent
+                  ? this.onSelectActivityByStudentHandler
+                  : this.onSelectActivityByTeacherHandler
+              }
+              color={this.state.classroomData.color}
+            />
           </div>
         </div>
+
       </div>
     );
   }
 }
 
+const Title = ({children:text}) => (
+  <div className='customDashboardTitleContainer'>
+    <p>{text}</p>
+  </div>
+)
+
 export default function ComponentWithContext(props) {
   return (
     <AuthContext.Consumer>
-      {({ currentUser }) => <Dashboard currentUser={currentUser} {...props} />}
+    {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+      <Dashboard
+        {...props}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        errorOpenHandler={errorOpenHandler}
+        successOpenHandler={successOpenHandler}
+      />
+    )}
     </AuthContext.Consumer>
   );
 }

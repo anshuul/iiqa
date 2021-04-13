@@ -121,11 +121,13 @@ class SignUp extends Component {
                   }
                   const userData = await getOnlyUserProfile(uid);
                   this.props.setCurrentUser({ ...userData });
-                  alert(message);
+                  console.log(message);
+                  this.props.successOpenHandler(message)
                   this.props.history.push("/classroom");
                 }
               } catch (err) {
-                alert(err.message)
+                console.log(err.message)
+                this.props.errorOpenHandler(err.message)
               } finally {
                 this.disableLoading()
               }
@@ -313,13 +315,15 @@ class SignUp extends Component {
 export default function ComponentWithContext(props) {
   return (
     <AuthContext.Consumer>
-      {({ currentUser, setCurrentUser }) => (
-        <SignUp
-          {...props}
-          currentUser={currentUser}
-          setCurrentUser={setCurrentUser}
-        />
-      )}
+    {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+      <SignUp
+        {...props}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        errorOpenHandler={errorOpenHandler}
+        successOpenHandler={successOpenHandler}
+      />
+    )}
     </AuthContext.Consumer>
   );
 }

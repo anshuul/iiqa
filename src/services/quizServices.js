@@ -1,6 +1,6 @@
 import { storage } from "../shared/firebase";
 
-import { dbAPI } from '../shared/utils'
+import { dbAPI, capitalize } from '../shared/utils'
 
 export function getPromiseForFetchingImageSet(classroomDocId) {
   return Promise.all([
@@ -84,17 +84,18 @@ export async function getQuizData(imageSets) {
     }
 }
 
-export async function createNewQuiz(quizData, classroomDocId) {
+export async function createNewQuiz(quizData, classroomDocId, quizName) {
   /**
    * @param quizData set of quistion answrs and imageLinks to be stored
    * @param classroomDocId
+   * @param quizName
    *
    * @return return quiz docId
    */
 
    try {
     const { data } = await dbAPI.post(`/classrooms/quizzes`, {
-      classroomDocId, quizData
+      classroomDocId, quizData, quizName
     })
     return data.quizDocId
     } catch (err) {
@@ -171,6 +172,18 @@ export async function isStudentEligibleForQuiz(
   }
 }
 
+export const caitalizeQuizData = (quizData) => {
+  quizData = quizData.map(eachQuizData => {
+    let { question, answer, ...rest } = eachQuizData
+    question = capitalize(question.trim())
+    let { correct_answer, options } = answer
+    correct_answer = capitalize(correct_answer)
+    options = options.map(eachOption => capitalize(eachOption))
+    answer = {correct_answer, options}
+    return { question, answer, ...rest }
+  })
+  return quizData
+}
 
 export async function getGeneratedQuiz(classroomDocId, quizDocId){
   /**
@@ -181,7 +194,10 @@ export async function getGeneratedQuiz(classroomDocId, quizDocId){
    */
 
   try {
-    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}`)
+    let { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}`)
+    let { quizData, ...rest } = data.quizData
+    quizData = caitalizeQuizData(quizData)
+    data.quizData = {quizData, ...rest}
     return data.quizData
   } catch (err) {
       throw new Error(err.response.data.error)

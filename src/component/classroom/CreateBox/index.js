@@ -8,6 +8,7 @@ import Loading from '../../layout/Loading'
 import { AuthContext } from '../../../context/authContext'
 import ModalWrapper from '../../layout/ModalWrapper'
 import ButtonGroup from '../../layout/ButtonGroup'
+import { CancelButton, SubmitButton } from '../../layout/Button'
 
 class CreateBox extends Component {
 
@@ -44,10 +45,12 @@ class CreateBox extends Component {
         this.setState({...this.state, loading:true})
         createNewClassroom(this.state.name.trim(), this.state.colorChose, this.props.currentUser.docId, this.state.displayPictureChose)
         .then(message => {
-            alert(message)
+            console.log(message)
+            this.props.successOpenHandler(message)
         })
         .catch(err => {
-            alert(err.message)
+            console.log(err.message)
+            this.props.errorOpenHandler(err.message)
         })
         .finally(()=>{
             this.setState({...this.state, loading:false})
@@ -98,6 +101,7 @@ class CreateBox extends Component {
                                     value={this.state.name}
                                     onChange={this.onNameChange}
                                     autoFocus
+                                    onKeyDown={(event) => event.key === 'Enter' && this.createHandler()}
                                 />
                             </div>
                             <div className='checkBoxContainer' >
@@ -128,8 +132,8 @@ class CreateBox extends Component {
                                 </div>
                             </div>
                             <ButtonGroup>
-                                <div className='btn red darken-3 z-depth-0' onClick={()=>this.props.cancelHandler()}>Cancel</div>
-                                <div className='btn blue darken-3 z-depth-0' onClick={this.createHandler} >Create</div>
+                                <CancelButton onClick={()=>this.props.cancelHandler()}>Cancel</CancelButton>
+                                <SubmitButton onClick={this.createHandler} >Create</SubmitButton>
                             </ButtonGroup>
                         </form>
                     </div>
@@ -141,8 +145,16 @@ class CreateBox extends Component {
 
 export default function ComponentWithContext(props){
     return (
-        <AuthContext.Consumer>
-            {({currentUser}) => <CreateBox currentUser={currentUser} {...props} />}
-        </AuthContext.Consumer>
+    <AuthContext.Consumer>
+    {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+      <CreateBox
+        {...props}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        errorOpenHandler={errorOpenHandler}
+        successOpenHandler={successOpenHandler}
+      />
+    )}
+    </AuthContext.Consumer>
     )
 }

@@ -17,18 +17,11 @@ import ImageStack from "./ImageStack";
 import Loading from "../../layout/Loading";
 import FileInputButton from '../../layout/FileInputButton'
 import { getHeightForMainContainer } from '../../../shared/utils'
-import PlusIcon from '../../../assets/plus-black.svg'
 import MinusIcon from '../../../assets/minus-black.png'
+import { ExpandIcon, CollapseIcon } from '../../layout/Icon'
+import {AuthContext } from '../../../context/authContext'
 
-const ExpandIcon = () => (
-  <img alt='expand' src={PlusIcon} className='customDropDownIcon' />
-)
-
-const CollapseIcon = () => (
-  <img alt='collapse' src={MinusIcon} className='customDropDownIcon' />
-)
-
-export default class index extends Component {
+class SetUpQuiz extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,6 +40,7 @@ export default class index extends Component {
       isSavedBoxOpen:false,
       isPredfinedBoxOpen:true,
       imageContainersHeightValue:'95.5%',
+      quizName:'',
     };
     this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(
       this
@@ -65,6 +59,7 @@ export default class index extends Component {
     this.uploadHandler = this.uploadHandler.bind(this)
     this.toggleSavedImageSetBox = this.toggleSavedImageSetBox.bind(this)
     this.togglePredefinedImageSetBox = this.togglePredefinedImageSetBox.bind(this)
+    this.onQuizNameChange = this.onQuizNameChange.bind(this)
   }
 
   fillImagesToBeDisplayed(selectedImageSet) {
@@ -121,7 +116,8 @@ export default class index extends Component {
         this.uploadQuiz()
       })
       .catch((err) => {
-        alert('Please select some images.')
+        console.log('Please select some images.')
+        this.props.errorOpenHandler('Please select some images.')
         console.error(err)
           this.setState({ ...this.state, loading: false });
       })
@@ -137,10 +133,12 @@ export default class index extends Component {
   uploadQuiz(){
     if(this.state.generatedQuiz.length > 0){
       this.setState({...this.state, loading:true, loadingMessage:'Uploading your Quiz'})
-      createNewQuiz(this.state.generatedQuiz, this.state.currentClassroomDocId)
+      console.log('quiz name', this.state.quizName)
+      createNewQuiz(this.state.generatedQuiz, this.state.currentClassroomDocId, this.state.quizName)
       .then((quizDocId) => {
         console.log("quiz created on ", quizDocId);
-        alert("Quiz created");
+        console.log("Quiz created");
+        this.props.successOpenHandler('Quiz uploaded')
         this.props.history.push({
           pathname:'/finalizequiz',
           state: {
@@ -150,13 +148,15 @@ export default class index extends Component {
         });
       })
       .catch((err) => {
-        alert(err.message);
+        console.log(err.message);
+        this.props.errorOpenHandler(err.message)
       })
       .finally(() => {
         this.setState({ ...this.state, loading: false });
       });
     } else {
-      alert('Please generate a quiz first.')
+      console.log('Please generate a quiz first.')
+      this.props.errorOpenHandler('Please generate a quiz first.')
     }
   }
 
@@ -182,7 +182,8 @@ export default class index extends Component {
                       })
       })
       .catch((err) => {
-        alert(err.message);
+        console.log(err.message);
+        this.props.errorOpenHandler(err.message)
       })
       .finally(() => {
         this.setState({ ...this.state, loading: false });
@@ -202,8 +203,10 @@ export default class index extends Component {
 
   setUpQuizHandler() {
     // this.setState({ ...this.state, loading: true });
-    if (this.state.imageSetImages.length === 0 && this.state.uploadedImages.file.length === 0)
-      alert("Please select some image first");
+    if (this.state.imageSetImages.length === 0 && this.state.uploadedImages.file.length === 0){
+      console.log("Please select some image first");
+      this.props.errorOpenHandler("Please select some image first")
+    }
     else {
       this.setState({...this.state, loading:true, loadingMessage:'Uploading your Chosen Images'})
       uploadImagesToFirebaseStorage(this.state.uploadedImages.file)
@@ -284,6 +287,10 @@ export default class index extends Component {
     this.setState({...this.state, isPredfinedBoxOpen, imageContainersHeightValue})
   }
 
+  onQuizNameChange(event){
+    this.setState({...this.state, quizName:event.target.value})
+  }
+
   componentDidMount() {
     const { classroomDocId } = this.props.location.state
 
@@ -307,7 +314,7 @@ export default class index extends Component {
       })
       .catch((err) => {
         console.error(err);
-        alert(err.message);
+        this.props.errorOpenHandler(err.message);
       })
       .finally(() => {
         this.setState({
@@ -331,7 +338,7 @@ export default class index extends Component {
           {/* Image sets container */}
           <div className='customImageMenuContainer' >
             <div className="customImageSetContainer" id='predefined' style={{height:this.state.imageContainersHeightValue}}>
-              <div className="customImageSetContainerTitle grey lighten-4" onClick={this.togglePredefinedImageSetBox}>
+              <div className="customImageSetContainerTitle" onClick={this.togglePredefinedImageSetBox}>
                 <p>Ready - made</p>
                 {this.state.isPredfinedBoxOpen ? <CollapseIcon/> : <ExpandIcon/>}
               </div>
@@ -350,7 +357,7 @@ export default class index extends Component {
               </div>}
             </div>
             <div className="customImageSetContainer" id='saved' style={{height:this.state.imageContainersHeightValue}}>
-              <div className="customImageSetContainerTitle grey lighten-4" onClick={this.toggleSavedImageSetBox}>
+              <div className="customImageSetContainerTitle" onClick={this.toggleSavedImageSetBox}>
                 <p>Stored</p>
                 {this.state.isSavedBoxOpen ? <CollapseIcon/> : <ExpandIcon/>}
               </div>
@@ -373,9 +380,12 @@ export default class index extends Component {
           <div className="customImageViewContainer">
             {/* options container */}
             <div className='customOptionsContainer' >
-              <div className='customOptionsWrapper' >
-                <FileInputButton onChangeHandler={this.chooseFileChangeHandler} />
-              </div>
+              <div className="input-field col s6" style={{margin:0, width:'100%'}}>
+                <i className="material-icons prefix" style={{fontSize:'1.5rem', top:'1rem', width:0}}>border_color</i>
+                <input id="name_inline" type="text" style={{height:'40px', marginLeft:'2rem'}} value={this.state.quizName} onChange={this.onQuizNameChange}/>
+                <label for="name_inline" id='quiz-name-label' style={{marginLeft:'1.5rem'}}>Name of you Quiz</label>
+              </div>    
+              <FileInputButton onChangeHandler={this.chooseFileChangeHandler} />
             </div>
             {/* display container */}
             <div className="customDisplayContainer">
@@ -386,10 +396,10 @@ export default class index extends Component {
                   }}
                 >
                   <div
-                    className="cancelIcon"
+                    className="cancelIcon grey lighten-3"
                     onClick={() => this.onCrosshandlerForGeneratedQuizImages(index)}
                   >
-                    X
+                    <img alt='-' src={MinusIcon} width='12px' />
                   </div>
                   <div className='customGeneratedQuizBlock' >
                     <p className="customTextClass center">{question}</p>
@@ -411,10 +421,10 @@ export default class index extends Component {
                   }}
                 >
                   <div
-                    className="cancelIcon"
+                    className="cancelIcon grey lighten-3"
                     onClick={() => this.onCrosshandler(index)}
                   >
-                    X
+                    <img alt='-' src={MinusIcon} width='12px' />
                   </div>
                   
                 </div>
@@ -426,10 +436,10 @@ export default class index extends Component {
                   }}
                 >
                   <div
-                    className="cancelIcon"
+                    className="cancelIcon grey lighten-3"
                     onClick={() => this.onCrosshandlerForUploadedImages(index)}
                   >
-                    X
+                    <img alt='-' src={MinusIcon} width='12px' />
                   </div>
                 </div>
               ))}
@@ -467,4 +477,20 @@ export default class index extends Component {
       </div>
     );
   }
+}
+
+export default function ComponentWithContext(props){
+  return (
+      <AuthContext.Consumer>
+          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+          <SetUpQuiz
+              {...props}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              errorOpenHandler={errorOpenHandler}
+              successOpenHandler={successOpenHandler}
+          />
+          )}
+      </AuthContext.Consumer>
+  )
 }
