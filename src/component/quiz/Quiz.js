@@ -6,40 +6,45 @@ import { decryptInformationAfterRouting } from "../../services/classroomServices
 import { saveQuizScore, caitalizeQuizData } from "../../services/quizServices";
 import { textToSpeech } from "../../shared/utils";
 import volumeIcon from "../../assets/volume.svg";
-import { getHeightForMainContainer } from '../../shared/utils'
+import { getHeightForMainContainer } from "../../shared/utils";
+import { AuthContext } from "../../context/authContext";
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
-  const [isOptionSelected, setIsOptionSelected] = useState(false)
-  const [isImgLoaded, setIsImgLoaded] = useState(false)
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
+  const [isImgLoaded, setIsImgLoaded] = useState(false);
 
   useEffect(() => {
-    console.log(props);
-    // setIsImgLoaded(false)
-    // logic to prevent refreshing of quiz
-    if (localStorage.getItem("quizToken")) {
-      // incase of quiz from dashboard, quizId can be retrieved. So On refresh object for that quizId will be retried and score will be updated and saved/
-      props.history.goBack();
-      localStorage.removeItem("quizToken");
-    } else {
-      if (props.location.state.quizData) {
-        localStorage.setItem("quizToken", "started");
-        console.log(localStorage.getItem("quizToken"));
-        setQuizData(caitalizeQuizData(props.location.state.quizData));
+    try {
+      console.log(props);
+      // setIsImgLoaded(false)
+      // logic to prevent refreshing of quiz
+      if (localStorage.getItem("quizToken")) {
+        // incase of quiz from dashboard, quizId can be retrieved. So On refresh object for that quizId will be retried and score will be updated and saved/
+        props.history.goBack();
+        localStorage.removeItem("quizToken");
       } else {
+        if (props.location.state.quizData) {
+          localStorage.setItem("quizToken", "started");
+          console.log(localStorage.getItem("quizToken"));
+          setQuizData(caitalizeQuizData(props.location.state.quizData));
+        } else {
+          console.log("else block");
+        }
 
-        console.log("else block");
+        console.log("rendered");
       }
-
-      console.log("rendered");
+    } catch (err) {
+      props.errorOpenHandler(err.message);
+      props.history.goBack();
     }
 
-    const reset = () => setIsImgLoaded(false)
+    const reset = () => setIsImgLoaded(false);
 
-    return () => reset()
+    return () => reset();
   }, []);
 
   useEffect(() => {
@@ -47,32 +52,31 @@ function Quiz(props) {
   }, [quizData]);
 
   const onImageLoadHandler = () => {
-    !isImgLoaded && setIsImgLoaded(true)
+    !isImgLoaded && setIsImgLoaded(true);
     textToSpeech(
       `For the above Image, Question is, ${processQuestion(
         quizData[currentQuestionIndex].question
       )}`
     );
-    console.log(isImgLoaded)
-  }
+    console.log(isImgLoaded);
+  };
 
   useEffect(() => {
     if (
       quizData &&
       currentQuestionIndex >= 0 &&
       currentQuestionIndex < quizData.length
-    )
-    {  
-      setIsOptionSelected(false)
-      isImgLoaded && setIsImgLoaded(false)
+    ) {
+      setIsOptionSelected(false);
+      isImgLoaded && setIsImgLoaded(false);
     }
   }, [currentQuestionIndex, quizData]);
 
   const onOptionPressHandler = (event, optionTitle) => {
-    if(isOptionSelected){
-      return
+    if (isOptionSelected) {
+      return;
     } else {
-      setIsOptionSelected(true)
+      setIsOptionSelected(true);
     }
     if (optionTitle === quizData[currentQuestionIndex].answer.correct_answer) {
       textToSpeech(`Your are right. Correct answer is ${optionTitle}`);
@@ -108,7 +112,7 @@ function Quiz(props) {
   return showScore ? (
     <FinalScore score={score} outOff={quizData.length} {...props} />
   ) : (
-    <div className="quiz" style={{height:getHeightForMainContainer()}}>
+    <div className="quiz" style={{ height: getHeightForMainContainer() }}>
       {quizData && (
         <div
           style={{
@@ -120,9 +124,7 @@ function Quiz(props) {
             width: "100%",
           }}
         >
-          <div
-            className="imageClass"
-          >
+          <div className="imageClass">
             <img
               src={quizData[currentQuestionIndex].image_path}
               alt="quizimage"
@@ -134,12 +136,14 @@ function Quiz(props) {
           </div>
 
           <div className="questionClass">
-            {isImgLoaded && <p
-              className="question"
-              style={{ fontSize: "30px", textAlign: "center" }}
-            >
-              {processQuestion(quizData[currentQuestionIndex].question)}
-            </p>}
+            {isImgLoaded && (
+              <p
+                className="question"
+                style={{ fontSize: "30px", textAlign: "center" }}
+              >
+                {processQuestion(quizData[currentQuestionIndex].question)}
+              </p>
+            )}
           </div>
 
           {quizData[currentQuestionIndex].answer && (
@@ -154,20 +158,21 @@ function Quiz(props) {
                 height: "100%",
               }}
             >
-              {isImgLoaded && quizData[currentQuestionIndex].answer.options.map(
-                (optionTitle, index) => (
-                  <div className="optionsContainer" key={index}>
-                    <div
-                      className="options font-quiz text-2xl"
-                      onClick={(event) =>
-                        onOptionPressHandler(event, optionTitle)
-                      }
-                    >
-                      {optionTitle}
+              {isImgLoaded &&
+                quizData[currentQuestionIndex].answer.options.map(
+                  (optionTitle, index) => (
+                    <div className="optionsContainer" key={index}>
+                      <div
+                        className="options font-quiz text-2xl"
+                        onClick={(event) =>
+                          onOptionPressHandler(event, optionTitle)
+                        }
+                      >
+                        {optionTitle}
+                      </div>
                     </div>
-                  </div>
-                )
-              )}
+                  )
+                )}
             </div>
           )}
         </div>
@@ -176,4 +181,25 @@ function Quiz(props) {
   );
 }
 
-export default React.memo(Quiz);
+// export default React.memo(Quiz);
+
+export default function ComponentWithContext(props) {
+  return (
+    <AuthContext.Consumer>
+      {({
+        currentUser,
+        setCurrentUser,
+        errorOpenHandler,
+        successOpenHandler,
+      }) => (
+        <Quiz
+          {...props}
+          currentUser={currentUser}
+          setCurrentUser={setCurrentUser}
+          errorOpenHandler={errorOpenHandler}
+          successOpenHandler={successOpenHandler}
+        />
+      )}
+    </AuthContext.Consumer>
+  );
+}
