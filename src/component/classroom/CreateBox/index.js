@@ -50,7 +50,7 @@ class CreateBox extends Component {
         })
         .catch(err => {
             console.log(err.message)
-            this.props.errorOpenHandler(err.message)
+            this.props.errorOpenHandler('Something went wronf while creating new classroom.')
         })
         .finally(()=>{
             this.setState({...this.state, loading:false})

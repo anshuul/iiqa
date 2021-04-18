@@ -5,6 +5,7 @@ import "./FinalizeQuiz.css";
 import { decryptInformationAfterRouting } from "../../services/classroomServices";
 import { getGeneratedQuiz } from "../../services/quizServices";
 import { getHeightForMainContainer } from "../../shared/utils";
+import { AuthContext } from '../../context/authContext'
 
 class FinalizeQuiz extends Component {
   state = {
@@ -24,6 +25,7 @@ class FinalizeQuiz extends Component {
       })
       .catch((err) => {
         console.error(err);
+        this.props.errorOpenHandler('Failed to get you generated quiz.')
       });
   }
 
@@ -52,4 +54,19 @@ class FinalizeQuiz extends Component {
   }
 }
 
-export default FinalizeQuiz;
+// export default FinalizeQuiz;
+export default function ComponentWithContext(props){
+  return (
+      <AuthContext.Consumer>
+          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+          <FinalizeQuiz
+              {...props}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              errorOpenHandler={errorOpenHandler}
+              successOpenHandler={successOpenHandler}
+          />
+          )}
+      </AuthContext.Consumer>
+  )
+}

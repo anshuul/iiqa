@@ -42,7 +42,7 @@ class Scores extends Component {
     })
     .catch(err => {
       console.log(err.message)
-      this.props.errorOpenHandler(err.message)
+      this.props.errorOpenHandler('Failed to get scores.')
     })
     .finally(()=>{
       this.setState({...this.state, loading:false})

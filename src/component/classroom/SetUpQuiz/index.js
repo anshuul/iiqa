@@ -149,7 +149,7 @@ class SetUpQuiz extends Component {
       })
       .catch((err) => {
         console.log(err.message);
-        this.props.errorOpenHandler(err.message)
+        this.props.errorOpenHandler('Failed to upload your quiz.')
       })
       .finally(() => {
         this.setState({ ...this.state, loading: false });
@@ -208,7 +208,7 @@ class SetUpQuiz extends Component {
       this.props.errorOpenHandler("Please select some image first")
     }
     else {
-      this.setState({...this.state, loading:true, loadingMessage:'Uploading your Chosen Images'})
+      this.setState({...this.state, loading:true, loadingMessage:'Uploading your Images'})
       uploadImagesToFirebaseStorage(this.state.uploadedImages.file)
       .then(uploadedFilesURLs => {
         console.log(uploadedFilesURLs)
@@ -292,38 +292,44 @@ class SetUpQuiz extends Component {
   }
 
   componentDidMount() {
-    const { classroomDocId } = this.props.location.state
+    try {
 
-    let predefinedImageSetsState = [],
-      classroomImageSetsState = [];
+      const { classroomDocId } = this.props.location.state
 
-    this.setState({
-      ...this.state,
-      currentClassroomDocId: classroomDocId,
-      loading: true,
-      loadingMessage: "Getting Image Sets ready. Please wait.",
-    });
-    getPromiseForFetchingImageSet(classroomDocId)
-      .then(([predefinedImageSets, classroomImageSets]) => {
-        console.log(predefinedImageSets);
-        console.log(classroomImageSets);
-        predefinedImageSets.sort((a, b) => a.name.localeCompare(b.name));
-        classroomImageSets.sort((a, b) => b.name.localeCompare(a.name));
-        predefinedImageSetsState = predefinedImageSets;
-        classroomImageSetsState = classroomImageSets;
-      })
-      .catch((err) => {
-        console.error(err);
-        this.props.errorOpenHandler(err.message);
-      })
-      .finally(() => {
-        this.setState({
-          ...this.state,
-          predefinedImageSets: predefinedImageSetsState,
-          classroomImageSets: classroomImageSetsState,
-          loading: false,
-        });
+      let predefinedImageSetsState = [],
+        classroomImageSetsState = [];
+
+      this.setState({
+        ...this.state,
+        currentClassroomDocId: classroomDocId,
+        loading: true,
+        loadingMessage: "Getting Image Sets ready. Please wait.",
       });
+      getPromiseForFetchingImageSet(classroomDocId)
+        .then(([predefinedImageSets, classroomImageSets]) => {
+          console.log(predefinedImageSets);
+          console.log(classroomImageSets);
+          predefinedImageSets.sort((a, b) => a.name.localeCompare(b.name));
+          classroomImageSets.sort((a, b) => b.name.localeCompare(a.name));
+          predefinedImageSetsState = predefinedImageSets;
+          classroomImageSetsState = classroomImageSets;
+        })
+        .catch((err) => {
+          console.error(err);
+          throw err
+        })
+        .finally(() => {
+          this.setState({
+            ...this.state,
+            predefinedImageSets: predefinedImageSetsState,
+            classroomImageSets: classroomImageSetsState,
+            loading: false,
+          });
+        });
+
+    } catch (err) {
+      this.props.errorOpenHandler('Failed to get your imagesets');
+    }
   }
 
   render() {

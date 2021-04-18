@@ -106,40 +106,45 @@ class Dashboard extends Component {
     window.speechSynthesis.cancel()
     // this.loadUserData();
     console.log(this.props)
-    const { classroomDocId } = this.props.location.state
-    this.setState({ ...this.state, classroomLoading: true });
-    getClassroomData(classroomDocId)
-      .then((data) => { 
-        console.log(data)
-        const { name: title, displayPicture, color, studentDataList, teacherData } = data;
-        const studentsNameList = studentDataList.map((eachData) => ({
-          name: `${eachData.fname} ${eachData.lname}`,
-          id: eachData.docId,
-        }));
-        this.setState({
-          ...this.state,
-          classroomData: { title, displayPicture, color, code: classroomDocId },
-          teacherName: `${teacherData.fname} ${teacherData.lname}`,
-          studentsNameList,
+    try {
+      const { classroomDocId } = this.props.location.state
+      this.setState({ ...this.state, classroomLoading: true });
+      getClassroomData(classroomDocId)
+        .then((data) => { 
+          console.log(data)
+          const { name: title, displayPicture, color, studentDataList, teacherData } = data;
+          const studentsNameList = studentDataList.map((eachData) => ({
+            name: `${eachData.fname} ${eachData.lname}`,
+            id: eachData.docId,
+          }));
+          this.setState({
+            ...this.state,
+            classroomData: { title, displayPicture, color, code: classroomDocId },
+            teacherName: `${teacherData.fname} ${teacherData.lname}`,
+            studentsNameList,
+          });
+        })
+        .catch((err) => {
+          console.log(err.message);
+          throw err
+        })
+        .finally(() => {
+          this.setState({ ...this.state, classroomLoading: false });
         });
-      })
-      .catch((err) => {
-        console.log(err.message);
-        this.props.errorOpenHandler('Cound not fetch data for Dashboard')
-      })
-      .finally(() => {
-        this.setState({ ...this.state, classroomLoading: false });
-      });
 
-    getQuizzesForClassroom(classroomDocId)
-      .then((quizActivitiesData) => {
-        console.log(quizActivitiesData);
-        this.setState({ ...this.state, quizActivities: quizActivitiesData });
-      })
-      .catch((err) => {
-        console.log(err.message);
-        this.props.errorOpenHandler('Cound not fetch data for Dashboard')
-      });
+      getQuizzesForClassroom(classroomDocId)
+        .then((quizActivitiesData) => {
+          console.log(quizActivitiesData);
+          this.setState({ ...this.state, quizActivities: quizActivitiesData });
+        })
+        .catch((err) => {
+          console.log(err.message);
+          throw err
+        });
+
+    } catch (err) {
+      this.props.errorOpenHandler('Cound not fetch data for Dashboard')
+    }
   }
 
   render() {

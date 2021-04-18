@@ -83,7 +83,7 @@ class ClassroomComponent extends Component {
     })
     .catch(err => {
         console.log(err.message)
-        this.props.errorOpenHandler('Please Login First')
+        this.props.errorOpenHandler('Failed to get data for your Dashboard.')
       })
     .finally(() => this.setState({...this.state, loading:false})
     )

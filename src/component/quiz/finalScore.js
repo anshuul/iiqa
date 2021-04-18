@@ -40,7 +40,7 @@ const FinalScore = (props) => {
         })
         .catch((err) => {
           console.log(err.message);
-          this.props.errorOpenHandler(err.message)
+          this.props.errorOpenHandler('Failed to save your score.')
         });
     } else {
       setIsScoreSaved(true);

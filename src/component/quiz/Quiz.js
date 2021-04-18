@@ -7,6 +7,7 @@ import { saveQuizScore, capitalizeQuizData } from "../../services/quizServices";
 import { textToSpeech } from "../../shared/utils";
 import volumeIcon from "../../assets/volume.svg";
 import { getHeightForMainContainer } from '../../shared/utils'
+import { AuthContext } from '../../context/authContext'
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
@@ -19,22 +20,26 @@ function Quiz(props) {
   useEffect(() => {
     console.log(props);
     // setIsImgLoaded(false)
-    // logic to prevent refreshing of quiz
-    if (localStorage.getItem("quizToken")) {
-      // incase of quiz from dashboard, quizId can be retrieved. So On refresh object for that quizId will be retried and score will be updated and saved/
-      props.history.goBack();
-      localStorage.removeItem("quizToken");
-    } else {
-      if (props.location.state.quizData) {
-        localStorage.setItem("quizToken", "started");
-        console.log(localStorage.getItem("quizToken"));
-        setQuizData(capitalizeQuizData(props.location.state.quizData));
+    try {
+      // logic to prevent refreshing of quiz
+      if (localStorage.getItem("quizToken")) {
+        // incase of quiz from dashboard, quizId can be retrieved. So On refresh object for that quizId will be retried and score will be updated and saved/
+        props.history.goBack();
+        localStorage.removeItem("quizToken");
       } else {
+        if (props.location.state.quizData) {
+          localStorage.setItem("quizToken", "started");
+          console.log(localStorage.getItem("quizToken"));
+          setQuizData(capitalizeQuizData(props.location.state.quizData));
+        } else {
 
-        console.log("else block");
+          console.log("else block");
+        }
+
+        console.log("rendered");
       }
-
-      console.log("rendered");
+    } catch (err) {
+      props.errorOpenHandler('Failed to get your quiz.')
     }
 
     const reset = () => setIsImgLoaded(false)
@@ -176,4 +181,20 @@ function Quiz(props) {
   );
 }
 
-export default React.memo(Quiz);
+// export default React.memo(Quiz);
+
+export default function ComponentWithContext(props){
+  return (
+      <AuthContext.Consumer>
+          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+          <Quiz
+              {...props}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              errorOpenHandler={errorOpenHandler}
+              successOpenHandler={successOpenHandler}
+          />
+          )}
+      </AuthContext.Consumer>
+  )
+}
