@@ -1,3 +1,4 @@
+import { date } from "yup";
 import { storage } from "../shared/firebase";
 
 import { dbAPI, capitalize } from '../shared/utils'
@@ -74,9 +75,12 @@ export async function getQuizData(imageSets) {
    */
 
    try {
+    console.log(imageSets)
     const { data } = await dbAPI.post(`/classrooms/quizzes/?generate=True`, {
-      imageLinksArray: imageSets
+      imageLinksArray: imageSets,
+      dateTime: Date.now()
     })
+    console.log(data)
     return data
     } catch (err) {
       console.log(err.response)
@@ -172,7 +176,7 @@ export async function isStudentEligibleForQuiz(
   }
 }
 
-export const caitalizeQuizData = (quizData) => {
+export const capitalizeQuizData = (quizData) => {
   quizData = quizData.map(eachQuizData => {
     let { question, answer, ...rest } = eachQuizData
     question = capitalize(question.trim())
@@ -196,7 +200,7 @@ export async function getGeneratedQuiz(classroomDocId, quizDocId){
   try {
     let { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}`)
     let { quizData, ...rest } = data.quizData
-    quizData = caitalizeQuizData(quizData)
+    quizData = capitalizeQuizData(quizData)
     data.quizData = {quizData, ...rest}
     return data.quizData
   } catch (err) {
@@ -208,41 +212,63 @@ function getFirebaseFileUrl(fileName){
   return `https://firebasestorage.googleapis.com/v0/b/iiqa-dev.appspot.com/o/uploadedImages%2F${fileName}?alt=media`
 }
 
+// function getImageBlobs(imageFiles){
+//   const blobConversionTask = imageFiles.map(imageFile => fetch(imageFile).then(res => res.blob()))
+//   return Promise.all(blobConversionTask)
+// }
+
 export async function uploadImagesToFirebaseStorage(imageFiles){
-  /**
-   * @param imageFiles
-   * 
-   * @return array of urls
-   */
-
-  try {
-
-    if(imageFiles.length === 0){
-      return []
+    try {
+      let formData = new FormData()
+      imageFiles.forEach((imageFile, index) => {
+        formData.append(`images`, imageFile)
+      })
+      // formData.append('images', imageFiles)
+      let { data } = await dbAPI.post('/storage/', formData, {headers:{'Content-Type': 'multipart/form-data' }})
+      console.log(data)
+      return data.uploadedFilesURLs
+    } catch (err) {
+      console.log(err)
+      throw new Error(err.response.data.error)
     }
-
-    const filesNamesArr = imageFiles.map(file => {
-      const ogFileName = file.name
-      const nameOfFile = ogFileName.slice(0,ogFileName.lastIndexOf('.'))
-      const ext = ogFileName.slice(ogFileName.lastIndexOf('.'))
-      const uniquePart = new Date().toDateString().split(' ').join('')
-      const modifiedfileName = `${nameOfFile}${uniquePart}${ext}`
-      return modifiedfileName
-    })
-
-    const uploadTasks = imageFiles.map((file, index) => {
-      console.log(filesNamesArr[index])
-      return storage.ref(`/uploadedImages/${filesNamesArr[index]}`).put(file)
-    })    
-
-    const snapshotArr = await Promise.all(uploadTasks)
-    if(snapshotArr.length === uploadTasks.length){
-      return filesNamesArr.map(fileName => getFirebaseFileUrl(fileName))
-    } else {
-      throw new Error('Could not upload all the files')
-    }
-
-  } catch (err) {
-    throw new Error(err)
-  }
 }
+
+// export async function uploadImagesToFirebaseStorage(imageFiles){
+//   /**
+//    * @param imageFiles
+//    * 
+//    * @return array of urls
+//    */
+
+//   try {
+
+//     if(imageFiles.length === 0){
+//       return []
+//     }
+
+//     const filesNamesArr = imageFiles.map(file => {
+//       let ogFileName = file.name
+//       ogFileName = ogFileName.split(' ').join('')
+//       const nameOfFile = ogFileName.slice(0,ogFileName.lastIndexOf('.'))
+//       const ext = ogFileName.slice(ogFileName.lastIndexOf('.'))
+//       const uniquePart = new Date().toDateString().split(' ').join('')
+//       const modifiedfileName = `${nameOfFile}${uniquePart}${ext}`
+//       return modifiedfileName
+//     })
+
+//     const uploadTasks = imageFiles.map((file, index) => {
+//       console.log(filesNamesArr[index])
+//       return storage.ref(`/uploadedImages/${filesNamesArr[index]}`).put(file)
+//     })    
+
+//     const snapshotArr = await Promise.all(uploadTasks)
+//     if(snapshotArr.length === uploadTasks.length){
+//       return filesNamesArr.map(fileName => getFirebaseFileUrl(fileName))
+//     } else {
+//       throw new Error('Could not upload all the files')
+//     }
+
+//   } catch (err) {
+//     throw new Error(err)
+//   }
+// }

@@ -167,7 +167,7 @@ class SetUpQuiz extends Component {
         loading: true,
         loadingMessage: "Creating your Quiz.",
       }) : this.setState({...this.state, loadingMessage: "Creating your Quiz.",})
-      console.log(uploadedFilesURLs)
+      console.log([...this.state.imageSetImages, ...uploadedFilesURLs])
       getQuizData([...this.state.imageSetImages, ...uploadedFilesURLs])
       .then(({result}) => {
         console.log(result);
@@ -183,7 +183,7 @@ class SetUpQuiz extends Component {
       })
       .catch((err) => {
         console.log(err.message);
-        this.props.errorOpenHandler(err.message)
+        this.props.errorOpenHandler('Failed to generate quiz')
       })
       .finally(() => {
         this.setState({ ...this.state, loading: false });
