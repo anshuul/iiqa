@@ -30,3 +30,8 @@ export const getHeightForMainContainer = () => {
 
 // util method for capitalize
 export const capitalize = (text) => text[0].toUpperCase() + text.slice(1)
+
+export const getTokenizedHeader = () => {
+  const token = sessionStorage.getItem('token')
+  return {headers: {'Authorization': `Bearer ${token}`}}
+}

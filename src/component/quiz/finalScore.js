@@ -35,12 +35,12 @@ const FinalScore = (props) => {
       )
         .then((message) => {
           console.log(message);
-          this.props.successOpenHandler(message)
+          props.successOpenHandler(message)
           setIsScoreSaved(true);
         })
         .catch((err) => {
           console.log(err.message);
-          this.props.errorOpenHandler('Failed to save your score.')
+          props.errorOpenHandler('Failed to save your score.')
         });
     } else {
       setIsScoreSaved(true);

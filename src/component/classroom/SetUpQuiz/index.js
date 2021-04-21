@@ -134,6 +134,7 @@ class SetUpQuiz extends Component {
     if(this.state.generatedQuiz.length > 0){
       this.setState({...this.state, loading:true, loadingMessage:'Uploading your Quiz'})
       console.log('quiz name', this.state.quizName)
+      console.log('this.state.generatedQuiz',this.state.generatedQuiz)
       createNewQuiz(this.state.generatedQuiz, this.state.currentClassroomDocId, this.state.quizName)
       .then((quizDocId) => {
         console.log("quiz created on ", quizDocId);
@@ -295,6 +296,7 @@ class SetUpQuiz extends Component {
     try {
 
       const { classroomDocId } = this.props.location.state
+      console.log('classroomDocId',classroomDocId)
 
       let predefinedImageSetsState = [],
         classroomImageSetsState = [];

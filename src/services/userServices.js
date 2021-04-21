@@ -1,8 +1,11 @@
 import { auth } from '../shared/firebase'
-import { dbAPI } from '../shared/utils'
+import { dbAPI, getTokenizedHeader } from '../shared/utils'
 
 export async function signIn(emailId, password){
-    await auth.signInWithEmailAndPassword(emailId, password)
+    const { user } = await auth.signInWithEmailAndPassword(emailId, password)
+    const token = await user.getIdToken()
+    sessionStorage.setItem('token', token)
+    console.log('token', token)
     const { uid } = auth.currentUser
     return uid
     // const currentUser = await getUserProfile(uid)
@@ -27,11 +30,13 @@ export async function signUpForTeacher(email, password, fname, lname){
      */
 
     try{
-        const userCreds = await auth.createUserWithEmailAndPassword(email, password)
-        console.log(userCreds)
+        const {user} = await auth.createUserWithEmailAndPassword(email, password)
+        const token = await user.getIdToken()
+        sessionStorage.setItem('token', token)
+        console.log(user)
         const { uid } = auth.currentUser
         try {
-            await dbAPI.post('/users/', {
+            await dbAPI.post('/users/', getTokenizedHeader(), {
                 fname, lname, uid, isTeacher:true
             })
             return uid
@@ -57,10 +62,12 @@ export async function signUpForStudent(email, password, fname, lname){
      * store the docid in student collection
      */
     try{
-        await auth.createUserWithEmailAndPassword(email, password)
+        const {user} = await auth.createUserWithEmailAndPassword(email, password)
+        const token = await user.getIdToken()
+        sessionStorage.setItem('token', token)
         const { uid } = auth.currentUser
         try {
-            await dbAPI.post('/users/', {
+            await dbAPI.post('/users/', getTokenizedHeader(), {
                 fname, lname, uid, isStudent:true
             })
             return uid
@@ -74,7 +81,7 @@ export async function signUpForStudent(email, password, fname, lname){
 
 export async function getOnlyUserProfile(id){
     try {
-        const {data} = await dbAPI.get(`/users/?userAuthId=${id}`)
+        const {data} = await dbAPI.get(`/users/?userAuthId=${id}`, getTokenizedHeader())
         return data.user
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -122,7 +129,7 @@ export async function getProfileDataFromDocId(docId){
      */
 
      try {
-        const {data} = await dbAPI.get(`/users/?userDocId=${docId}`)
+        const {data} = await dbAPI.get(`/users/?userDocId=${docId}`, getTokenizedHeader())
         return data.user
     } catch (err) {
         throw new Error(err.response.data.error)

@@ -38,7 +38,8 @@ class Dashboard extends Component {
         code: "",
       },
       quizActivities: [],
-      classroomLoading: false,
+      loading: false,
+      loadingMessage: '',
       activitiesLoading: false,
       studentsListLoading: false,
       isScoreDisplayed: false,
@@ -57,6 +58,7 @@ class Dashboard extends Component {
   onSelectActivityByStudentHandler = (quizData, quizDocId) => {
     const decryptedQuizData = JSON.parse(quizData);
     console.log(decryptedQuizData);
+    this.setState({...this.state, loading:true, loadingMessage:'Getting your Quiz Ready. Please wait.'})
     isStudentEligibleForQuiz(
       this.state.classroomData.code,
       quizDocId,
@@ -77,7 +79,13 @@ class Dashboard extends Component {
         console.log("You are not eligible for the quiz. As you already attended this quiz.");
         this.props.errorOpenHandler("You are not eligible for the quiz. As you already attended this quiz.")
       }
-    });
+    })
+    .catch(err => {
+      this.props.errorOpenHandler('Failed to load your quiz')
+    })
+    .finally(()=>{
+      this.setState({...this.state, loading:false})
+    })
   };
 
   onSelectActivityByTeacherHandler = (_, quizDocId) => {
@@ -108,7 +116,7 @@ class Dashboard extends Component {
     console.log(this.props)
     try {
       const { classroomDocId } = this.props.location.state
-      this.setState({ ...this.state, classroomLoading: true });
+      this.setState({ ...this.state, loading: true, loadingMessage:"Getting Classroom Dashboard Ready. Please wait." });
       getClassroomData(classroomDocId)
         .then((data) => { 
           console.log(data)
@@ -129,7 +137,7 @@ class Dashboard extends Component {
           throw err
         })
         .finally(() => {
-          this.setState({ ...this.state, classroomLoading: false });
+          this.setState({ ...this.state, loading: false });
         });
 
       getQuizzesForClassroom(classroomDocId)
@@ -150,8 +158,8 @@ class Dashboard extends Component {
   render() {
     return (
       <div className="dashboard container" style={{ height: "93vh" }}>
-        {this.state.classroomLoading && (
-          <Loading message="Getting Classroom Dashboard Ready. Please wait." />
+        {this.state.loading && (
+          <Loading message={this.state.loadingMessage} />
         )}
         {this.state.isScoreDisplayed && (
           <Score

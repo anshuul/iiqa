@@ -1,4 +1,4 @@
-import { dbAPI } from '../shared/utils'
+import { dbAPI, getTokenizedHeader } from '../shared/utils'
 
 export async function loadClassroomForStudents(userId){
     /**
@@ -9,7 +9,7 @@ export async function loadClassroomForStudents(userId){
      * from docid get the list of classrom user is part of
      */
     try {
-        const { data } = await dbAPI.get(`/classrooms/?studentDocId=${userId}`)
+        const { data } = await dbAPI.get(`/classrooms/?studentDocId=${userId}`, getTokenizedHeader())
         console.log(data.classrooms)
         return data.classrooms
     } catch (err) {
@@ -26,7 +26,7 @@ export async function loadClassroomsForTeacher(userId){
      * from docid get the list of classrom user is part of
      */
     try {
-        const { data } = await dbAPI.get(`/classrooms/?teacherDocId=${userId}`)
+        const { data } = await dbAPI.get(`/classrooms/?teacherDocId=${userId}`, getTokenizedHeader())
         return data.classrooms
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -38,7 +38,7 @@ export async function getAvatarImageLinks(){
      * @return list of image links of all stored avatars from db
      */
      try {
-        const {data} = await dbAPI.get(`/avatars`)
+        const {data} = await dbAPI.get(`/avatars`, getTokenizedHeader())
         return data.avatars
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -62,7 +62,7 @@ export async function createNewClassroom(name, color, teacherId, displayPicture)
      try {
         const {data} = await dbAPI.post(`/classrooms`, {
             name, color, displayPicture, teacherDocId:teacherId
-        })
+        }, getTokenizedHeader())
         return data.message
     } catch (err) {
         console.log(err.response)
@@ -85,7 +85,7 @@ export async function joinClassroom(code, studentId){
      try {
     const {data} = await dbAPI.patch(`/classrooms/${code}`, {
         studentDocId:studentId
-    })
+    }, getTokenizedHeader())
     return data.message
     } catch (err) {
         console.log(err.response)
@@ -101,7 +101,7 @@ export async function getClassroomData(classroomDocId){
      */
 
     try {
-        const {data} = await dbAPI.get(`/classrooms/${classroomDocId}`)
+        const {data} = await dbAPI.get(`/classrooms/${classroomDocId}`, getTokenizedHeader())
         let { classroomData } = data
         classroomData.name = classroomData.name.toUpperCase()
         return classroomData
