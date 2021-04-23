@@ -20,6 +20,7 @@ class SignIn extends Component {
   componentDidMount() {
     signOut()
       .then(() => {
+        sessionStorage.removeItem('token')
         console.log("signed out");
         this.props.setCurrentUser({ uid: "" });
       })

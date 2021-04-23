@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Router, Switch } from "react-router-dom";
 import SignIn from "./component/auth/SignIn";
 import SignUp from "./component/auth/SignUp";
 import Classroom from "./component/classroom/Classroom";
@@ -46,13 +46,22 @@ class App extends React.Component {
   componentDidMount() {
     console.log("on refresh");
     const currentUserUid = localStorage.getItem("currentUserId");
-    if (currentUserUid && !this.state.currentUser.docId) {
-      getOnlyUserProfile(currentUserUid).then((userData) => {
-        console.log(userData);
-        this.setState({ ...this.state, currentUser: userData });
-      });
+    const token = sessionStorage.getItem('token')
+    try {
+      if (token && currentUserUid && !this.state.currentUser.docId) {
+        getOnlyUserProfile(currentUserUid).then((userData) => {
+          console.log(userData);
+          this.setState({ ...this.state, currentUser: userData });
+        })
+        .catch(err => {
+          this.state.errorOpenHandler('Please Log In')
+        })
+      }
+      this.setState({ ...this.state, loading: false });
+    } catch (err) {
+      this.state.errorOpenHandler('Something went wrong. Please restart the application.')
+      // window.location.href = 'signin/'
     }
-    this.setState({ ...this.state, loading: false });
   }
 
   setCurrentUser(currentUser) {
