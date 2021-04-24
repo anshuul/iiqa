@@ -1,6 +1,7 @@
 .displayPicture {
     width:65px;
     height:65px;
+    position: absolute;
     text-align: center;
     /* aspect-ratio: auto; */
     border:1px solid lightgrey;

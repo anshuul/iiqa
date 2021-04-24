@@ -33,30 +33,16 @@ class App extends React.Component {
     successOpenHandler: this.successOpenHandler.bind(this),
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.currentUser.uid !== prevState.currentUser.uid) {
-      localStorage.setItem("currentUserId", this.state.currentUser.uid);
-      // if(this.state.currentUser.uid) {
-      //   const userData = await getOnlyUserProfile(this.state.currentUser.uid)
-      //   this.setState({...this.state, currentUser:userData})
-      // }
-    }
-  }
-
   componentDidMount() {
     console.log("on refresh");
-    const currentUserUid = localStorage.getItem("currentUserId");
-    const token = sessionStorage.getItem('token')
     try {
-      if (token && currentUserUid && !this.state.currentUser.docId) {
-        getOnlyUserProfile(currentUserUid).then((userData) => {
-          console.log(userData);
-          this.setState({ ...this.state, currentUser: userData });
-        })
-        .catch(err => {
-          this.state.errorOpenHandler('Please Log In')
-        })
-      }
+      getOnlyUserProfile().then((userData) => {
+        console.log(userData);
+        this.setState({ ...this.state, currentUser: userData });
+      })
+      .catch(err => {
+        // this.state.errorOpenHandler('Please Log In')
+      })
       this.setState({ ...this.state, loading: false });
     } catch (err) {
       this.state.errorOpenHandler('Something went wrong. Please restart the application.')

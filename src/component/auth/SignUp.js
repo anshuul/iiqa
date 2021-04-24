@@ -119,7 +119,7 @@ class SignUp extends Component {
                     );
                     message = "New Student Account created Succesfully";
                   }
-                  const userData = await getOnlyUserProfile(uid);
+                  const userData = await getOnlyUserProfile();
                   this.props.setCurrentUser({ ...userData });
                   console.log(message);
                   this.props.successOpenHandler(message)
@@ -127,7 +127,7 @@ class SignUp extends Component {
                 }
               } catch (err) {
                 console.log(err.message)
-                this.props.errorOpenHandler(err.message)
+                this.props.errorOpenHandler('Something went wrong while creating your account.')
               } finally {
                 this.disableLoading()
               }

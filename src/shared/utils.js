@@ -16,6 +16,7 @@ export function textToSpeech(message) {
 export const dbAPI = axios.create({
   baseURL: "http://127.0.0.1:8000/",
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 export const getHeightForMainContainer = () => {
@@ -30,8 +31,3 @@ export const getHeightForMainContainer = () => {
 
 // util method for capitalize
 export const capitalize = (text) => text[0].toUpperCase() + text.slice(1)
-
-export const getTokenizedHeader = () => {
-  const token = sessionStorage.getItem('token')
-  return {headers: {'Authorization': `Bearer ${token}`}}
-}

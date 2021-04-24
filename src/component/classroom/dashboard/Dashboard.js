@@ -198,7 +198,7 @@ class Dashboard extends Component {
                   </p>
               </div>
               <div className="right customImageClass">
-                <Avatar displayPicture={this.state.classroomData.displayPicture}/>
+                <Avatar displayPicture={this.state.classroomData.displayPicture} className='customDashboardAvatar'/>
               </div>
             </div>
           </div>

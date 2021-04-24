@@ -134,6 +134,10 @@
   text-align: center;
 }
 
+.customDashboardAvatar {
+  position:relative;
+}
+
 @media only screen and (max-width:560px) {
   .customSubMainLeftContainer {
     display: none;

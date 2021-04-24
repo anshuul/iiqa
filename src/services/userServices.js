@@ -2,18 +2,22 @@ import { auth } from '../shared/firebase'
 import { dbAPI, getTokenizedHeader } from '../shared/utils'
 
 export async function signIn(emailId, password){
-    const { user } = await auth.signInWithEmailAndPassword(emailId, password)
-    const token = await user.getIdToken()
-    sessionStorage.setItem('token', token)
-    console.log('token', token)
-    const { uid } = auth.currentUser
-    return uid
-    // const currentUser = await getUserProfile(uid)
-    // return currentUser
+    try {
+        const { user } = await auth.signInWithEmailAndPassword(emailId, password)
+        const token = await user.getIdToken()
+        const response = await dbAPI.post('/auth/login', {token})
+        console.log(response)
+        return user.uid
+        // const currentUser = await getUserProfile(uid)
+        // return currentUser
+    } catch(err) {
+        throw err
+    }
 }
 
-export function signOut(){
-    return auth.signOut()
+export async function signOut(){
+    await auth.signOut()
+    await dbAPI.post('/auth/logout')
 }
 
 export async function signUpForTeacher(email, password, fname, lname){
@@ -32,11 +36,11 @@ export async function signUpForTeacher(email, password, fname, lname){
     try{
         const {user} = await auth.createUserWithEmailAndPassword(email, password)
         const token = await user.getIdToken()
-        sessionStorage.setItem('token', token)
+        const response = await dbAPI.post('/auth/login', {token})
         console.log(user)
-        const { uid } = auth.currentUser
+        const { uid } = user
         try {
-            await dbAPI.post('/users/', getTokenizedHeader(), {
+            await dbAPI.post('/users/', {
                 fname, lname, uid, isTeacher:true
             })
             return uid
@@ -64,10 +68,11 @@ export async function signUpForStudent(email, password, fname, lname){
     try{
         const {user} = await auth.createUserWithEmailAndPassword(email, password)
         const token = await user.getIdToken()
-        sessionStorage.setItem('token', token)
-        const { uid } = auth.currentUser
+        const response = await dbAPI.post('/auth/login', {token})
+        console.log(user)
+        const { uid } = user
         try {
-            await dbAPI.post('/users/', getTokenizedHeader(), {
+            await dbAPI.post('/users/', {
                 fname, lname, uid, isStudent:true
             })
             return uid
@@ -79,9 +84,9 @@ export async function signUpForStudent(email, password, fname, lname){
     }
 }
 
-export async function getOnlyUserProfile(id){
+export async function getOnlyUserProfile(){
     try {
-        const {data} = await dbAPI.get(`/users/?userAuthId=${id}`, getTokenizedHeader())
+        const {data} = await dbAPI.get(`/users/?current=true`)
         return data.user
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -129,7 +134,7 @@ export async function getProfileDataFromDocId(docId){
      */
 
      try {
-        const {data} = await dbAPI.get(`/users/?userDocId=${docId}`, getTokenizedHeader())
+        const {data} = await dbAPI.get(`/users/?userDocId=${docId}`)
         return data.user
     } catch (err) {
         throw new Error(err.response.data.error)

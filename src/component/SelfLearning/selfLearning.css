@@ -53,6 +53,7 @@
 
 .selfLearningCustomAvatar {
   overflow: hidden;
+  position: relative;
 }
 
 .selfLearningModuleContainer {

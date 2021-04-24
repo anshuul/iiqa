@@ -18,7 +18,7 @@ export async function getPredefinedImageSets() {
    */
 
   try {
-    const { data } = await dbAPI.get(`/imagesets`, getTokenizedHeader())
+    const { data } = await dbAPI.get(`/imagesets`)
     return data.imageSets
   } catch (err) {
       throw new Error(err.response.data.error)
@@ -37,7 +37,7 @@ export async function getClassroomImageSet(classroomDocId) {
    */
 
   try {
-    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/imagesets`, getTokenizedHeader())
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/imagesets`)
     return data.imageSets
   } catch (err) {
       throw new Error(err.response.data.error)
@@ -59,7 +59,7 @@ export async function createImageSetForClassroom(docId, imageLinks) {
    try {
     const { data } = await dbAPI.post(`/classrooms/imagesets`, {
       classroomDocId:docId, imageLinks
-    }, getTokenizedHeader())
+    })
     return data.message
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -79,7 +79,7 @@ export async function getQuizData(imageSets) {
     const { data } = await dbAPI.post(`/classrooms/quizzes/?generate=True`, {
       imageLinksArray: imageSets,
       dateTime: Date.now()
-    }, getTokenizedHeader())
+    })
     console.log(data)
     return data
     } catch (err) {
@@ -100,7 +100,7 @@ export async function createNewQuiz(quizData, classroomDocId, quizName) {
    try {
     const { data } = await dbAPI.post(`/classrooms/quizzes`, {
       classroomDocId, quizData, quizName
-    }, getTokenizedHeader())
+    })
     return data.quizDocId
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -115,7 +115,7 @@ export async function getQuizzesForClassroom(classroomDocId) {
    */
 
    try {
-    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes`, getTokenizedHeader())
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes`)
     return data.quizzes
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -140,7 +140,7 @@ export async function saveQuizScore(
    try {
     const { data } = await dbAPI.post(`/classrooms/quizzes/attendees`, {
       classroomDocId, quizDocId, studentDocId, score, outOffScore
-    }, getTokenizedHeader())
+    })
     return data.message
     } catch (err) {
         throw new Error(err.response.data.error)
@@ -156,7 +156,7 @@ export async function getAttendeesAndScores(classroomDocId, quizDocId) {
    */
 
   try {
-    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`, getTokenizedHeader())
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees`)
     return data.attendees
   } catch (err) {
       throw new Error(err.response.data.error)
@@ -169,7 +169,7 @@ export async function isStudentEligibleForQuiz(
   studentId
 ) {
   try {
-    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees/${studentId}?eligibilityCheck=True`, getTokenizedHeader())
+    const { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}/attendees/${studentId}?eligibilityCheck=True`)
     return Number(data.eligibilityStatus)
   } catch (err) {
       throw new Error(err.response.data.error)
@@ -198,7 +198,7 @@ export async function getGeneratedQuiz(classroomDocId, quizDocId){
    */
 
   try {
-    let { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}`, getTokenizedHeader())
+    let { data } = await dbAPI.get(`/classrooms/${classroomDocId}/quizzes/${quizDocId}`)
     let { quizData, ...rest } = data.quizData
     quizData = capitalizeQuizData(quizData)
     data.quizData = {quizData, ...rest}
@@ -224,7 +224,7 @@ export async function uploadImagesToFirebaseStorage(imageFiles){
         formData.append(`images`, imageFile)
       })
       // formData.append('images', imageFiles)
-      const headers = {headers:{'Content-Type': 'multipart/form-data',...getTokenizedHeader().headers }}
+      const headers = {headers:{'Content-Type': 'multipart/form-data' }}
       let { data } = await dbAPI.post('/storage/', formData, headers)
       console.log(data)
       return data.uploadedFilesURLs

@@ -318,7 +318,7 @@ class SetUpQuiz extends Component {
         })
         .catch((err) => {
           console.error(err);
-          throw err
+          this.props.errorOpenHandler('Something went wrong. Please LogIn again.')
         })
         .finally(() => {
           this.setState({

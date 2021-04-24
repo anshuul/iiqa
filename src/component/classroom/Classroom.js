@@ -53,7 +53,7 @@ class ClassroomComponent extends Component {
   loadClassrooms(){
     console.log(this.props.currentUser)
     this.setState({...this.state, loading:true})
-    getOnlyUserProfile(localStorage.getItem("currentUserId"))
+    getOnlyUserProfile()
     .then(userData => {
       if(userData){
         console.log('reacher here in if block of user data check')

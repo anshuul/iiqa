@@ -20,7 +20,6 @@ class SignIn extends Component {
   componentDidMount() {
     signOut()
       .then(() => {
-        sessionStorage.removeItem('token')
         console.log("signed out");
         this.props.setCurrentUser({ uid: "" });
       })
@@ -77,12 +76,13 @@ class SignIn extends Component {
                   try {
                     this.enableLoading();
                     const uid = await signIn(values.email, values.password);
-                    const userData = await getOnlyUserProfile(uid);
+                    const userData = await getOnlyUserProfile();
+                    console.log(userData)
                     this.props.setCurrentUser({ ...userData });
                     this.props.history.push("classroom");
                   } catch (err) {
                     console.log(err.message);
-                    this.props.errorOpenHandler(err.message)
+                    this.props.errorOpenHandler('Something went wrong while signing you in.')
                   } finally {
                     this.disableLoading();
                   }
