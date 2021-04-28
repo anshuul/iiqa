@@ -6,6 +6,7 @@ export async function signIn(emailId, password){
         const { user } = await auth.signInWithEmailAndPassword(emailId, password)
         const token = await user.getIdToken()
         const response = await dbAPI.post('/auth/login', {token})
+        await auth.signOut()
         console.log(response)
         return user.uid
         // const currentUser = await getUserProfile(uid)

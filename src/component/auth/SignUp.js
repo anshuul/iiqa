@@ -127,14 +127,22 @@ class SignUp extends Component {
                 }
               } catch (err) {
                 console.log(err.message)
-                this.props.errorOpenHandler('Something went wrong while creating your account.')
+                if(err.code.startsWith('auth')){
+                  this.props.errorOpenHandler(err.message)  
+                } else {
+                  this.props.errorOpenHandler('Something went wrong while signing you in.')
+                }
               } finally {
                 this.disableLoading()
               }
             }}
           >
             {(props) => (
-              <div className="row customRow">
+              <form 
+                className="row customRow" 
+                onSubmit={props.handleSubmit} 
+                onKeyDown={(event) => event.key === 'Enter' && props.handleSubmit()}
+              >
                 <div className="col s8 customLeftContainer" style={{}}>
                   {/*                 <img
                   src={SignUpImage}
@@ -297,13 +305,12 @@ class SignUp extends Component {
                         type="submit"
                         value="Register"
                         className="btn blue darken-3 z-depth-0 customSubmitButton"
-                        onClick={props.handleSubmit}
                         style={{ borderRadius: "10px" }}
                       />
                     </center>
                   </div>
                 </div>
-              </div>
+              </form>
             )}
           </Formik>
         </div>

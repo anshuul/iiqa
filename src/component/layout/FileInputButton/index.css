@@ -27,7 +27,7 @@
 
 .fileInput:focus + .fileInputLabel,
 .fileInput + .fileInputLabel:hover {
-    background-color: black;
+    background-color:#424242;
 }
 
 .fileInput + .fileInputLabel {
@@ -35,6 +35,6 @@
 }
 
 .fileInput:focus + .fileInputLabel {
-	outline: 1px dotted #000;
+	outline: 1px dotted #424242;
 	outline: -webkit-focus-ring-color auto 5px;
 }
