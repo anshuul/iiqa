@@ -19,7 +19,7 @@ import FileInputButton from '../../layout/FileInputButton'
 import { getHeightForMainContainer } from '../../../shared/utils'
 import MinusIcon from '../../../assets/minus-black.png'
 import { ExpandIcon, CollapseIcon } from '../../layout/Icon'
-import {AuthContext } from '../../../context/authContext'
+import { AuthContext, contextWrapper } from '../../../context/authContext'
 
 class SetUpQuiz extends Component {
   constructor(props) {
@@ -487,18 +487,20 @@ class SetUpQuiz extends Component {
   }
 }
 
-export default function ComponentWithContext(props){
-  return (
-      <AuthContext.Consumer>
-          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-          <SetUpQuiz
-              {...props}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              errorOpenHandler={errorOpenHandler}
-              successOpenHandler={successOpenHandler}
-          />
-          )}
-      </AuthContext.Consumer>
-  )
-}
+export default contextWrapper(SetUpQuiz)
+
+// export default function ComponentWithContext(props){
+//   return (
+//       <AuthContext.Consumer>
+//           {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//           <SetUpQuiz
+//               {...props}
+//               currentUser={currentUser}
+//               setCurrentUser={setCurrentUser}
+//               errorOpenHandler={errorOpenHandler}
+//               successOpenHandler={successOpenHandler}
+//           />
+//           )}
+//       </AuthContext.Consumer>
+//   )
+// }

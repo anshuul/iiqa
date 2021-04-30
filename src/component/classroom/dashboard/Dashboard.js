@@ -19,7 +19,7 @@ import {
 } from "../../../services/quizServices";
 import Loading from "../../layout/Loading";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../context/authContext";
+import { AuthContext, contextWrapper } from "../../../context/authContext";
 import Score from "../../scores/scores";
 import CopyIcon from '../../../assets/copy-icon.png'
 import CreateQuizIcon from '../../../assets/create-quiz-icon.png'
@@ -207,7 +207,9 @@ class Dashboard extends Component {
         <div className='customMainAreaContainer' >
           <div className='customSubMainLeftContainer'>
           <Title>Students</Title>
-            <StudentDetails studentsNameList={this.state.studentsNameList} />
+            {this.state.studentsNameList.length?
+              <StudentDetails studentsNameList={this.state.studentsNameList} />:
+              <p class='center' style={{padding:'5px 0'}}>No Student present</p>}
           </div>
           <div className='customSubMainRightContainer' >
             {this.props.currentUser.isTeacher && <div className="cardBox cardBoxBoxed" onClick={this.onSelectCreateQuizHandler}>
@@ -242,18 +244,20 @@ const Title = ({children:text}) => (
   </div>
 )
 
-export default function ComponentWithContext(props) {
-  return (
-    <AuthContext.Consumer>
-    {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-      <Dashboard
-        {...props}
-        currentUser={currentUser}
-        setCurrentUser={setCurrentUser}
-        errorOpenHandler={errorOpenHandler}
-        successOpenHandler={successOpenHandler}
-      />
-    )}
-    </AuthContext.Consumer>
-  );
-}
+export default contextWrapper(Dashboard)
+
+// export default function ComponentWithContext(props) {
+//   return (
+//     <AuthContext.Consumer>
+//     {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//       <Dashboard
+//         {...props}
+//         currentUser={currentUser}
+//         setCurrentUser={setCurrentUser}
+//         errorOpenHandler={errorOpenHandler}
+//         successOpenHandler={successOpenHandler}
+//       />
+//     )}
+//     </AuthContext.Consumer>
+//   );
+// }

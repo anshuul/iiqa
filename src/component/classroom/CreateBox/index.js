@@ -5,7 +5,7 @@ import tempImg from '../../../assets/dp2.svg'
 import { getAvatarImageLinks, createNewClassroom } from '../../../services/classroomServices'
 import Avatar from '../../layout/Avatar'
 import Loading from '../../layout/Loading'
-import { AuthContext } from '../../../context/authContext'
+import { AuthContext, contextWrapper } from '../../../context/authContext'
 import ModalWrapper from '../../layout/ModalWrapper'
 import ButtonGroup from '../../layout/ButtonGroup'
 import { CancelButton, SubmitButton } from '../../layout/Button'
@@ -50,7 +50,7 @@ class CreateBox extends Component {
         })
         .catch(err => {
             console.log(err.message)
-            this.props.errorOpenHandler('Something went wronf while creating new classroom.')
+            this.props.errorOpenHandler('Something went wrong while creating new classroom.')
         })
         .finally(()=>{
             this.setState({...this.state, loading:false})
@@ -92,7 +92,11 @@ class CreateBox extends Component {
                     </div>
                     <div className='divider'></div>
                     <div className='createFormContainer'>
-                        <form style={{width:'70%'}}>
+                        <form 
+                            style={{width:'70%'}}
+                            onSubmit={this.createHandler}
+                            onKeyDown={(e) => e.key === 'Enter' && this.createHandler}
+                        >
                             <div className="input-field">
                                 <label htmlFor="name">Name of Class</label>
                                 <input
@@ -133,7 +137,7 @@ class CreateBox extends Component {
                             </div>
                             <ButtonGroup>
                                 <CancelButton onClick={()=>this.props.cancelHandler()}>Cancel</CancelButton>
-                                <SubmitButton onClick={this.createHandler} >Create</SubmitButton>
+                                <SubmitButton>Create</SubmitButton>
                             </ButtonGroup>
                         </form>
                     </div>
@@ -143,18 +147,20 @@ class CreateBox extends Component {
     }
 }
 
-export default function ComponentWithContext(props){
-    return (
-    <AuthContext.Consumer>
-    {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-      <CreateBox
-        {...props}
-        currentUser={currentUser}
-        setCurrentUser={setCurrentUser}
-        errorOpenHandler={errorOpenHandler}
-        successOpenHandler={successOpenHandler}
-      />
-    )}
-    </AuthContext.Consumer>
-    )
-}
+export default contextWrapper(CreateBox)
+
+// export default function ComponentWithContext(props){
+//     return (
+//     <AuthContext.Consumer>
+//     {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//       <CreateBox
+//         {...props}
+//         currentUser={currentUser}
+//         setCurrentUser={setCurrentUser}
+//         errorOpenHandler={errorOpenHandler}
+//         successOpenHandler={successOpenHandler}
+//       />
+//     )}
+//     </AuthContext.Consumer>
+//     )
+// }

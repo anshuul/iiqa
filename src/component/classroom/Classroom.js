@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Classes from "./classes/Classes";
 import './Classroom.css'
-import { AuthContext } from '../../context/authContext'
+import { AuthContext, contextWrapper } from '../../context/authContext'
 import { loadClassroomForStudents, loadClassroomsForTeacher, encryptInformationForRouting } from '../../services/classroomServices'
 import { getUserProfile, getOnlyUserProfile } from '../../services/userServices'
 import Loading from '../layout/Loading'
@@ -50,43 +50,66 @@ class ClassroomComponent extends Component {
     }
   }
 
-  loadClassrooms(){
+  async loadClassrooms(){
     console.log(this.props.currentUser)
     this.setState({...this.state, loading:true})
-    getOnlyUserProfile()
-    .then(userData => {
-      if(userData){
-        console.log('reacher here in if block of user data check')
-        this.setState({...this.state, currentUserData:userData})
-        if(userData.isStudent){
-          loadClassroomForStudents(userData.docId)
-          .then(listOfClassrooms => {
-            console.log(listOfClassrooms)
-            this.setState({...this.state, classrooms: listOfClassrooms })
-          })
-          .catch(err => {
-            throw new Error(err)
-          })
-        }
-        else {
-          console.log('reacher here in else block of user data teacher check')
-          loadClassroomsForTeacher(userData.docId)
-          .then((listOfClassrooms) => {
-            console.log(listOfClassrooms)
-            this.setState({classrooms: listOfClassrooms })
-          })
-          .catch(err => {
-            throw new Error(err)
-          })
-        }
+    console.log('classroom log', this.props.currentUser)
+    try {
+      let userData
+      if(this.props.currentUser.uid){
+        userData = this.props.currentUser
+      } else {
+        console.log('classroom log reached here before calling currentuser api')
+        userData = await getOnlyUserProfile()
       }
-    })
-    .catch(err => {
-        console.log(err.message)
-        this.props.errorOpenHandler('Failed to get data for your Dashboard.')
-      })
-    .finally(() => this.setState({...this.state, loading:false})
-    )
+      this.setState({...this.state, currentUserData:userData})
+      let listOfClassrooms
+      if(userData.isStudent){
+        listOfClassrooms = await loadClassroomForStudents(userData.docId)
+      } else {
+        listOfClassrooms = await loadClassroomsForTeacher(userData.docId)
+      }
+      this.setState({...this.state, classrooms: listOfClassrooms})
+    } catch (err) {
+      console.log(err)
+      this.props.errorOpenHandler('Failed to get data for your Dashboard.')
+    } finally {
+      this.setState({...this.state, loading:false})
+    }
+    // getOnlyUserProfile()
+    // .then(userData => {
+    //   if(userData){
+    //     console.log('reacher here in if block of user data check')
+    //     this.setState({...this.state, currentUserData:userData})
+    //     if(userData.isStudent){
+    //       loadClassroomForStudents(userData.docId)
+    //       .then(listOfClassrooms => {
+    //         console.log(listOfClassrooms)
+    //         this.setState({...this.state, classrooms: listOfClassrooms })
+    //       })
+    //       .catch(err => {
+    //         throw new Error(err)
+    //       })
+    //     }
+    //     else {
+    //       console.log('reacher here in else block of user data teacher check')
+    //       loadClassroomsForTeacher(userData.docId)
+    //       .then((listOfClassrooms) => {
+    //         console.log(listOfClassrooms)
+    //         this.setState({classrooms: listOfClassrooms })
+    //       })
+    //       .catch(err => {
+    //         throw new Error(err)
+    //       })
+    //     }
+    //   }
+    // })
+    // .catch(err => {
+    //     console.log(err.message)
+    //     this.props.errorOpenHandler('Failed to get data for your Dashboard.')
+    //   })
+    // .finally(() => this.setState({...this.state, loading:false})
+    // )
   }
 
   enableCreateBox(){
@@ -133,18 +156,20 @@ class ClassroomComponent extends Component {
   }
 }
 
-export default function Classroom(props){
-  return (
-    <AuthContext.Consumer>
-      {({currentUser, setCurrentUser, errorClosehandler, successCloseHandler, errorOpenHandler, successOpenHandler}) => 
-      <ClassroomComponent 
-        {...props} 
-        currentUser = {currentUser} 
-        setCurrentUser={setCurrentUser}
-        errorOpenHandler={errorOpenHandler}
-        successOpenHandler={successOpenHandler}  
-      />}
-    </AuthContext.Consumer>
-  )
-}
+export default contextWrapper(ClassroomComponent)
+
+// export default function Classroom(props){
+//   return (
+//     <AuthContext.Consumer>
+//       {({currentUser, setCurrentUser, errorClosehandler, successCloseHandler, errorOpenHandler, successOpenHandler}) => 
+//       <ClassroomComponent 
+//         {...props} 
+//         currentUser = {currentUser} 
+//         setCurrentUser={setCurrentUser}
+//         errorOpenHandler={errorOpenHandler}
+//         successOpenHandler={successOpenHandler}  
+//       />}
+//     </AuthContext.Consumer>
+//   )
+// }
 // selection blue darken-2 btn-flat btn-medium"

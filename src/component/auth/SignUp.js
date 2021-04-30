@@ -8,7 +8,7 @@ import {
   signUpForTeacher,
   signUpForStudent,
 } from "../../services/userServices";
-import { AuthContext } from "../../context/authContext";
+import { AuthContext, contextWrapper } from "../../context/authContext";
 import Loading from "../layout/Loading";
 import ErrorText from "../layout/ErrorText";
 
@@ -319,18 +319,20 @@ class SignUp extends Component {
   }
 }
 
-export default function ComponentWithContext(props) {
-  return (
-    <AuthContext.Consumer>
-    {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-      <SignUp
-        {...props}
-        currentUser={currentUser}
-        setCurrentUser={setCurrentUser}
-        errorOpenHandler={errorOpenHandler}
-        successOpenHandler={successOpenHandler}
-      />
-    )}
-    </AuthContext.Consumer>
-  );
-}
+export default contextWrapper(SignUp)
+
+// export default function ComponentWithContext(props) {
+//   return (
+//     <AuthContext.Consumer>
+//     {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//       <SignUp
+//         {...props}
+//         currentUser={currentUser}
+//         setCurrentUser={setCurrentUser}
+//         errorOpenHandler={errorOpenHandler}
+//         successOpenHandler={successOpenHandler}
+//       />
+//     )}
+//     </AuthContext.Consumer>
+//   );
+// }

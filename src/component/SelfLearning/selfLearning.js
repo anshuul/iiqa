@@ -8,7 +8,7 @@ import {
 } from "../../services/quizServices";
 import Quiz from "../quiz/Quiz";
 import Loading from "../layout/Loading";
-import { AuthContext } from '../../context/authContext'
+import { AuthContext, contextWrapper } from '../../context/authContext'
 
 class SelfLearning extends Component {
   constructor(props) {
@@ -119,18 +119,20 @@ class SelfLearning extends Component {
   }
 }
 
-export default function ComponentWithContext(props){
-  return (
-      <AuthContext.Consumer>
-          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-          <SelfLearning
-              {...props}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              errorOpenHandler={errorOpenHandler}
-              successOpenHandler={successOpenHandler}
-          />
-          )}
-      </AuthContext.Consumer>
-  )
-}
+export default contextWrapper(SelfLearning)
+
+// export default function ComponentWithContext(props){
+//   return (
+//       <AuthContext.Consumer>
+//           {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//           <SelfLearning
+//               {...props}
+//               currentUser={currentUser}
+//               setCurrentUser={setCurrentUser}
+//               errorOpenHandler={errorOpenHandler}
+//               successOpenHandler={successOpenHandler}
+//           />
+//           )}
+//       </AuthContext.Consumer>
+//   )
+// }

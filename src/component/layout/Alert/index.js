@@ -9,14 +9,18 @@ import InfoIcon from '../../../assets/info-icon.svg'
 
 const AlertWrapper = ({children, okClickHandler}) => (
     <ModalWrapper>
-        <div className='alertFormContainer' >
+        <form 
+            className='alertFormContainer' 
+            onSubmit={okClickHandler}
+            onKeyDown={(e) => e.key === 'Enter' && okClickHandler()}
+        >
             <div className='alertContentContainer' >
                 {children}
             </div>
-            <div className='alertButtonContainer' >
-                <SubmitButton onClick={okClickHandler}>OK</SubmitButton>
+            <div className='alertButtonContainer'>
+                <SubmitButton>OK</SubmitButton>
             </div>
-        </div>
+        </form>
     </ModalWrapper>
 )
 

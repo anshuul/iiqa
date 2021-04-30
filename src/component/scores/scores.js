@@ -5,7 +5,7 @@ import { getAttendeesAndScores } from '../../services/quizServices'
 import { getProfileDataFromDocId } from '../../services/userServices'
 import Loading from '../layout/Loading'
 import ModalWrapper from "../layout/ModalWrapper";
-import { AuthContext } from '../../context/authContext'
+import { AuthContext, contextWrapper } from '../../context/authContext'
 
 class Scores extends Component {
   state = {
@@ -101,18 +101,20 @@ class Scores extends Component {
   }
 }
 
-export default function ComponentWithContext(props){
-  return (
-      <AuthContext.Consumer>
-          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-          <Scores
-              {...props}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              errorOpenHandler={errorOpenHandler}
-              successOpenHandler={successOpenHandler}
-          />
-          )}
-      </AuthContext.Consumer>
-  )
-}
+export default contextWrapper(Scores)
+
+// export default function ComponentWithContext(props){
+//   return (
+//       <AuthContext.Consumer>
+//           {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//           <Scores
+//               {...props}
+//               currentUser={currentUser}
+//               setCurrentUser={setCurrentUser}
+//               errorOpenHandler={errorOpenHandler}
+//               successOpenHandler={successOpenHandler}
+//           />
+//           )}
+//       </AuthContext.Consumer>
+//   )
+// }

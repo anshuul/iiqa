@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import SignedInLinks from "./SignedInLinks";
 import SignedOutLinks from "./SignedOutLinks";
-import { AuthContext } from "../../context/authContext";
+import { AuthContext, contextWrapper } from "../../context/authContext";
 
 class NavbarComponent extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -29,12 +29,14 @@ class NavbarComponent extends React.Component {
   }
 }
 
-export default function Navbar() {
-  return (
-    <AuthContext.Consumer>
-      {({ currentUser }) => {
-        return <NavbarComponent currentUser={currentUser} />;
-      }}
-    </AuthContext.Consumer>
-  );
-}
+export default contextWrapper(NavbarComponent)
+
+// export default function Navbar() {
+//   return (
+//     <AuthContext.Consumer>
+//       {({ currentUser }) => {
+//         return <NavbarComponent currentUser={currentUser} />;
+//       }}
+//     </AuthContext.Consumer>
+//   );
+// }

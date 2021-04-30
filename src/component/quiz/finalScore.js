@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./finalScore.css";
 import { saveQuizScore } from "../../services/quizServices";
 import { getHeightForMainContainer } from '../../shared/utils'
-import { AuthContext } from '../../context/authContext'
+import { AuthContext, contextWrapper } from '../../context/authContext'
 
 const FinalScore = (props) => {
   const [bgImage, setBgImage] = useState();
@@ -76,18 +76,20 @@ const FinalScore = (props) => {
   );
 };
 
-export default function ComponentWithContext(props){
-  return (
-      <AuthContext.Consumer>
-          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-          <FinalScore
-              {...props}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              errorOpenHandler={errorOpenHandler}
-              successOpenHandler={successOpenHandler}
-          />
-          )}
-      </AuthContext.Consumer>
-  )
-}
+export default contextWrapper(FinalScore)
+
+// export default function ComponentWithContext(props){
+//   return (
+//       <AuthContext.Consumer>
+//           {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//           <FinalScore
+//               {...props}
+//               currentUser={currentUser}
+//               setCurrentUser={setCurrentUser}
+//               errorOpenHandler={errorOpenHandler}
+//               successOpenHandler={successOpenHandler}
+//           />
+//           )}
+//       </AuthContext.Consumer>
+//   )
+// }

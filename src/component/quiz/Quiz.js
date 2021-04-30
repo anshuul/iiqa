@@ -7,7 +7,7 @@ import { saveQuizScore, capitalizeQuizData } from "../../services/quizServices";
 import { textToSpeech } from "../../shared/utils";
 import volumeIcon from "../../assets/volume.svg";
 import { getHeightForMainContainer } from '../../shared/utils'
-import { AuthContext } from '../../context/authContext'
+import { AuthContext, contextWrapper } from '../../context/authContext'
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
@@ -183,18 +183,20 @@ function Quiz(props) {
 
 // export default React.memo(Quiz);
 
-export default function ComponentWithContext(props){
-  return (
-      <AuthContext.Consumer>
-          {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-          <Quiz
-              {...props}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              errorOpenHandler={errorOpenHandler}
-              successOpenHandler={successOpenHandler}
-          />
-          )}
-      </AuthContext.Consumer>
-  )
-}
+export default contextWrapper(Quiz)
+
+// export default function ComponentWithContext(props){
+//   return (
+//       <AuthContext.Consumer>
+//           {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//           <Quiz
+//               {...props}
+//               currentUser={currentUser}
+//               setCurrentUser={setCurrentUser}
+//               errorOpenHandler={errorOpenHandler}
+//               successOpenHandler={successOpenHandler}
+//           />
+//           )}
+//       </AuthContext.Consumer>
+//   )
+// }

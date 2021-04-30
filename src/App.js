@@ -33,17 +33,31 @@ class App extends React.Component {
     successOpenHandler: this.successOpenHandler.bind(this),
   };
 
+  componentDidUpdate(prevState){
+    if(this.state.currentUser.uid && prevState.uid !== this.state.currentUser.uid){
+      sessionStorage.setItem('userInfo', JSON.stringify(this.state.currentUser))
+    }
+  }
+
   componentDidMount() {
     console.log("on refresh");
+    const storedUserInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+    console.log(sessionStorage.getItem('userInfo'))
+    console.log(storedUserInfo)
     try {
-      getOnlyUserProfile().then((userData) => {
-        console.log(userData);
-        this.setState({ ...this.state, currentUser: userData });
-      })
-      .catch(err => {
-        // this.state.errorOpenHandler('Please Log In')
-      })
-      this.setState({ ...this.state, loading: false });
+      if(storedUserInfo && storedUserInfo.uid){
+        console.log('reached in if block of app cdm')
+        this.setState({...this.state, currentUser: storedUserInfo, loading:false})
+      } else {
+        getOnlyUserProfile().then((userData) => {
+          console.log(userData);
+          this.setState({ ...this.state, currentUser: userData, loading:false });
+        })
+        .catch(err => {
+          // this.state.errorOpenHandler('Please Log In')
+        })
+      }
+      // this.setState({ ...this.state, loading: false });
     } catch (err) {
       this.state.errorOpenHandler('Something went wrong. Please restart the application.')
       // window.location.href = 'signin/'

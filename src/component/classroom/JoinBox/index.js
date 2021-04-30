@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './index.css'
 import { joinClassroom } from '../../../services/classroomServices'
-import { AuthContext } from '../../../context/authContext'
+import { AuthContext, contextWrapper } from '../../../context/authContext'
 import Loading from '../../layout/Loading'
 import ButtonGroup from '../../layout/ButtonGroup'
 import { CancelButton, SubmitButton } from '../../layout/Button'
@@ -14,7 +14,8 @@ class JoinBox extends Component {
         this.state = {
             classroomCode: '',
             loading:false,
-            errorMessage:''
+            errorMessage:'',
+            loadingMessage:'',
         }
         this.classroomCodeChangeHandler = this.classroomCodeChangeHandler.bind(this)
         this.joinHandler = this.joinHandler.bind(this)
@@ -24,7 +25,8 @@ class JoinBox extends Component {
         this.setState({...this.state, classroomCode:event.target.value})
     }
 
-    joinHandler(){
+    joinHandler(e){
+        e.preventDefault()
         this.setState({...this.state, loading:true})
         joinClassroom(this.state.classroomCode, this.props.currentUser.docId)
         .then((message)=>{
@@ -46,10 +48,13 @@ class JoinBox extends Component {
     render() {
         return (
             <div className='boxContainer'>
-                {this.state.loading && <Loading message='Joining you in the Classroom. Please wait.'/>}
+                {this.state.loading && <Loading message='Getting you enrolled in the Classroom. Please wait.'/>}
                 <div className='boxContent' >
                     <div className='formContainer'>
-                        <form>
+                        <form
+                            onSubmit={this.joinHandler}
+                            onKeyDown={(e) => e.key === 'Enter' && this.joinHandler}
+                        >
                             <div className="input-field">
                                 <label htmlFor="code">Code of Classroom</label>
                                 <input
@@ -61,8 +66,8 @@ class JoinBox extends Component {
                                 <ErrorText errorText={this.state.errorMessage} />
                             </div>
                             <ButtonGroup>
-                                <CancelButton onClick={()=>this.props.cancelHandler()}>Cancel</CancelButton>
-                                <SubmitButton onClick={this.joinHandler} >Join</SubmitButton>
+                                <CancelButton onClick={this.props.cancelHandler}>Cancel</CancelButton>
+                                <SubmitButton>Join</SubmitButton>
                             </ButtonGroup>
                         </form>
                     </div>
@@ -72,18 +77,20 @@ class JoinBox extends Component {
     }
 }
 
-export default function ComponentWithContext(props){
-    return (
-        <AuthContext.Consumer>
-            {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
-            <JoinBox
-                {...props}
-                currentUser={currentUser}
-                setCurrentUser={setCurrentUser}
-                errorOpenHandler={errorOpenHandler}
-                successOpenHandler={successOpenHandler}
-            />
-            )}
-        </AuthContext.Consumer>
-    )
-}
+export default contextWrapper(JoinBox)
+
+// export default function ComponentWithContext(props){
+//     return (
+//         <AuthContext.Consumer>
+//             {({ currentUser, setCurrentUser, errorOpenHandler, successOpenHandler }) => (
+//             <JoinBox
+//                 {...props}
+//                 currentUser={currentUser}
+//                 setCurrentUser={setCurrentUser}
+//                 errorOpenHandler={errorOpenHandler}
+//                 successOpenHandler={successOpenHandler}
+//             />
+//             )}
+//         </AuthContext.Consumer>
+//     )
+// }
