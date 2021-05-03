@@ -6,5 +6,5 @@ export const CancelButton = ({onClick:cancelHandler, children:title}) => (
 )
 
 export const SubmitButton = ({children:title}) => (
-    <input type='submit' value={title} className='btn blue darken-3 z-depth-0' />
+    <input type='submit' value={title} className='btn blue darken-3 z-depth-0 submitInputButton' />
 )

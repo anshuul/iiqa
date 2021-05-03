@@ -93,24 +93,38 @@
     justify-content: space-evenly;
     align-content: flex-start;
     padding:18px;
-    flex:0.8;
+    flex:0.7;
     width:100%;
     max-height: 82%;
-    min-height: 82%;
+    min-height: 75%;
     /* height:500px; */
     /* max-height:500px; */
     border:1px solid grey;
-    border-radius: 25px;
+    border-top: none;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
     /* background-color: white; */
     overflow-y: scroll;
+}
+
+.customSetUpQuizOptionsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex:0.1;
+    padding:0 30px;
+    border:1px solid grey;
+    border-bottom: none;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
 }
 
 .customButtonContainer {
     display:flex;
     flex:0.1;
     align-items: center;
-    justify-content: flex-end;
-    /* padding:10px 10px 10px 0px; */
+    justify-content: center;
+    padding:5px 0px;
     /* align-content: space-evenly; */
     /* border:1px solid brown; */
     /* height:10%; */
@@ -118,10 +132,24 @@
 
 .customButtonWrapper {
     display: flex;
-    flex:0.75;
+    flex:0.93;
     padding: 0;
-    justify-content: flex-end;
+    justify-content: stretch;
     align-items: center;
+}
+
+.customPrimaryButtonWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex:1;
+}
+
+.customSecondaryButtonWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex:1;
 }
 
 .customQuizButton {
@@ -133,6 +161,11 @@
     text-align: left;
     margin: 0;
     margin-right:6%;
+}
+
+.quizButtonDisabled {
+    background-color: rgba(21,101,192,0.6) !important;
+    cursor:default;
 }
 
 .customImageBlockContainer {
@@ -319,6 +352,17 @@
         align-items: center;
         flex:1;
         margin:1%;
+    }
+
+    .customPrimaryButtonWrapper {
+        flex-direction: column;
+        flex:1;
+        width:100%
+    }
+
+    .customSecondaryButtonWrapper {
+        flex-direction: column;
+        width:100%;
     }
 
     .customQuizButton {

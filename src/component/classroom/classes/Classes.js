@@ -7,16 +7,14 @@ import ClassLayoutContainer from '../../layout/ClassLayoutContainer'
 
 
 const Classes = (props) => {
-  console.log(props)
-  console.log(props.classroom)
   const defaultClassName = "child lighten-2 customTitleContainer";
   const finalClassName = `${defaultClassName} ${props.color}`;
 
   const ComponentContent = () => (
     <React.Fragment>
       <div className={finalClassName}>
-        <p>{props.name}</p>
-        <Avatar displayPicture={props.displayPicture} className={props.name ? 'displayPictureDefault' : 'displayPictureModified'}/>
+        <p className='ClassTitle'>{props.name}</p>
+        <Avatar displayPicture={props.displayPicture} className='displayPictureDefault'/>
       </div>
       <div className="footer">
         <p>Total Students: {props.studentIds.length}</p>
@@ -37,7 +35,7 @@ const Classes = (props) => {
 
   
   return (
-        <ClassLayoutContainer onClick={redirectToDashboard}>
+        <ClassLayoutContainer emphasize = {props.emphasize} onClick={redirectToDashboard}>
           <ComponentContent/>
         </ClassLayoutContainer>
   );

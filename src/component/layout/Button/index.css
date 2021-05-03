@@ -1,3 +1,11 @@
 .cancelButton {
     border:1px solid #C62828
 }
+
+.cancelButton:hover {
+    background-color: rgba(198, 40, 40, 0.2);
+}
+
+.submitInputButton:hover {
+    background-color: rgba(21, 101, 192, 0.8) !important;
+}

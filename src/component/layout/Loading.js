@@ -12,12 +12,12 @@ export default class Loading extends Component {
         return (
             <ModalWrapper>
                 <div className='loaderContent' >
-                    <div style={{display:'flex', flex:1, justifyContent:'space-evenly', width:'100%'}} >
-                        <img alt='loader' src={Loader3} width='70px' />
-                        <img alt='loader' src={Loader} width='70px' />
-                        <img alt='loader' src={Loader4} width='70px' />
+                    <div style={{display:'flex', flex:1, justifyContent:'center', width:'100%'}} >
+                        <img alt='loader' id='loader' src={Loader3} width='70px' />
+                        <img alt='loader' id='loader' src={Loader} width='70px' />
+                        <img alt='loader' id='loader' src={Loader4} width='70px' />
                     </div>
-                    <p style={{marginTop:'10px'}}>{this.props.message}</p>
+                    <p className='loaderTitle'>{this.props.message}</p>
                 </div>
             </ModalWrapper>
         )

@@ -88,6 +88,7 @@ class CreateBox extends Component {
                             displayPicture = {this.state.displayPictureChose}
                             name = {this.state.name}
                             {...this.state}
+                            emphasize
                         /> 
                     </div>
                     <div className='divider'></div>
@@ -105,7 +106,6 @@ class CreateBox extends Component {
                                     value={this.state.name}
                                     onChange={this.onNameChange}
                                     autoFocus
-                                    onKeyDown={(event) => event.key === 'Enter' && this.createHandler()}
                                 />
                             </div>
                             <div className='checkBoxContainer' >

@@ -20,6 +20,7 @@ import { getHeightForMainContainer } from '../../../shared/utils'
 import MinusIcon from '../../../assets/minus-black.png'
 import { ExpandIcon, CollapseIcon } from '../../layout/Icon'
 import { AuthContext, contextWrapper } from '../../../context/authContext'
+import { Confirm } from "../../layout/Alert";
 
 class SetUpQuiz extends Component {
   constructor(props) {
@@ -41,6 +42,8 @@ class SetUpQuiz extends Component {
       isPredfinedBoxOpen:true,
       imageContainersHeightValue:'95.5%',
       quizName:'',
+      isUploadConfirmed:false,
+      isConfirmBoxToBeShown:false,
     };
     this.onSelectPredefinedImageSetHandler = this.onSelectPredefinedImageSetHandler.bind(
       this
@@ -60,6 +63,9 @@ class SetUpQuiz extends Component {
     this.toggleSavedImageSetBox = this.toggleSavedImageSetBox.bind(this)
     this.togglePredefinedImageSetBox = this.togglePredefinedImageSetBox.bind(this)
     this.onQuizNameChange = this.onQuizNameChange.bind(this)
+    this.confirmUpload = this.confirmUpload.bind(this)
+    this.cancelUpload = this.cancelUpload.bind(this)
+    this.onPositiveUploadConfirmation = this.onPositiveUploadConfirmation.bind(this)
   }
 
   fillImagesToBeDisplayed(selectedImageSet) {
@@ -95,6 +101,7 @@ class SetUpQuiz extends Component {
   }
 
   uploadHandler(){
+    // this.setState({...this.state, isConfirmBoxToBeShown:false})
     console.log(this.state.isCollectionToBeSaved)
     if (this.state.isCollectionToBeSaved) {
       console.log('if block')
@@ -102,9 +109,10 @@ class SetUpQuiz extends Component {
         this.setState({
           ...this.state,
           loading: true,
+          isConfirmBoxToBeShown:false,
           loadingMessage:
             "Saving your collection first.",
-        }) : this.setState({...this.state, loadingMessage:"Saving your collection first.",})
+        }) : this.setState({...this.state, loadingMessage:"Saving your collection first.",isConfirmBoxToBeShown:false})
       console.log(this.state.currentClassroomDocId);
       console.log(this.state.generatedQuiz.map(quizObj => quizObj.image_path))
       createImageSetForClassroom(
@@ -132,7 +140,7 @@ class SetUpQuiz extends Component {
 
   uploadQuiz(){
     if(this.state.generatedQuiz.length > 0){
-      this.setState({...this.state, loading:true, loadingMessage:'Uploading your Quiz'})
+      this.setState({...this.state, loading:true, loadingMessage:'Uploading your Quiz', isConfirmBoxToBeShown:false})
       console.log('quiz name', this.state.quizName)
       console.log('this.state.generatedQuiz',this.state.generatedQuiz)
       createNewQuiz(this.state.generatedQuiz, this.state.currentClassroomDocId, this.state.quizName)
@@ -167,7 +175,8 @@ class SetUpQuiz extends Component {
         ...this.state,
         loading: true,
         loadingMessage: "Creating your Quiz.",
-      }) : this.setState({...this.state, loadingMessage: "Creating your Quiz.",})
+        isConfirmBoxToBeShown:false,
+      }) : this.setState({...this.state, loadingMessage: "Creating your Quiz.",isConfirmBoxToBeShown:false,})
       console.log([...this.state.imageSetImages, ...uploadedFilesURLs])
       getQuizData([...this.state.imageSetImages, ...uploadedFilesURLs])
       .then(({result}) => {
@@ -292,6 +301,23 @@ class SetUpQuiz extends Component {
     this.setState({...this.state, quizName:event.target.value})
   }
 
+  cancelUpload(){
+    this.setState({...this.state, isConfirmBoxToBeShown:false})
+  }
+
+  onPositiveUploadConfirmation(){
+    // this.setState({...this.state, isConfirmBoxToBeShown:false})
+    // console.log(this.state)
+    this.uploadHandler()
+  }
+
+  confirmUpload(){
+    if(!this.state.generatedQuiz.length){
+      return
+    }
+    this.setState({...this.state, isConfirmBoxToBeShown:true})
+  }
+
   componentDidMount() {
     try {
 
@@ -340,6 +366,7 @@ class SetUpQuiz extends Component {
     return (
       <div className="container customQuizMainContainer" style={{height:getHeightForMainContainer()}}>
         {this.state.loading && <Loading message={this.state.loadingMessage} />}
+        {this.state.isConfirmBoxToBeShown && <Confirm message='Are you sure, you want to upload this quiz ?' onCancelClick={this.cancelUpload} onOkClick={this.onPositiveUploadConfirmation} />}
         <h5>Choose Images to set up a Quiz...</h5>
         <p className='grey-text text-lighten-1' >Choose images from the given collections, generate quiz and upload it.</p>
         <div className="customQuizContainer">
@@ -389,13 +416,14 @@ class SetUpQuiz extends Component {
             {/* options container */}
             <div className='customOptionsContainer' >
               <div className="input-field col s6" style={{margin:0, width:'100%'}}>
-                <i className="material-icons prefix" style={{fontSize:'1.5rem', top:'1rem', width:0}}>border_color</i>
-                <input id="name_inline" type="text" style={{height:'40px', marginLeft:'2rem'}} value={this.state.quizName} onChange={this.onQuizNameChange}/>
-                <label for="name_inline" id='quiz-name-label' style={{marginLeft:'1.5rem'}}>Name of you Quiz</label>
+                <input id="name_inline" type="text" style={{height:'40px'}} value={this.state.quizName} onChange={this.onQuizNameChange}/>
+                <label for="name_inline" id='quiz-name-label'>Name of your Quiz</label>
               </div>    
-              <FileInputButton onChangeHandler={this.chooseFileChangeHandler} />
             </div>
             {/* display container */}
+            <div className='customSetUpQuizOptionsContainer' >
+              <FileInputButton onChangeHandler={this.chooseFileChangeHandler} />
+            </div>
             <div className="customDisplayContainer">
               {this.state.generatedQuiz && this.state.generatedQuiz.map(({image_path, question, answer}, index) => (
                 <div className="customImageBlockContainer" key={index}
@@ -456,28 +484,32 @@ class SetUpQuiz extends Component {
             <div className="customButtonContainer">
               {/*<FileInputButton onChangeHandler={this.chooseFileChangeHandler} />*/}
               <div className='customButtonWrapper'>
-              <p className='customQuizButton'>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={this.state.isCollectionToBeSaved}
-                    onChange={this.checkBoxChangeHandler}
-                  />
-                  <span>Save this collection</span>
-                </label>
-              </p>
-              <div
-                className="btn blue darken-3 z-depth-0 customQuizButton"
-                onClick={this.setUpQuizHandler}
-              >
-                Generate Quiz
-              </div>
-              <div
-                className="btn blue darken-3 z-depth-0 customQuizButton"
-                onClick={this.uploadHandler}
-              >
-                Upload Quiz
-              </div>
+                <div className='customPrimaryButtonWrapper'>
+                  <p className='customQuizButton'>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={this.state.isCollectionToBeSaved}
+                        onChange={this.checkBoxChangeHandler}
+                      />
+                      <span>Save this collection</span>
+                    </label>
+                  </p>
+                  <div
+                    className="btn blue darken-3 z-depth-0 customQuizButton"
+                    onClick={this.setUpQuizHandler}
+                  >
+                    Generate Quiz
+                  </div>
+                </div>
+                <div className='customSecondaryButtonWrapper'>
+                  <div
+                    className={ this.state.generatedQuiz.length?"btn blue darken-3 z-depth-0 customQuizButton":"btn z-depth-0 customQuizButton quizButtonDisabled"}
+                    onClick={this.confirmUpload}
+                  >
+                    Upload Quiz
+                  </div>
+                </div>
               </div>
             </div>
           </div>

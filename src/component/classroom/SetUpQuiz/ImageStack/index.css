@@ -12,6 +12,10 @@
   cursor: pointer;
 }
 
+.imageStackContainer:hover{
+  background-color: rgba(0,0,0,0.05) !important;
+}
+
 .imageStackDisplayPicture {
   width: 70px;
   height: 70px;

@@ -44,6 +44,7 @@ class Dashboard extends Component {
       studentsListLoading: false,
       isScoreDisplayed: false,
       selectedQuizActivityDocId: "",
+      copyStatusText:'Copy the code',
     };
     this.onSelectActivityByStudentHandler = this.onSelectActivityByStudentHandler.bind(
       this
@@ -107,6 +108,7 @@ class Dashboard extends Component {
 
   onCopyHandler(){
     navigator.clipboard.writeText(this.state.classroomData.code)
+    this.setState({...this.state, copyStatusText:'Code copied'})
   }
 
   componentDidMount() {
@@ -195,6 +197,7 @@ class Dashboard extends Component {
                      {this.state.classroomData.code}
                     </span>
                     <img alt='copy' src={CopyIcon} id='copyIcon' onClick={this.onCopyHandler}/>
+                    <span id='tooltip'>{this.state.copyStatusText}</span>
                   </p>
               </div>
               <div className="right customImageClass">

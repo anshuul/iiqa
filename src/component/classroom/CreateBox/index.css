@@ -71,7 +71,8 @@
 }
 
 .focusedCheckBox {
-    box-shadow: 6px 3px 10px lightgrey;
+    box-shadow: 0px 0px 10px 3px lightgrey;
+    border:1px solid #686868;
 }
 
 .customAvatar {
