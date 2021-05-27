@@ -1,8 +1,8 @@
 .imageClass {
   border: 4px solid black;
-  width: 20rem;
-  max-width: 20rem;
-  height: 18rem;
+  width: 25rem;
+  max-width: 25rem;
+  height: 22rem;
   margin-top: 5rem;
   display: flex;
   justify-content: center;
@@ -60,5 +60,10 @@
 @media only screen and (max-height: 699px) {
   .optionsContainer {
     margin-bottom: 2rem;
+  }
+
+  .imageClass {
+    width:20rem;
+    height:18rem;
   }
 }

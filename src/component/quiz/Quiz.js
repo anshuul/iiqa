@@ -8,6 +8,16 @@ import { textToSpeech } from "../../shared/utils";
 import volumeIcon from "../../assets/volume.svg";
 import { getHeightForMainContainer } from '../../shared/utils'
 import { AuthContext, contextWrapper } from '../../context/authContext'
+import { HappyPopup, SadPopup, MoveToNextQuestionPopup } from '../ReactionPopup'
+
+const HAPPYMESSAGE = 'Yayy!!! you are correct, you scored a point'
+const SADMESSAGE = 'Oh no!!! you can do better'
+const MOVEMESSAGES = [
+  'Gear up for upcoming question',
+  'Buckle up your seatbelt for the upcoming question',
+  'Are you ready for the upcoming question?',
+  'And the upcoming question is ......'
+]
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
@@ -16,6 +26,9 @@ function Quiz(props) {
   const [score, setScore] = useState(0);
   const [isOptionSelected, setIsOptionSelected] = useState(false)
   const [isImgLoaded, setIsImgLoaded] = useState(false)
+  const [isHappyPopupDisplayed, setIsHappyPopupDisplayed] = useState(false)
+  const [isSadPopupDisplayed, setIsSadPopupDisplayed] = useState(false)
+  const [isMoveToNextQuestionPopupDisplayed, setIsMoveToNextQuestionDisplayed] = useState(false)
 
   useEffect(() => {
     console.log(props);
@@ -51,14 +64,20 @@ function Quiz(props) {
     console.log("quiz data updated");
   }, [quizData]);
 
+  function getRandomMoveMessages() {
+    return MOVEMESSAGES[Math.floor(Math.random() * MOVEMESSAGES.length)];
+  }
+
   const onImageLoadHandler = () => {
-    !isImgLoaded && setIsImgLoaded(true)
-    textToSpeech(
-      `For the above Image, Question is, ${processQuestion(
-        quizData[currentQuestionIndex].question
-      )}`
-    );
-    console.log(isImgLoaded)
+    setTimeout(()=>{
+      !isImgLoaded && setIsImgLoaded(true)
+      textToSpeech(
+        `For the above Image, Question is, ${processQuestion(
+          quizData[currentQuestionIndex].question
+        )}`
+      );
+      console.log(isImgLoaded)
+    },[1200])
   }
 
   useEffect(() => {
@@ -80,14 +99,16 @@ function Quiz(props) {
       setIsOptionSelected(true)
     }
     if (optionTitle === quizData[currentQuestionIndex].answer.correct_answer) {
-      textToSpeech(`Your are right. Correct answer is ${optionTitle}`);
       setScore((score) => score + 1);
       event.target.className = "options green";
+      textToSpeech(HAPPYMESSAGE);
+      setIsHappyPopupDisplayed(true)
     } else {
-      textToSpeech(
-        `Your are wrong. Correct answer is ${quizData[currentQuestionIndex].answer.correct_answer}`
-      );
       event.target.className = "options red";
+      textToSpeech(
+        `${SADMESSAGE}. Correct answer is ${quizData[currentQuestionIndex].answer.correct_answer}`
+      );
+      setIsSadPopupDisplayed(true)
     }
     setTimeout(() => {
       if (currentQuestionIndex + 1 === quizData.length) {
@@ -98,7 +119,9 @@ function Quiz(props) {
         );
       }
       event.target.className = "options";
-    }, 5000);
+      setIsHappyPopupDisplayed(false)
+      setIsSadPopupDisplayed(false)
+    }, 4000);
   };
 
   const processQuestion = (questionText) => {
@@ -114,6 +137,9 @@ function Quiz(props) {
     <FinalScore score={score} outOff={quizData.length} {...props} />
   ) : (
     <div className="quiz" style={{height:getHeightForMainContainer()}}>
+      {isSadPopupDisplayed && <SadPopup message={SADMESSAGE} />}
+      {isHappyPopupDisplayed && <HappyPopup message={HAPPYMESSAGE} />}
+      {!isImgLoaded && <MoveToNextQuestionPopup message={getRandomMoveMessages()}/>}
       {quizData && (
         <div
           style={{

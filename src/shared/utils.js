@@ -5,7 +5,7 @@ var voices = window.speechSynthesis.getVoices();
 export function textToSpeech(message) {
   let messageObj = new SpeechSynthesisUtterance();
   messageObj.voice = voices[2];
-  messageObj.lang = "en-US";
+  messageObj.lang = "en-IN";
   messageObj.volume = 1;
   messageObj.rate = 0.9;
   messageObj.pitch = 1;

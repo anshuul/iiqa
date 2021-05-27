@@ -1,0 +1,52 @@
+.popupContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.animated {
+    animation: popup 0.7s;
+}
+
+.popupTitle {
+    color: white;
+    font-family: "Henny Penny", cursive;
+    font-size: 40px;
+    text-align: center;
+}
+
+@media only screen and (max-height: 699px) {
+    /* .popupTitle {
+        font-size: small;
+    }     */
+
+    .popupContent > img {
+        width: 70%;
+    }
+}
+  
+
+@keyframes popup {
+    0%{
+      transform: scale(1);
+    }
+    50%{
+      transform: scale(1.4);
+    }
+    60%{
+      transform: scale(1.1);
+    }
+    70%{
+      transform: scale(1.2);
+    }
+    80%{
+      transform: scale(1);
+    }
+    90%{
+      transform: scale(1.1);
+    }
+    100%{
+      transform: scale(1);
+    }
+  }
