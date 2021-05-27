@@ -5,7 +5,7 @@ var voices = window.speechSynthesis.getVoices();
 export function textToSpeech(message) {
   let messageObj = new SpeechSynthesisUtterance();
   messageObj.voice = voices[2];
-  messageObj.lang = "en-IN";
+  messageObj.lang = "en-UK";
   messageObj.volume = 1;
   messageObj.rate = 0.9;
   messageObj.pitch = 1;
@@ -30,4 +30,4 @@ export const getHeightForMainContainer = () => {
 };
 
 // util method for capitalize
-export const capitalize = (text) => text[0].toUpperCase() + text.slice(1)
+export const capitalize = (text) => text[0].toUpperCase() + text.slice(1);

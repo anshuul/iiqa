@@ -6,29 +6,36 @@ import { decryptInformationAfterRouting } from "../../services/classroomServices
 import { saveQuizScore, capitalizeQuizData } from "../../services/quizServices";
 import { textToSpeech } from "../../shared/utils";
 import volumeIcon from "../../assets/volume.svg";
-import { getHeightForMainContainer } from '../../shared/utils'
-import { AuthContext, contextWrapper } from '../../context/authContext'
-import { HappyPopup, SadPopup, MoveToNextQuestionPopup } from '../ReactionPopup'
+import { getHeightForMainContainer } from "../../shared/utils";
+import { AuthContext, contextWrapper } from "../../context/authContext";
+import {
+  HappyPopup,
+  SadPopup,
+  MoveToNextQuestionPopup,
+} from "../ReactionPopup";
 
-const HAPPYMESSAGE = 'Yayy!!! you are correct, you scored a point'
-const SADMESSAGE = 'Oh no!!! you can do better'
+const HAPPYMESSAGE = "Yayy!!! you are correct, you scored a point";
+const SADMESSAGE = "Oh no!!! you can do better";
 const MOVEMESSAGES = [
-  'Gear up for upcoming question',
-  'Buckle up your seatbelt for the upcoming question',
-  'Are you ready for the upcoming question?',
-  'And the upcoming question is ......'
-]
+  "Gear up for upcoming question",
+  "Buckle up your seatbelt for the upcoming question",
+  "Are you ready for the upcoming question?",
+  "And the upcoming question is ......",
+];
 
 function Quiz(props) {
   const [quizData, setQuizData] = useState();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
-  const [isOptionSelected, setIsOptionSelected] = useState(false)
-  const [isImgLoaded, setIsImgLoaded] = useState(false)
-  const [isHappyPopupDisplayed, setIsHappyPopupDisplayed] = useState(false)
-  const [isSadPopupDisplayed, setIsSadPopupDisplayed] = useState(false)
-  const [isMoveToNextQuestionPopupDisplayed, setIsMoveToNextQuestionDisplayed] = useState(false)
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
+  const [isImgLoaded, setIsImgLoaded] = useState(false);
+  const [isHappyPopupDisplayed, setIsHappyPopupDisplayed] = useState(false);
+  const [isSadPopupDisplayed, setIsSadPopupDisplayed] = useState(false);
+  const [
+    isMoveToNextQuestionPopupDisplayed,
+    setIsMoveToNextQuestionDisplayed,
+  ] = useState(false);
 
   useEffect(() => {
     console.log(props);
@@ -45,19 +52,18 @@ function Quiz(props) {
           console.log(localStorage.getItem("quizToken"));
           setQuizData(capitalizeQuizData(props.location.state.quizData));
         } else {
-
           console.log("else block");
         }
 
         console.log("rendered");
       }
     } catch (err) {
-      props.errorOpenHandler('Failed to get your quiz.')
+      props.errorOpenHandler("Failed to get your quiz.");
     }
 
-    const reset = () => setIsImgLoaded(false)
+    const reset = () => setIsImgLoaded(false);
 
-    return () => reset()
+    return () => reset();
   }, []);
 
   useEffect(() => {
@@ -69,46 +75,45 @@ function Quiz(props) {
   }
 
   const onImageLoadHandler = () => {
-    setTimeout(()=>{
-      !isImgLoaded && setIsImgLoaded(true)
+    setTimeout(() => {
+      !isImgLoaded && setIsImgLoaded(true);
       textToSpeech(
         `For the above Image, Question is, ${processQuestion(
           quizData[currentQuestionIndex].question
         )}`
       );
-      console.log(isImgLoaded)
-    },[1200])
-  }
+      console.log(isImgLoaded);
+    }, [1500]);
+  };
 
   useEffect(() => {
     if (
       quizData &&
       currentQuestionIndex >= 0 &&
       currentQuestionIndex < quizData.length
-    )
-    {  
-      setIsOptionSelected(false)
-      isImgLoaded && setIsImgLoaded(false)
+    ) {
+      setIsOptionSelected(false);
+      isImgLoaded && setIsImgLoaded(false);
     }
   }, [currentQuestionIndex, quizData]);
 
   const onOptionPressHandler = (event, optionTitle) => {
-    if(isOptionSelected){
-      return
+    if (isOptionSelected) {
+      return;
     } else {
-      setIsOptionSelected(true)
+      setIsOptionSelected(true);
     }
     if (optionTitle === quizData[currentQuestionIndex].answer.correct_answer) {
       setScore((score) => score + 1);
       event.target.className = "options green";
       textToSpeech(HAPPYMESSAGE);
-      setIsHappyPopupDisplayed(true)
+      setIsHappyPopupDisplayed(true);
     } else {
       event.target.className = "options red";
       textToSpeech(
         `${SADMESSAGE}. Correct answer is ${quizData[currentQuestionIndex].answer.correct_answer}`
       );
-      setIsSadPopupDisplayed(true)
+      setIsSadPopupDisplayed(true);
     }
     setTimeout(() => {
       if (currentQuestionIndex + 1 === quizData.length) {
@@ -119,8 +124,8 @@ function Quiz(props) {
         );
       }
       event.target.className = "options";
-      setIsHappyPopupDisplayed(false)
-      setIsSadPopupDisplayed(false)
+      setIsHappyPopupDisplayed(false);
+      setIsSadPopupDisplayed(false);
     }, 4000);
   };
 
@@ -136,10 +141,12 @@ function Quiz(props) {
   return showScore ? (
     <FinalScore score={score} outOff={quizData.length} {...props} />
   ) : (
-    <div className="quiz" style={{height:getHeightForMainContainer()}}>
+    <div className="quiz" style={{ height: getHeightForMainContainer() }}>
       {isSadPopupDisplayed && <SadPopup message={SADMESSAGE} />}
       {isHappyPopupDisplayed && <HappyPopup message={HAPPYMESSAGE} />}
-      {!isImgLoaded && <MoveToNextQuestionPopup message={getRandomMoveMessages()}/>}
+      {!isImgLoaded && (
+        <MoveToNextQuestionPopup message={getRandomMoveMessages()} />
+      )}
       {quizData && (
         <div
           style={{
@@ -151,9 +158,7 @@ function Quiz(props) {
             width: "100%",
           }}
         >
-          <div
-            className="imageClass"
-          >
+          <div className="imageClass">
             <img
               src={quizData[currentQuestionIndex].image_path}
               alt="quizimage"
@@ -165,12 +170,14 @@ function Quiz(props) {
           </div>
 
           <div className="questionClass">
-            {isImgLoaded && <p
-              className="question"
-              style={{ fontSize: "30px", textAlign: "center" }}
-            >
-              {processQuestion(quizData[currentQuestionIndex].question)}
-            </p>}
+            {isImgLoaded && (
+              <p
+                className="question"
+                style={{ fontSize: "30px", textAlign: "center" }}
+              >
+                {processQuestion(quizData[currentQuestionIndex].question)}
+              </p>
+            )}
           </div>
 
           {quizData[currentQuestionIndex].answer && (
@@ -185,20 +192,21 @@ function Quiz(props) {
                 height: "100%",
               }}
             >
-              {isImgLoaded && quizData[currentQuestionIndex].answer.options.map(
-                (optionTitle, index) => (
-                  <div className="optionsContainer" key={index}>
-                    <div
-                      className="options font-quiz text-2xl"
-                      onClick={(event) =>
-                        onOptionPressHandler(event, optionTitle)
-                      }
-                    >
-                      {optionTitle}
+              {isImgLoaded &&
+                quizData[currentQuestionIndex].answer.options.map(
+                  (optionTitle, index) => (
+                    <div className="optionsContainer" key={index}>
+                      <div
+                        className="options font-quiz text-2xl"
+                        onClick={(event) =>
+                          onOptionPressHandler(event, optionTitle)
+                        }
+                      >
+                        {optionTitle}
+                      </div>
                     </div>
-                  </div>
-                )
-              )}
+                  )
+                )}
             </div>
           )}
         </div>
@@ -209,7 +217,7 @@ function Quiz(props) {
 
 // export default React.memo(Quiz);
 
-export default contextWrapper(Quiz)
+export default contextWrapper(Quiz);
 
 // export default function ComponentWithContext(props){
 //   return (
